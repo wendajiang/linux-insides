@@ -1,0 +1,515 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Initialization of non-early interrupt gates - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html" class="active">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="interrupts-and-interrupt-handling-part-4"><a class="header" href="#interrupts-and-interrupt-handling-part-4">Interrupts and Interrupt Handling. Part 4.</a></h1>
+<h2 id="initialization-of-non-early-interrupt-gates"><a class="header" href="#initialization-of-non-early-interrupt-gates">Initialization of non-early interrupt gates</a></h2>
+<p>This is fourth part about an interrupts and exceptions handling in the Linux kernel and in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">part</a> we saw first early <code>#DB</code> and <code>#BP</code> exceptions handlers from the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a>. We stopped on the right after the <code>early_trap_init</code> function that called in the <code>setup_arch</code> function which defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/setup.c">arch/x86/kernel/setup.c</a>. In this part we will continue to dive into an interrupts and exceptions handling in the Linux kernel for <code>x86_64</code> and continue to do it from the place where we left off in the last part. First thing which is related to the interrupts and exceptions handling is the setup of the <code>#PF</code> or <a href="https://en.wikipedia.org/wiki/Page_fault">page fault</a> handler with the <code>early_trap_pf_init</code> function. Let's start from it.</p>
+<h2 id="early-page-fault-handler"><a class="header" href="#early-page-fault-handler">Early page fault handler</a></h2>
+<p>The <code>early_trap_pf_init</code> function defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a>. It uses <code>set_intr_gate</code> macro that fills <a href="https://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt Descriptor Table</a> with the given entry:</p>
+<pre><code class="language-C">void __init early_trap_pf_init(void)
+{
+#ifdef CONFIG_X86_64
+         set_intr_gate(X86_TRAP_PF, page_fault);
+#endif
+}
+</code></pre>
+<p>This macro defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/include/asm/desc.h">arch/x86/include/asm/desc.h</a>. We already saw macros like this in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">part</a> - <code>set_system_intr_gate</code> and <code>set_intr_gate_ist</code>. This macro checks that given vector number is not greater than <code>255</code> (maximum vector number) and calls <code>_set_gate</code> function as <code>set_system_intr_gate</code> and <code>set_intr_gate_ist</code> did it:</p>
+<pre><code class="language-C">#define set_intr_gate(n, addr)                                  \
+do {                                                            \
+        BUG_ON((unsigned)n &gt; 0xFF);                             \
+        _set_gate(n, GATE_INTERRUPT, (void *)addr, 0, 0,        \
+                  __KERNEL_CS);                                 \
+        _trace_set_gate(n, GATE_INTERRUPT, (void *)trace_##addr,\
+                        0, 0, __KERNEL_CS);                     \
+} while (0)
+</code></pre>
+<p>The <code>set_intr_gate</code> macro takes two parameters:</p>
+<ul>
+<li>vector number of a interrupt;</li>
+<li>address of an interrupt handler;</li>
+</ul>
+<p>In our case they are:</p>
+<ul>
+<li><code>X86_TRAP_PF</code> - <code>14</code>;</li>
+<li><code>page_fault</code> - the interrupt handler entry point.</li>
+</ul>
+<p>The <code>X86_TRAP_PF</code> is the element of enum which defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/include/asm/traprs.h">arch/x86/include/asm/traprs.h</a>:</p>
+<pre><code class="language-C">enum {
+	...
+	...
+	...
+	...
+	X86_TRAP_PF,            /* 14, Page Fault */
+	...
+	...
+	...
+}
+</code></pre>
+<p>When the <code>early_trap_pf_init</code> will be called, the <code>set_intr_gate</code> will be expanded to the call of the <code>_set_gate</code> which will fill the <code>IDT</code> with the handler for the page fault. Now let's look on the implementation of the <code>page_fault</code> handler. The <code>page_fault</code> handler defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> assembly source code file as all exceptions handlers. Let's look on it:</p>
+<pre><code class="language-assembly">trace_idtentry page_fault do_page_fault has_error_code=1
+</code></pre>
+<p>We saw in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">part</a> how <code>#DB</code> and <code>#BP</code> handlers defined. They were defined with the <code>idtentry</code> macro, but here we can see <code>trace_idtentry</code>. This macro defined in the same source code file and depends on the <code>CONFIG_TRACING</code> kernel configuration option:</p>
+<pre><code class="language-assembly">#ifdef CONFIG_TRACING
+.macro trace_idtentry sym do_sym has_error_code:req
+idtentry trace(\sym) trace(\do_sym) has_error_code=\has_error_code
+idtentry \sym \do_sym has_error_code=\has_error_code
+.endm
+#else
+.macro trace_idtentry sym do_sym has_error_code:req
+idtentry \sym \do_sym has_error_code=\has_error_code
+.endm
+#endif
+</code></pre>
+<p>We will not dive into exceptions <a href="https://en.wikipedia.org/wiki/Tracing_%28software%29">Tracing</a> now. If <code>CONFIG_TRACING</code> is not set, we can see that <code>trace_idtentry</code> macro just expands to the normal <code>idtentry</code>. We already saw implementation of the <code>idtentry</code> macro in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">part</a>, so let's start from the <code>page_fault</code> exception handler.</p>
+<p>As we can see in the <code>idtentry</code> definition, the handler of the <code>page_fault</code> is <code>do_page_fault</code> function which defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/mm/fault.c">arch/x86/mm/fault.c</a> and as all exceptions handlers it takes two arguments:</p>
+<ul>
+<li><code>regs</code> - <code>pt_regs</code> structure that holds state of an interrupted process;</li>
+<li><code>error_code</code> - error code of the page fault exception.</li>
+</ul>
+<p>Let's look inside this function. First of all we read content of the <a href="https://en.wikipedia.org/wiki/Control_register">cr2</a> control register:</p>
+<pre><code class="language-C">dotraplinkage void notrace
+do_page_fault(struct pt_regs *regs, unsigned long error_code)
+{
+	unsigned long address = read_cr2();
+	...
+	...
+	...
+}
+</code></pre>
+<p>This register contains a linear address which caused <code>page fault</code>. In the next step we make a call of the <code>exception_enter</code> function from the <a href="https://github.com/torvalds/linux/blob/master/include/linux/context_tracking.h">include/linux/context_tracking.h</a>. The <code>exception_enter</code> and <code>exception_exit</code> are functions from context tracking subsystem in the Linux kernel used by the <a href="https://en.wikipedia.org/wiki/Read-copy-update">RCU</a> to remove its dependency on the timer tick while a processor runs in userspace. Almost in every exception handler we will see similar code:</p>
+<pre><code class="language-C">enum ctx_state prev_state;
+prev_state = exception_enter();
+...
+... // exception handler here
+...
+exception_exit(prev_state);
+</code></pre>
+<p>The <code>exception_enter</code> function checks that <code>context tracking</code> is enabled with the <code>context_tracking_is_enabled</code> and if it is in enabled state, we get previous context with the <code>this_cpu_read</code> (more about <code>this_cpu_*</code> operations you can read in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/this_cpu_ops.txt">Documentation</a>). After this it calls <code>context_tracking_user_exit</code> function which informs the context tracking that the processor is exiting userspace mode and entering the kernel:</p>
+<pre><code class="language-C">static inline enum ctx_state exception_enter(void)
+{
+        enum ctx_state prev_ctx;
+
+        if (!context_tracking_is_enabled())
+                return 0;
+
+        prev_ctx = this_cpu_read(context_tracking.state);
+        context_tracking_user_exit();
+
+        return prev_ctx;
+}
+</code></pre>
+<p>The state can be one of the:</p>
+<pre><code class="language-C">enum ctx_state {
+    IN_KERNEL = 0,
+	IN_USER,
+} state;
+</code></pre>
+<p>And in the end we return previous context. Between the <code>exception_enter</code> and <code>exception_exit</code> we call actual page fault handler:</p>
+<pre><code class="language-C">__do_page_fault(regs, error_code, address);
+</code></pre>
+<p>The <code>__do_page_fault</code> is defined in the same source code file as <code>do_page_fault</code> - <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/mm/fault.c">arch/x86/mm/fault.c</a>. In the beginning of the <code>__do_page_fault</code> we check state of the <a href="https://www.kernel.org/doc/Documentation/kmemcheck.txt">kmemcheck</a> checker. The <code>kmemcheck</code> detects warns about some uses of uninitialized memory. We need to check it because page fault can be caused by kmemcheck:</p>
+<pre><code class="language-C">if (kmemcheck_active(regs))
+		kmemcheck_hide(regs);
+	prefetchw(&amp;mm-&gt;mmap_sem);
+</code></pre>
+<p>After this we can see the call of the <code>prefetchw</code> which executes instruction with the same <a href="http://www.felixcloutier.com/x86/PREFETCHW.html">name</a> which fetches <a href="https://en.wikipedia.org/?title=3DNow!">X86_FEATURE_3DNOW</a> to get exclusive <a href="https://en.wikipedia.org/wiki/CPU_cache">cache line</a>. The main purpose of prefetching is to hide the latency of a memory access. In the next step we check that we got page fault not in the kernel space with the following condition:</p>
+<pre><code class="language-C">if (unlikely(fault_in_kernel_space(address))) {
+...
+...
+...
+}
+</code></pre>
+<p>where <code>fault_in_kernel_space</code> is:</p>
+<pre><code class="language-C">static int fault_in_kernel_space(unsigned long address)
+{
+        return address &gt;= TASK_SIZE_MAX;
+}
+</code></pre>
+<p>The <code>TASK_SIZE_MAX</code> macro expands to the:</p>
+<pre><code class="language-C">#define TASK_SIZE_MAX   ((1UL &lt;&lt; 47) - PAGE_SIZE)
+</code></pre>
+<p>or <code>0x00007ffffffff000</code>. Pay attention on <code>unlikely</code> macro. There are two macros in the Linux kernel:</p>
+<pre><code class="language-C">#define likely(x)      __builtin_expect(!!(x), 1)
+#define unlikely(x)    __builtin_expect(!!(x), 0)
+</code></pre>
+<p>You can <a href="http://lxr.free-electrons.com/ident?i=unlikely">often</a> find these macros in the code of the Linux kernel. Main purpose of these macros is optimization. Sometimes this situation is that we need to check the condition of the code and we know that it will rarely be <code>true</code> or <code>false</code>. With these macros we can tell to the compiler about this. For example</p>
+<pre><code class="language-C">static int proc_root_readdir(struct file *file, struct dir_context *ctx)
+{
+        if (ctx-&gt;pos &lt; FIRST_PROCESS_ENTRY) {
+                int error = proc_readdir(file, ctx);
+                if (unlikely(error &lt;= 0))
+                        return error;
+...
+...
+...
+}
+</code></pre>
+<p>Here we can see <code>proc_root_readdir</code> function which will be called when the Linux <a href="https://en.wikipedia.org/wiki/Virtual_file_system">VFS</a> needs to read the <code>root</code> directory contents. If condition marked with <code>unlikely</code>, compiler can put <code>false</code> code right after branching. Now let's back to the our address check. Comparison between the given address and the <code>0x00007ffffffff000</code> will give us to know, was page fault in the kernel mode or user mode. After this check we know it. After this <code>__do_page_fault</code> routine will try to understand the problem that provoked page fault exception and then will pass address to the appropriate routine. It can be <code>kmemcheck</code> fault, spurious fault, <a href="https://www.kernel.org/doc/Documentation/kprobes.txt">kprobes</a> fault and etc. Will not dive into implementation details of the page fault exception handler in this part, because we need to know many different concepts which are provided by the Linux kernel, but will see it in the chapter about the <a href="https://0xax.gitbook.io/linux-insides/summary/mm">memory management</a> in the Linux kernel.</p>
+<h2 id="back-to-start_kernel"><a class="header" href="#back-to-start_kernel">Back to start_kernel</a></h2>
+<p>There are many different function calls after the <code>early_trap_pf_init</code> in the <code>setup_arch</code> function from different kernel subsystems, but there are no one interrupts and exceptions handling related. So, we have to go back where we came from - <code>start_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c#L492">init/main.c</a>. The first things after the <code>setup_arch</code> is the <code>trap_init</code> function from the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a>. This function makes initialization of the remaining exceptions handlers (remember that we already setup 3 handlers for the <code>#DB</code> - debug exception, <code>#BP</code> - breakpoint exception and <code>#PF</code> - page fault exception). The <code>trap_init</code> function starts from the check of the <a href="https://en.wikipedia.org/wiki/Extended_Industry_Standard_Architecture">Extended Industry Standard Architecture</a>:</p>
+<pre><code class="language-C">#ifdef CONFIG_EISA
+        void __iomem *p = early_ioremap(0x0FFFD9, 4);
+
+        if (readl(p) == 'E' + ('I'&lt;&lt;8) + ('S'&lt;&lt;16) + ('A'&lt;&lt;24))
+                EISA_bus = 1;
+        early_iounmap(p, 4);
+#endif
+</code></pre>
+<p>Note that it depends on the <code>CONFIG_EISA</code> kernel configuration parameter which represents <code>EISA</code> support. Here we use <code>early_ioremap</code> function to map <code>I/O</code> memory on the page tables. We use <code>readl</code> function to read first <code>4</code> bytes from the mapped region and if they are equal to <code>EISA</code> string we set <code>EISA_bus</code> to one. In the end we just unmap previously mapped region. More about <code>early_ioremap</code> you can read in the part which describes <a href="https://0xax.gitbook.io/linux-insides/summary/mm/linux-mm-2">Fix-Mapped Addresses and ioremap</a>.</p>
+<p>After this we start to fill the <code>Interrupt Descriptor Table</code> with the different interrupt gates. First of all we set <code>#DE</code> or <code>Divide Error</code> and <code>#NMI</code> or <code>Non-maskable Interrupt</code>:</p>
+<pre><code class="language-C">set_intr_gate(X86_TRAP_DE, divide_error);
+set_intr_gate_ist(X86_TRAP_NMI, &amp;nmi, NMI_STACK);
+</code></pre>
+<p>We use <code>set_intr_gate</code> macro to set the interrupt gate for the <code>#DE</code> exception and <code>set_intr_gate_ist</code> for the <code>#NMI</code>. You can remember that we already used these macros when we have set the interrupts gates for the page fault handler, debug handler and etc, you can find explanation of it in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">part</a>. After this we setup exception gates for the following exceptions:</p>
+<pre><code class="language-C">set_system_intr_gate(X86_TRAP_OF, &amp;overflow);
+set_intr_gate(X86_TRAP_BR, bounds);
+set_intr_gate(X86_TRAP_UD, invalid_op);
+set_intr_gate(X86_TRAP_NM, device_not_available);
+</code></pre>
+<p>Here we can see:</p>
+<ul>
+<li><code>#OF</code> or <code>Overflow</code> exception. This exception indicates that an overflow trap occurred when an special <a href="http://x86.renejeschke.de/html/file_module_x86_id_142.html">INTO</a> instruction was executed;</li>
+<li><code>#BR</code> or <code>BOUND Range exceeded</code> exception. This exception indicates that a <code>BOUND-range-exceed</code> fault occurred when a <a href="http://pdos.csail.mit.edu/6.828/2005/readings/i386/BOUND.htm">BOUND</a> instruction was executed;</li>
+<li><code>#UD</code> or <code>Invalid Opcode</code> exception. Occurs when a processor attempted to execute invalid or reserved <a href="https://en.wikipedia.org/?title=Opcode">opcode</a>, processor attempted to execute instruction with invalid operand(s) and etc;</li>
+<li><code>#NM</code> or <code>Device Not Available</code> exception. Occurs when the processor tries to execute <code>x87 FPU</code> floating point instruction while <code>EM</code> flag in the <a href="https://en.wikipedia.org/wiki/Control_register#CR0">control register</a> <code>cr0</code> was set.</li>
+</ul>
+<p>In the next step we set the interrupt gate for the <code>#DF</code> or <code>Double fault</code> exception:</p>
+<pre><code class="language-C">set_intr_gate_ist(X86_TRAP_DF, &amp;double_fault, DOUBLEFAULT_STACK);
+</code></pre>
+<p>This exception occurs when processor detected a second exception while calling an exception handler for a prior exception. In usual way when the processor detects another exception while trying to call an exception handler, the two exceptions can be handled serially. If the processor cannot handle them serially, it signals the double-fault or <code>#DF</code> exception.</p>
+<p>The following set of the interrupt gates is:</p>
+<pre><code class="language-C">set_intr_gate(X86_TRAP_OLD_MF, &amp;coprocessor_segment_overrun);
+set_intr_gate(X86_TRAP_TS, &amp;invalid_TSS);
+set_intr_gate(X86_TRAP_NP, &amp;segment_not_present);
+set_intr_gate_ist(X86_TRAP_SS, &amp;stack_segment, STACKFAULT_STACK);
+set_intr_gate(X86_TRAP_GP, &amp;general_protection);
+set_intr_gate(X86_TRAP_SPURIOUS, &amp;spurious_interrupt_bug);
+set_intr_gate(X86_TRAP_MF, &amp;coprocessor_error);
+set_intr_gate(X86_TRAP_AC, &amp;alignment_check);
+</code></pre>
+<p>Here we can see setup for the following exception handlers:</p>
+<ul>
+<li><code>#CSO</code> or <code>Coprocessor Segment Overrun</code> - this exception indicates that math <a href="https://en.wikipedia.org/wiki/Coprocessor">coprocessor</a> of an old processor detected a page or segment violation. Modern processors do not generate this exception</li>
+<li><code>#TS</code> or <code>Invalid TSS</code> exception - indicates that there was an error related to the <a href="https://en.wikipedia.org/wiki/Task_state_segment">Task State Segment</a>.</li>
+<li><code>#NP</code> or <code>Segment Not Present</code> exception indicates that the <code>present flag</code> of a segment or gate descriptor is clear during attempt to load one of <code>cs</code>, <code>ds</code>, <code>es</code>, <code>fs</code>, or <code>gs</code> register.</li>
+<li><code>#SS</code> or <code>Stack Fault</code> exception indicates one of the stack related conditions was detected, for example a not-present stack segment is detected when attempting to load the <code>ss</code> register.</li>
+<li><code>#GP</code> or <code>General Protection</code> exception indicates that the processor detected one of a class of protection violations called general-protection violations. There are many different conditions that can cause general-protection exception. For example loading the <code>ss</code>, <code>ds</code>, <code>es</code>, <code>fs</code>, or <code>gs</code> register with a segment selector for a system segment, writing to a code segment or a read-only data segment, referencing an entry in the <code>Interrupt Descriptor Table</code> (following an interrupt or exception) that is not an interrupt, trap, or task gate and many many more.</li>
+<li><code>Spurious Interrupt</code> - a hardware interrupt that is unwanted.</li>
+<li><code>#MF</code> or <code>x87 FPU Floating-Point Error</code> exception caused when the <a href="https://en.wikipedia.org/wiki/X86_instruction_listings#x87_floating-point_instructions">x87 FPU</a> has detected a floating point error.</li>
+<li><code>#AC</code> or <code>Alignment Check</code> exception Indicates that the processor detected an unaligned memory operand when alignment checking was enabled.</li>
+</ul>
+<p>After that we setup this exception gates, we can see setup of the <code>Machine-Check</code> exception:</p>
+<pre><code class="language-C">#ifdef CONFIG_X86_MCE
+	set_intr_gate_ist(X86_TRAP_MC, &amp;machine_check, MCE_STACK);
+#endif
+</code></pre>
+<p>Note that it depends on the <code>CONFIG_X86_MCE</code> kernel configuration option and indicates that the processor detected an internal <a href="https://en.wikipedia.org/wiki/Machine-check_exception">machine error</a> or a bus error, or that an external agent detected a bus error. The next exception gate is for the <a href="https://en.wikipedia.org/?title=SIMD">SIMD</a> Floating-Point exception:</p>
+<pre><code class="language-C">set_intr_gate(X86_TRAP_XF, &amp;simd_coprocessor_error);
+</code></pre>
+<p>which indicates the processor has detected an <code>SSE</code> or <code>SSE2</code> or <code>SSE3</code> SIMD floating-point exception. There are six classes of numeric exception conditions that can occur while executing an SIMD floating-point instruction:</p>
+<ul>
+<li>Invalid operation</li>
+<li>Divide-by-zero</li>
+<li>Denormal operand</li>
+<li>Numeric overflow</li>
+<li>Numeric underflow</li>
+<li>Inexact result (Precision)</li>
+</ul>
+<p>In the next step we fill the <code>used_vectors</code> array which defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/include/asm/desc.h">arch/x86/include/asm/desc.h</a> header file and represents <code>bitmap</code>:</p>
+<pre><code class="language-C">DECLARE_BITMAP(used_vectors, NR_VECTORS);
+</code></pre>
+<p>of the first <code>32</code> interrupts (more about bitmaps in the Linux kernel you can read in the part which describes <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">cpumasks and bitmaps</a>)</p>
+<pre><code class="language-C">for (i = 0; i &lt; FIRST_EXTERNAL_VECTOR; i++)
+	set_bit(i, used_vectors)
+</code></pre>
+<p>where <code>FIRST_EXTERNAL_VECTOR</code> is:</p>
+<pre><code class="language-C">#define FIRST_EXTERNAL_VECTOR           0x20
+</code></pre>
+<p>After this we setup the interrupt gate for the <code>ia32_syscall</code> and add <code>0x80</code> to the <code>used_vectors</code> bitmap:</p>
+<pre><code class="language-C">#ifdef CONFIG_IA32_EMULATION
+        set_system_intr_gate(IA32_SYSCALL_VECTOR, ia32_syscall);
+        set_bit(IA32_SYSCALL_VECTOR, used_vectors);
+#endif
+</code></pre>
+<p>There is <code>CONFIG_IA32_EMULATION</code> kernel configuration option on <code>x86_64</code> Linux kernels. This option provides ability to execute 32-bit processes in compatibility-mode. In the next parts we will see how it works, in the meantime we need only to know that there is yet another interrupt gate in the <code>IDT</code> with the vector number <code>0x80</code>. In the next step we maps <code>IDT</code> to the fixmap area:</p>
+<pre><code class="language-C">__set_fixmap(FIX_RO_IDT, __pa_symbol(idt_table), PAGE_KERNEL_RO);
+idt_descr.address = fix_to_virt(FIX_RO_IDT);
+</code></pre>
+<p>and write its address to the <code>idt_descr.address</code> (more about fix-mapped addresses you can read in the second part of the <a href="https://0xax.gitbook.io/linux-insides/summary/mm/linux-mm-2">Linux kernel memory management</a> chapter). After this we can see the call of the <code>cpu_init</code> function that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/cpu/common.c">arch/x86/kernel/cpu/common.c</a>. This function makes initialization of the all <code>per-cpu</code> state. In the beginning of the <code>cpu_init</code> we do the following things: First of all we wait while current cpu is initialized and than we call the <code>cr4_init_shadow</code> function which stores shadow copy of the <code>cr4</code> control register for the current cpu and load CPU microcode if need with the following function calls:</p>
+<pre><code class="language-C">wait_for_master_cpu(cpu);
+cr4_init_shadow();
+load_ucode_ap();
+</code></pre>
+<p>Next we get the <code>Task State Segment</code> for the current cpu and <code>orig_ist</code> structure which represents origin <code>Interrupt Stack Table</code> values with the:</p>
+<pre><code class="language-C">t = &amp;per_cpu(cpu_tss, cpu);
+oist = &amp;per_cpu(orig_ist, cpu);
+</code></pre>
+<p>As we got values of the <code>Task State Segment</code> and <code>Interrupt Stack Table</code> for the current processor, we clear following bits in the <code>cr4</code> control register:</p>
+<pre><code class="language-C">cr4_clear_bits(X86_CR4_VME|X86_CR4_PVI|X86_CR4_TSD|X86_CR4_DE);
+</code></pre>
+<p>with this we disable <code>vm86</code> extension, virtual interrupts, timestamp (<a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">RDTSC</a> can only be executed with the highest privilege) and debug extension. After this we reload the <code>Global Descriptor Table</code> and <code>Interrupt Descriptor table</code> with the:</p>
+<pre><code class="language-C">	switch_to_new_gdt(cpu);
+	loadsegment(fs, 0);
+	load_current_idt();
+</code></pre>
+<p>After this we setup array of the Thread-Local Storage Descriptors, configure <a href="https://en.wikipedia.org/wiki/NX_bit">NX</a> and load CPU microcode. Now is time to setup and load <code>per-cpu</code> Task State Segments. We are going in a loop through the all exception stack which is <code>N_EXCEPTION_STACKS</code> or <code>4</code> and fill it with <code>Interrupt Stack Tables</code>:</p>
+<pre><code class="language-C">	if (!oist-&gt;ist[0]) {
+		char *estacks = per_cpu(exception_stacks, cpu);
+
+		for (v = 0; v &lt; N_EXCEPTION_STACKS; v++) {
+			estacks += exception_stack_sizes[v];
+			oist-&gt;ist[v] = t-&gt;x86_tss.ist[v] =
+					(unsigned long)estacks;
+			if (v == DEBUG_STACK-1)
+				per_cpu(debug_stack_addr, cpu) = (unsigned long)estacks;
+		}
+	}
+</code></pre>
+<p>As we have filled <code>Task State Segments</code> with the <code>Interrupt Stack Tables</code> we can set <code>TSS</code> descriptor for the current processor and load it with the:</p>
+<pre><code class="language-C">set_tss_desc(cpu, t);
+load_TR_desc();
+</code></pre>
+<p>where <code>set_tss_desc</code> macro from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/desc.h">arch/x86/include/asm/desc.h</a> writes given  descriptor to the <code>Global Descriptor Table</code> of the given processor:</p>
+<pre><code class="language-C">#define set_tss_desc(cpu, addr) __set_tss_desc(cpu, GDT_ENTRY_TSS, addr)
+static inline void __set_tss_desc(unsigned cpu, unsigned int entry, void *addr)
+{
+        struct desc_struct *d = get_cpu_gdt_table(cpu);
+        tss_desc tss;
+        set_tssldt_descriptor(&amp;tss, (unsigned long)addr, DESC_TSS,
+                              IO_BITMAP_OFFSET + IO_BITMAP_BYTES +
+                              sizeof(unsigned long) - 1);
+        write_gdt_entry(d, entry, &amp;tss, DESC_TSS);
+}
+</code></pre>
+<p>and <code>load_TR_desc</code> macro expands to the <code>ltr</code> or <code>Load Task Register</code> instruction:</p>
+<pre><code class="language-C">#define load_TR_desc()                          native_load_tr_desc()
+static inline void native_load_tr_desc(void)
+{
+        asm volatile(&quot;ltr %w0&quot;::&quot;q&quot; (GDT_ENTRY_TSS*8));
+}
+</code></pre>
+<p>In the end of the <code>trap_init</code> function we can see the following code:</p>
+<pre><code class="language-C">set_intr_gate_ist(X86_TRAP_DB, &amp;debug, DEBUG_STACK);
+set_system_intr_gate_ist(X86_TRAP_BP, &amp;int3, DEBUG_STACK);
+...
+...
+...
+#ifdef CONFIG_X86_64
+        memcpy(&amp;nmi_idt_table, &amp;idt_table, IDT_ENTRIES * 16);
+        set_nmi_gate(X86_TRAP_DB, &amp;debug);
+        set_nmi_gate(X86_TRAP_BP, &amp;int3);
+#endif
+</code></pre>
+<p>Here we copy <code>idt_table</code> to the <code>nmi_dit_table</code> and setup exception handlers for the <code>#DB</code> or <code>Debug exception</code> and <code>#BR</code> or <code>Breakpoint exception</code>. You can remember that we already set these interrupt gates in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">part</a>, so why do we need to setup it again? We setup it again because when we initialized it before in the <code>early_trap_init</code> function, the <code>Task State Segment</code> was not ready yet, but now it is ready after the call of the <code>cpu_init</code> function.</p>
+<p>That's all. Soon we will consider all handlers of these interrupts/exceptions.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the fourth part about interrupts and interrupt handling in the Linux kernel. We saw the initialization of the <a href="https://en.wikipedia.org/wiki/Task_state_segment">Task State Segment</a> in this part and initialization of the different interrupt handlers as <code>Divide Error</code>, <code>Page Fault</code> exception and etc. You can note that we saw just initialization stuff, and will dive into details about handlers for these exceptions. In the next part we will start to do it.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Page_fault">page fault</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt Descriptor Table</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Tracing_%28software%29">Tracing</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Control_register">cr2</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Read-copy-update">RCU</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/this_cpu_ops.txt">this_cpu_* operations</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/kmemcheck.txt">kmemcheck</a></li>
+<li><a href="http://www.felixcloutier.com/x86/PREFETCHW.html">prefetchw</a></li>
+<li><a href="https://en.wikipedia.org/?title=3DNow!">3DNow</a></li>
+<li><a href="https://en.wikipedia.org/wiki/CPU_cache">CPU caches</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Virtual_file_system">VFS</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/mm">Linux kernel memory management</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/mm/linux-mm-2">Fix-Mapped Addresses and ioremap</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Extended_Industry_Standard_Architecture">Extended Industry Standard Architecture</a></li>
+<li><a href="https://en.wikipedia.org/wiki/INT_%28x86_instruction%29">INT isntruction</a></li>
+<li><a href="http://x86.renejeschke.de/html/file_module_x86_id_142.html">INTO</a></li>
+<li><a href="http://pdos.csail.mit.edu/6.828/2005/readings/i386/BOUND.htm">BOUND</a></li>
+<li><a href="https://en.wikipedia.org/?title=Opcode">opcode</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Control_register#CR0">control register</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86_instruction_listings#x87_floating-point_instructions">x87 FPU</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Machine-check_exception">MCE exception</a></li>
+<li><a href="https://en.wikipedia.org/?title=SIMD">SIMD</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">cpumasks and bitmaps</a></li>
+<li><a href="https://en.wikipedia.org/wiki/NX_bit">NX</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Task_state_segment">Task State Segment</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Interrupts/linux-interrupts-3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Interrupts/linux-interrupts-5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Interrupts/linux-interrupts-3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Interrupts/linux-interrupts-5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

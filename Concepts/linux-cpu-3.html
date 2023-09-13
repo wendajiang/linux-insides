@@ -1,0 +1,493 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The initcall mechanism - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html" class="active">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="the-initcall-mechanism"><a class="header" href="#the-initcall-mechanism">The initcall mechanism</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>As you may understand from the title, this part will cover an interesting and important concept in the Linux kernel which is called <code>initcall</code>. We already saw definitions like these:</p>
+<pre><code class="language-C">early_param(&quot;debug&quot;, debug_kernel);
+</code></pre>
+<p>or</p>
+<pre><code class="language-C">arch_initcall(init_pit_clocksource);
+</code></pre>
+<p>in some parts of the Linux kernel. Before we will see how this mechanism is implemented in the Linux kernel, we must know actually what is it and how the Linux kernel uses it. Definitions like these represent a <a href="https://en.wikipedia.org/wiki/Callback_%28computer_programming%29">callback</a> function which is called during Linux kernel initialization. Actually the main point of the <code>initcall</code> mechanism is to determine correct order of the built-in modules and subsystems initialization. For example let's look at the following function:</p>
+<pre><code class="language-C">static int __init nmi_warning_debugfs(void)
+{
+    debugfs_create_u64(&quot;nmi_longest_ns&quot;, 0644,
+                       arch_debugfs_dir, &amp;nmi_longest_ns);
+    return 0;
+}
+fs_initcall(nmi_warning_debugfs);
+</code></pre>
+<p>from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/nmi.c">arch/x86/kernel/nmi.c</a> source code file. As we may see it just creates the <code>nmi_longest_ns</code> <a href="https://en.wikipedia.org/wiki/Debugfs">debugfs</a> file in the <code>arch_debugfs_dir</code> directory. Actually, this <code>debugfs</code> file may be created only after the <code>arch_debugfs_dir</code> will be created. Creation of this directory occurs during the architecture-specific initialization of the Linux kernel. Actually this directory will be created in the <code>arch_kdebugfs_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/kdebugfs.c">arch/x86/kernel/kdebugfs.c</a> source code file. Note that the <code>arch_kdebugfs_init</code> function is marked as <code>initcall</code> too:</p>
+<pre><code class="language-C">arch_initcall(arch_kdebugfs_init);
+</code></pre>
+<p>The Linux kernel calls all architecture-specific <code>initcalls</code> before the <code>fs</code> related <code>initcalls</code>. So, our <code>nmi_longest_ns</code> file will be created only after the <code>arch_kdebugfs_dir</code> directory will be created. Actually, the Linux kernel provides eight levels of main <code>initcalls</code>:</p>
+<ul>
+<li><code>early</code>;</li>
+<li><code>core</code>;</li>
+<li><code>postcore</code>;</li>
+<li><code>arch</code>;</li>
+<li><code>subsys</code>;</li>
+<li><code>fs</code>;</li>
+<li><code>device</code>;</li>
+<li><code>late</code>.</li>
+</ul>
+<p>All of their names are represented by the <code>initcall_level_names</code> array which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> source code file:</p>
+<pre><code class="language-C">static char *initcall_level_names[] __initdata = {
+	&quot;early&quot;,
+	&quot;core&quot;,
+	&quot;postcore&quot;,
+	&quot;arch&quot;,
+	&quot;subsys&quot;,
+	&quot;fs&quot;,
+	&quot;device&quot;,
+	&quot;late&quot;,
+};
+</code></pre>
+<p>All functions which are marked as <code>initcall</code> by these identifiers, will be called in the same order presented in the <code>initcall_level_names</code> array, in other words, at first <code>early initcalls</code> will be called, then <code>core initcalls</code> and so forth. From this moment we know a little about <code>initcall</code> mechanism, so we can start to dive into the source code of the Linux kernel to see how this mechanism is implemented.</p>
+<h2 id="implementation-initcall-mechanism-in-the-linux-kernel"><a class="header" href="#implementation-initcall-mechanism-in-the-linux-kernel">Implementation initcall mechanism in the Linux kernel</a></h2>
+<p>The Linux kernel provides a set of macros from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/init.h">include/linux/init.h</a> header file to mark a given function as <code>initcall</code>. All of these macros are pretty simple:</p>
+<pre><code class="language-C">#define early_initcall(fn)		__define_initcall(fn, early)
+#define core_initcall(fn)		__define_initcall(fn, 1)
+#define postcore_initcall(fn)		__define_initcall(fn, 2)
+#define arch_initcall(fn)		__define_initcall(fn, 3)
+#define subsys_initcall(fn)		__define_initcall(fn, 4)
+#define fs_initcall(fn)			__define_initcall(fn, 5)
+#define device_initcall(fn)		__define_initcall(fn, 6)
+#define late_initcall(fn)		__define_initcall(fn, 7)
+</code></pre>
+<p>and as we may see these macros just expand to the call of the <code>__define_initcall</code> macro from the same header file. Moreover, the <code>__define_initcall</code> macro takes two arguments:</p>
+<ul>
+<li><code>fn</code> - callback function which will be called during call of <code>initcalls</code> of the certain level;</li>
+<li><code>id</code> - identifier to identify <code>initcall</code> to prevent error when two the same <code>initcalls</code> point to the same handler.</li>
+</ul>
+<p>The implementation of the <code>__define_initcall</code> macro looks like:</p>
+<pre><code class="language-C">#define __define_initcall(fn, id) \
+	static initcall_t __initcall_##fn##id __used \
+	__attribute__((__section__(&quot;.initcall&quot; #id &quot;.init&quot;))) = fn; \
+	LTO_REFERENCE_INITCALL(__initcall_##fn##id)
+</code></pre>
+<p>To understand the <code>__define_initcall</code> macro, first of all let's look at the <code>initcall_t</code> type. This type is defined in the same <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/init.h">header</a> file and it represents pointer to a function which returns <a href="https://en.wikipedia.org/wiki/Integer">integer</a> which will be result of the <code>initcall</code>:</p>
+<pre><code class="language-C">typedef int (*initcall_t)(void);
+</code></pre>
+<p>Now let's return to the <code>__define_initcall</code> macro. The <a href="https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html">##</a> provides ability to concatenate two symbols. In our case, the first line of the <code>__define_initcall</code> macro produces the definition of a given function, <code>__initcall_&lt;function-name&gt;_&lt;id&gt;</code>, which is located in the <code>.initcall &lt;id&gt; .init</code> <a href="http://www.skyfree.org/linux/references/ELF_Format.pdf">ELF section</a> and marked with the <code>__user</code> <a href="https://en.wikipedia.org/wiki/GNU_Compiler_Collection">gcc</a> attribute. If we look at <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/asm-generic/vmlinux.lds.h">include/asm-generic/vmlinux.lds.h</a> header file, which represents data for the kernel <a href="https://en.wikipedia.org/wiki/Linker_%28computing%29">linker</a> script, we will see that all of <code>initcalls</code> sections will be placed in the <code>.data</code> section:</p>
+<pre><code class="language-C">#define INIT_CALLS					\
+		VMLINUX_SYMBOL(__initcall_start) = .;	\
+		*(.initcallearly.init)					\
+		INIT_CALLS_LEVEL(0)					    \
+		INIT_CALLS_LEVEL(1)					    \
+		INIT_CALLS_LEVEL(2)					    \
+		INIT_CALLS_LEVEL(3)					    \
+		INIT_CALLS_LEVEL(4)					    \
+		INIT_CALLS_LEVEL(5)					    \
+		INIT_CALLS_LEVEL(rootfs)				\
+		INIT_CALLS_LEVEL(6)					    \
+		INIT_CALLS_LEVEL(7)					    \
+		VMLINUX_SYMBOL(__initcall_end) = .;
+
+#define INIT_DATA_SECTION(initsetup_align)	\
+	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET) {	   \
+        ...                                                \
+        INIT_CALLS						                   \
+        ...                                                \
+	}
+
+</code></pre>
+<p>and their names are going to be as follows (got from System.map):</p>
+<pre><code>...
+ffffffff8320ce60 t __initcall_arch_kdebugfs_init3
+...
+ffffffff8320d0e0 t __initcall_nmi_warning_debugfs5
+...
+</code></pre>
+<p>The attribute <code>__used</code> is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/compiler-gcc.h">include/linux/compiler-gcc.h</a> header file and it expands to the definition of the following <code>gcc</code> attribute:</p>
+<pre><code class="language-C">#define __used   __attribute__((__used__))
+</code></pre>
+<p>which prevents <code>variable defined but not used</code> warning. The last line of the <code>__define_initcall</code> macro is:</p>
+<pre><code class="language-C">LTO_REFERENCE_INITCALL(__initcall_##fn##id)
+</code></pre>
+<p>depends on the <code>CONFIG_LTO</code> kernel configuration option and just provides stub for the compiler <a href="https://gcc.gnu.org/wiki/LinkTimeOptimization">Link time optimization</a>:</p>
+<pre><code>#ifdef CONFIG_LTO
+#define LTO_REFERENCE_INITCALL(x) \
+        static __used __exit void *reference_##x(void)  \
+        {                                               \
+                return &amp;x;                              \
+        }
+#else
+#define LTO_REFERENCE_INITCALL(x)
+#endif
+</code></pre>
+<p>In order to prevent any problem when there is no reference to a variable in a module, it will be moved to the end of the program. That's all about the <code>__define_initcall</code> macro. So, all of the <code>*_initcall</code> macros will be expanded during compilation of the Linux kernel, and all <code>initcalls</code> will be placed in their sections and all of them will be available from the <code>.data</code> section and the Linux kernel will know where to find a certain <code>initcall</code> to call it during initialization process.</p>
+<p>As <code>initcalls</code> can be called by the Linux kernel, let's look how the Linux kernel does this. This process starts in the <code>do_basic_setup</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> source code file:</p>
+<pre><code class="language-C">static void __init do_basic_setup(void)
+{
+    ...
+    ...
+    ...
+   	do_initcalls();
+    ...
+    ...
+    ...
+}
+</code></pre>
+<p>which is called during the initialization of the Linux kernel, right after main steps of initialization like memory manager related initialization, <code>CPU</code> subsystem and others are already finished. The <code>do_initcalls</code> function just goes through the array of <code>initcall</code> levels and call the <code>do_initcall_level</code> function for each level:</p>
+<pre><code class="language-C">static void __init do_initcalls(void)
+{
+	int level;
+
+	for (level = 0; level &lt; ARRAY_SIZE(initcall_levels) - 1; level++)
+		do_initcall_level(level);
+}
+</code></pre>
+<p>The <code>initcall_levels</code> array is defined in the same source code <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">file</a> and contains pointers to the sections which were defined in the <code>__define_initcall</code> macro:</p>
+<pre><code class="language-C">static initcall_t *initcall_levels[] __initdata = {
+	__initcall0_start,
+	__initcall1_start,
+	__initcall2_start,
+	__initcall3_start,
+	__initcall4_start,
+	__initcall5_start,
+	__initcall6_start,
+	__initcall7_start,
+	__initcall_end,
+};
+</code></pre>
+<p>If you are interested, you can find these sections in the <code>arch/x86/kernel/vmlinux.lds</code> linker script which is generated after the Linux kernel compilation:</p>
+<pre><code>.init.data : AT(ADDR(.init.data) - 0xffffffff80000000) {
+    ...
+    ...
+    ...
+    ...
+    __initcall_start = .;
+    *(.initcallearly.init)
+    __initcall0_start = .;
+    *(.initcall0.init)
+    *(.initcall0s.init)
+    __initcall1_start = .;
+    ...
+    ...
+}
+</code></pre>
+<p>If you are not familiar with this then you can know more about <a href="https://en.wikipedia.org/wiki/Linker_%28computing%29">linkers</a> in the special <a href="https://0xax.gitbook.io/linux-insides/summary/misc/linux-misc-3">part</a> of this book.</p>
+<p>As we just saw, the <code>do_initcall_level</code> function takes one parameter - level of <code>initcall</code> - and does the following two things:</p>
+<ul>
+<li>
+<p>parses the <code>initcall_command_line</code> which is copy of usual kernel <a href="https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.rst">command line</a> which may contain parameters for modules with the <code>parse_args</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/params.c">kernel/params.c</a> source code file;</p>
+</li>
+<li>
+<p>call the <code>do_on_initcall</code> function for each level:</p>
+</li>
+</ul>
+<pre><code class="language-C">for (fn = initcall_levels[level]; fn &lt; initcall_levels[level+1]; fn++)
+		do_one_initcall(*fn);
+</code></pre>
+<p>The <code>do_one_initcall</code> does the main job for us. As we may see, this function takes one parameter which represent <code>initcall</code> callback function and does the call of the given callback:</p>
+<pre><code class="language-C">int __init_or_module do_one_initcall(initcall_t fn)
+{
+	int count = preempt_count();
+	int ret;
+	char msgbuf[64];
+
+	if (initcall_blacklisted(fn))
+		return -EPERM;
+
+	if (initcall_debug)
+		ret = do_one_initcall_debug(fn);
+	else
+		ret = fn();
+
+	msgbuf[0] = 0;
+
+	if (preempt_count() != count) {
+		sprintf(msgbuf, &quot;preemption imbalance &quot;);
+		preempt_count_set(count);
+	}
+	if (irqs_disabled()) {
+		strlcat(msgbuf, &quot;disabled interrupts &quot;, sizeof(msgbuf));
+		local_irq_enable();
+	}
+	WARN(msgbuf[0], &quot;initcall %pF returned with %s\n&quot;, fn, msgbuf);
+
+	return ret;
+}
+</code></pre>
+<p>Let's try to understand what does the <code>do_one_initcall</code> function does. First of all we increase <a href="https://en.wikipedia.org/wiki/Preemption_%28computing%29">preemption</a> counter so that we can check it later to be sure that it is not imbalanced. After this step we can see the call of the <code>initcall_backlist</code> function which goes over the <code>blacklisted_initcalls</code> list which stores blacklisted <code>initcalls</code> and releases the given <code>initcall</code> if it is located in this list:</p>
+<pre><code class="language-C">list_for_each_entry(entry, &amp;blacklisted_initcalls, next) {
+	if (!strcmp(fn_name, entry-&gt;buf)) {
+		pr_debug(&quot;initcall %s blacklisted\n&quot;, fn_name);
+		kfree(fn_name);
+		return true;
+	}
+}
+</code></pre>
+<p>This blacklist is filled during early Linux kernel initialization from the Linux kernel command line.</p>
+<p>After the blacklisted <code>initcalls</code> are handled, the next part of code directly calls the <code>initcall</code> callback:</p>
+<pre><code class="language-C">if (initcall_debug)
+	ret = do_one_initcall_debug(fn);
+else
+	ret = fn();
+</code></pre>
+<p><code>initcall_debug</code> variable defines if the call should be handled through the debug codepath (with more information being printed to the <a href="https://en.wikipedia.org/wiki/Dmesg">kernel log buffer</a>) or not, where the callback will finally be executed. The <code>initcall_debug</code> variable is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">same</a> source code file:</p>
+<pre><code class="language-C">bool initcall_debug;
+</code></pre>
+<p>The value of the variable can be set from the kernel commands via the <code>initcall_debug</code> parameter, as we can read from the <a href="https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.rst">documentation</a> of the Linux kernel command line:</p>
+<pre><code>initcall_debug	[KNL] Trace initcalls as they are executed.  Useful
+                      for working out where the kernel is dying during
+                      startup.
+</code></pre>
+<p>And that's true. If we will look at the implementation of the <code>do_one_initcall_debug</code> function, we will see that it does the same as the <code>do_one_initcall</code> function, i.e. the <code>do_one_initcall_debug</code> function calls the given <code>initcall</code> and prints some information (like the <a href="https://en.wikipedia.org/wiki/Process_identifier">pid</a> of the currently running task, duration of execution of the <code>initcall</code> and etc.) related to the execution of the given <code>initcall</code>:</p>
+<pre><code class="language-C">static int __init_or_module do_one_initcall_debug(initcall_t fn)
+{
+	ktime_t calltime, delta, rettime;
+	unsigned long long duration;
+	int ret;
+
+	printk(KERN_DEBUG &quot;calling  %pF @ %i\n&quot;, fn, task_pid_nr(current));
+	calltime = ktime_get();
+	ret = fn();
+	rettime = ktime_get();
+	delta = ktime_sub(rettime, calltime);
+	duration = (unsigned long long) ktime_to_ns(delta) &gt;&gt; 10;
+	printk(KERN_DEBUG &quot;initcall %pF returned %d after %lld usecs\n&quot;,
+		 fn, ret, duration);
+
+	return ret;
+}
+</code></pre>
+<p>As an <code>initcall</code> was called by the one of the <code> do_one_initcall</code> or <code>do_one_initcall_debug</code> functions, we may see two checks in the end of the <code>do_one_initcall</code> function. The first one checks the amount of possible <code>__preempt_count_add</code> and <code>__preempt_count_sub</code> calls inside of the executed initcall, and if this value is not equal to the previous value of the preemptible counter, we add the <code>preemption imbalance</code> string to the message buffer and set correct value of the preemptible counter:</p>
+<pre><code class="language-C">if (preempt_count() != count) {
+	sprintf(msgbuf, &quot;preemption imbalance &quot;);
+	preempt_count_set(count);
+}
+</code></pre>
+<p>The last check the state of local <a href="https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQs</a> and if they are disabled, we add the <code>disabled interrupts</code> strings to log buffer and enable <code>IRQs</code> for the current processor to make sure that <code>IRQs</code> are enabled after each <code>initcall</code> is completed (in case the callback disabled it and didn't enable before exiting):</p>
+<pre><code class="language-C">if (irqs_disabled()) {
+	strlcat(msgbuf, &quot;disabled interrupts &quot;, sizeof(msgbuf));
+	local_irq_enable();
+}
+</code></pre>
+<p>That's all. In this way the Linux kernel does initialization of many subsystems in a correct order. From now on, we know what is the <code>initcall</code> mechanism in the Linux kernel. In this part, we covered main general portion of the <code>initcall</code> mechanism but we left some important concepts. Let's make a short look at these concepts.</p>
+<p>First of all, we have missed one level of <code>initcalls</code>, this is <code>rootfs initcalls</code>. You can find definition of the <code>rootfs_initcall</code> in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/init.h">include/linux/init.h</a> header file along with all similar macros which we saw in this part:</p>
+<pre><code class="language-C">#define rootfs_initcall(fn)		__define_initcall(fn, rootfs)
+</code></pre>
+<p>As we may understand from the macro's name, its main purpose is to store callbacks which are related to the <a href="https://en.wikipedia.org/wiki/Initramfs">rootfs</a>. Besides this goal, it may be useful to initialize other components after initialization related to filesystems level was already done, but before devices related initcalls. For example, the decompression of the <a href="https://en.wikipedia.org/wiki/Initramfs">initramfs</a> which occurred in the <code>populate_rootfs</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/initramfs.c">init/initramfs.c</a> source code file:</p>
+<pre><code class="language-C">rootfs_initcall(populate_rootfs);
+</code></pre>
+<p>From this place, we may see familiar output:</p>
+<pre><code>[    0.199960] Unpacking initramfs...
+</code></pre>
+<p>Besides the <code>rootfs_initcall</code> level, there are additional <code>console_initcall</code>, <code>security_initcall</code> and other secondary <code>initcall</code> levels. The last thing that we have missed is the set of the <code>*_initcall_sync</code> levels. Almost each <code>*_initcall</code> macro that we have seen in this part, has macro companion with the <code>_sync</code> prefix:</p>
+<pre><code class="language-C">#define core_initcall_sync(fn)		__define_initcall(fn, 1s)
+#define postcore_initcall_sync(fn)	__define_initcall(fn, 2s)
+#define arch_initcall_sync(fn)		__define_initcall(fn, 3s)
+#define subsys_initcall_sync(fn)	__define_initcall(fn, 4s)
+#define fs_initcall_sync(fn)		__define_initcall(fn, 5s)
+#define device_initcall_sync(fn)	__define_initcall(fn, 6s)
+#define late_initcall_sync(fn)		__define_initcall(fn, 7s)
+</code></pre>
+<p>The main goal of these additional levels is to wait for completion of all modules related initialization routines for a certain level.</p>
+<p>Another point worthy of mention is the <code>module_init(x)</code> macro, defined at <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/module.h">include/linux/module.h</a> as:</p>
+<pre><code class="language-C">#define module_init(x)   __initcall(x);
+</code></pre>
+<p>If we follow and check what's the definition of <code>__initcall(x)</code> at <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/init.h">include/linux/init.h</a> we can see that it's being set as an <code>device_initcall</code>:</p>
+<pre><code class="language-C">#define __initcall(fn) device_initcall(fn)
+</code></pre>
+<p>With that we can conclude that when a function set as <code>__init</code> of certain module isn't explicitly added to a specific initcall category, but using <code>module_init()</code> macro, it is added to device initcall list by default.</p>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>In this part we saw the important mechanism of the Linux kernel which allows to call a function which depends on the current state of the Linux kernel during its initialization.</p>
+<p>If you have questions or suggestions, feel free to ping me in twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me <a href="mailto:anotherworldofworld@gmail.com">email</a> or just create <a href="https://github.com/0xAX/linux-insides/issues/new">issue</a>.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Callback_%28computer_programming%29">callback</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Debugfs">debugfs</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Integer">integer type</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html">symbols concatenation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/GNU_Compiler_Collection">GCC</a></li>
+<li><a href="https://gcc.gnu.org/wiki/LinkTimeOptimization">Link time optimization</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/misc/linux-misc-3">Introduction to linkers</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/master/Documentation/admin-guide/kernel-parameters.rst">Linux kernel command line</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Process_identifier">Process identifier</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQs</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Initramfs">rootfs</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Concepts/linux-cpu-2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Concepts/linux-cpu-4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Concepts/linux-cpu-2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Concepts/linux-cpu-4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

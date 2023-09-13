@@ -1,0 +1,457 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Notification Chains - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html" class="active">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="notification-chains-in-linux-kernel"><a class="header" href="#notification-chains-in-linux-kernel">Notification Chains in Linux Kernel</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>The Linux kernel is huge piece of <a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> code which consists from many different subsystems. Each subsystem has its own purpose which is independent of other subsystems. But often one subsystem wants to know something from other subsystem(s). There is special mechanism in the Linux kernel which allows to solve this problem partly. The name of this mechanism is - <code>notification chains</code> and its main purpose to provide a way for different subsystems to subscribe on asynchronous events from other subsystems. Note that this mechanism is only for communication inside kernel, but there are other mechanisms for communication between kernel and userspace.</p>
+<p>Before we consider <code>notification chains</code> <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> and implementation of this API, let's look at <code>Notification chains</code> mechanism from theoretical side as we did it in other parts of this book. Everything which is related to <code>notification chains</code> mechanism is located in the <a href="https://github.com/torvalds/linux/blob/master/include/linux/notifier.h">include/linux/notifier.h</a> header file and <a href="https://github.com/torvalds/linux/blob/master/kernel/notifier.c">kernel/notifier.c</a> source code file. So let's open them and start to dive.</p>
+<h2 id="notification-chains-related-data-structures"><a class="header" href="#notification-chains-related-data-structures">Notification Chains related data structures</a></h2>
+<p>Let's start to consider <code>notification chains</code> mechanism from related data structures. As I wrote above, main data structures should be located in the <a href="https://github.com/torvalds/linux/blob/master/include/linux/notifier.h">include/linux/notifier.h</a> header file, so the Linux kernel provides generic API which does not depend on certain architecture. In general, the <code>notification chains</code> mechanism represents a list (that's why it's named <code>chains</code>) of <a href="https://en.wikipedia.org/wiki/Callback_%28computer_programming%29">callback</a> functions which are will be executed when an event will be occurred.</p>
+<p>All of these callback functions are represented as <code>notifier_fn_t</code> type in the Linux kernel:</p>
+<pre><code class="language-C">typedef	int (*notifier_fn_t)(struct notifier_block *nb, unsigned long action, void *data);
+</code></pre>
+<p>So we may see that it takes three following arguments:</p>
+<ul>
+<li><code>nb</code> - is linked list of function pointers (will see it now);</li>
+<li><code>action</code> - is type of an event. A notification chain may support multiple events, so we need this parameter to distinguish an event from other events;</li>
+<li><code>data</code> - is storage for private information. Actually it allows to provide additional data information about an event.</li>
+</ul>
+<p>Additionally we may see that <code>notifier_fn_t</code> returns an integer value. This integer value maybe one of:</p>
+<ul>
+<li><code>NOTIFY_DONE</code> - subscriber does not interested in notification;</li>
+<li><code>NOTIFY_OK</code> - notification was processed correctly;</li>
+<li><code>NOTIFY_BAD</code> - something went wrong;</li>
+<li><code>NOTIFY_STOP</code> - notification is done, but no further callbacks should be called for this event.</li>
+</ul>
+<p>All of these results defined as macros in the <a href="https://github.com/torvalds/linux/blob/master/include/linux/notifier.h">include/linux/notifier.h</a> header file:</p>
+<pre><code class="language-C">#define NOTIFY_DONE		0x0000
+#define NOTIFY_OK		0x0001
+#define NOTIFY_BAD		(NOTIFY_STOP_MASK|0x0002)
+#define NOTIFY_STOP		(NOTIFY_OK|NOTIFY_STOP_MASK)
+</code></pre>
+<p>Where <code>NOTIFY_STOP_MASK</code> represented by the:</p>
+<pre><code class="language-C">#define NOTIFY_STOP_MASK	0x8000
+</code></pre>
+<p>macro and means that callbacks will not be called during next notifications.</p>
+<p>Each part of the Linux kernel which wants to be notified on a certain event will should provide own <code>notifier_fn_t</code> callback function. Main role of the <code>notification chains</code> mechanism is to call certain callbacks when an asynchronous event occurred.</p>
+<p>The main building block of the <code>notification chains</code> mechanism is the <code>notifier_block</code> structure:</p>
+<pre><code class="language-C">struct notifier_block {
+	notifier_fn_t notifier_call;
+	struct notifier_block __rcu *next;
+	int priority;
+};
+</code></pre>
+<p>which is defined in the <a href="https://github.com/torvalds/linux/blob/master/include/linux/notifier.h">include/linux/notifier.h</a> file. This struct contains pointer to callback function - <code>notifier_call</code>, link to the next notification callback and <code>priority</code> of a callback function as functions with higher priority are executed first.</p>
+<p>The Linux kernel provides notification chains of four following types:</p>
+<ul>
+<li>Blocking notifier chains;</li>
+<li>SRCU notifier chains;</li>
+<li>Atomic notifier chains;</li>
+<li>Raw notifier chains.</li>
+</ul>
+<p>Let's consider all of these types of notification chains by order:</p>
+<p>In the first case for the <code>blocking notifier chains</code>, callbacks will be called/executed in process context. This means that the calls in a notification chain may be blocked.</p>
+<p>The second <code>SRCU notifier chains</code> represent alternative form of <code>blocking notifier chains</code>. In the first case, blocking notifier chains uses <code>rw_semaphore</code> synchronization primitive to protect chain links. <code>SRCU</code> notifier chains run in process context too, but uses special form of <a href="https://en.wikipedia.org/wiki/Read-copy-update">RCU</a> mechanism which is permissible to block in an read-side critical section.</p>
+<p>In the third case for the <code>atomic notifier chains</code> runs in interrupt or atomic context and protected by <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">spinlock</a> synchronization primitive. The last <code>raw notifier chains</code> provides special type of notifier chains without any locking restrictions on callbacks. This means that protection rests on the shoulders of caller side. It is very useful when we want to protect our chain with very specific locking mechanism.</p>
+<p>If we will look at the implementation of the <code>notifier_block</code> structure, we will see that it contains pointer to the <code>next</code> element from a notification chain list, but we have no head. Actually a head of such list is in separate structure depends on type of a notification chain. For example for the <code>blocking notifier chains</code>:</p>
+<pre><code class="language-C">struct blocking_notifier_head {
+	struct rw_semaphore rwsem;
+	struct notifier_block __rcu *head;
+};
+</code></pre>
+<p>or for <code>atomic notification chains</code>:</p>
+<pre><code class="language-C">struct atomic_notifier_head {
+	spinlock_t lock;
+	struct notifier_block __rcu *head;
+};
+</code></pre>
+<p>Now as we know a little about <code>notification chains</code> mechanism let's consider implementation of its API.</p>
+<h2 id="notification-chains"><a class="header" href="#notification-chains">Notification Chains</a></h2>
+<p>Usually there are two sides in a publish/subscriber mechanisms. One side who wants to get notifications and other side(s) who generates these notifications. We will consider notification chains mechanism from both sides. We will consider <code>blocking notification chains</code> in this part, because of other types of notification chains are similar to it and differ mostly in protection mechanisms.</p>
+<p>Before a notification producer is able to produce notification, first of all it should initialize head of a notification chain. For example let's consider notification chains related to kernel <a href="https://en.wikipedia.org/wiki/Loadable_kernel_module">loadable modules</a>. If we will look in the <a href="https://github.com/torvalds/linux/blob/master/kernel/module.c">kernel/module.c</a> source code file, we will see following definition:</p>
+<pre><code class="language-C">static BLOCKING_NOTIFIER_HEAD(module_notify_list);
+</code></pre>
+<p>which defines head for loadable modules blocking notifier chain. The <code>BLOCKING_NOTIFIER_HEAD</code> macro is defined in the <a href="https://github.com/torvalds/linux/blob/master/include/linux/notifier.h">include/linux/notifier.h</a> header file and expands to the following code:</p>
+<pre><code class="language-C">#define BLOCKING_INIT_NOTIFIER_HEAD(name) do {	\
+		init_rwsem(&amp;(name)-&gt;rwsem);	                            \
+		(name)-&gt;head = NULL;		                            \
+	} while (0)
+</code></pre>
+<p>So we may see that it takes name of a name of a head of a blocking notifier chain and initializes read/write <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-3">semaphore</a> and set head to <code>NULL</code>. Besides the <code>BLOCKING_INIT_NOTIFIER_HEAD</code> macro, the Linux kernel additionally provides <code>ATOMIC_INIT_NOTIFIER_HEAD</code>, <code>RAW_INIT_NOTIFIER_HEAD</code> macros and <code>srcu_init_notifier</code> function for initialization atomic and other types of notification chains.</p>
+<p>After initialization of a head of a notification chain, a subsystem which wants to receive notification from the given notification chain should register with certain function which depends on the type of notification. If you will look in the <a href="https://github.com/torvalds/linux/blob/master/include/linux/notifier.h">include/linux/notifier.h</a> header file, you will see following four function for this:</p>
+<pre><code class="language-C">extern int atomic_notifier_chain_register(struct atomic_notifier_head *nh,
+		struct notifier_block *nb);
+
+extern int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+		struct notifier_block *nb);
+
+extern int raw_notifier_chain_register(struct raw_notifier_head *nh,
+		struct notifier_block *nb);
+
+extern int srcu_notifier_chain_register(struct srcu_notifier_head *nh,
+		struct notifier_block *nb);
+</code></pre>
+<p>As I already wrote above, we will cover only blocking notification chains in the part, so let's consider implementation of the <code>blocking_notifier_chain_register</code> function. Implementation of this function is located in the <a href="https://github.com/torvalds/linux/blob/master/kernel/notifier.c">kernel/notifier.c</a> source code file and as we may see the <code>blocking_notifier_chain_register</code> takes two parameters:</p>
+<ul>
+<li><code>nh</code> - head of a notification chain;</li>
+<li><code>nb</code> - notification descriptor.</li>
+</ul>
+<p>Now let's look at the implementation of the <code>blocking_notifier_chain_register</code> function:</p>
+<pre><code class="language-C">int raw_notifier_chain_register(struct raw_notifier_head *nh,
+		struct notifier_block *n)
+{
+	return notifier_chain_register(&amp;nh-&gt;head, n);
+}
+</code></pre>
+<p>As we may see it just returns result of the <code>notifier_chain_register</code> function from the same source code file and as we may understand this function does all job for us. Definition of the <code>notifier_chain_register</code> function looks:</p>
+<pre><code class="language-C">int blocking_notifier_chain_register(struct blocking_notifier_head *nh,
+		struct notifier_block *n)
+{
+	int ret;
+
+	if (unlikely(system_state == SYSTEM_BOOTING))
+		return notifier_chain_register(&amp;nh-&gt;head, n);
+
+	down_write(&amp;nh-&gt;rwsem);
+	ret = notifier_chain_register(&amp;nh-&gt;head, n);
+	up_write(&amp;nh-&gt;rwsem);
+	return ret;
+}
+</code></pre>
+<p>As we may see implementation of the <code>blocking_notifier_chain_register</code> is pretty simple. First of all there is check which check current system state and if a system in rebooting state we just call the <code>notifier_chain_register</code>. In other way we do the same call of the <code>notifier_chain_register</code> but as you may see this call is protected with read/write semaphores. Now let's look at the implementation of the <code>notifier_chain_register</code> function:</p>
+<pre><code class="language-C">static int notifier_chain_register(struct notifier_block **nl,
+		struct notifier_block *n)
+{
+	while ((*nl) != NULL) {
+		if (n-&gt;priority &gt; (*nl)-&gt;priority)
+			break;
+		nl = &amp;((*nl)-&gt;next);
+	}
+	n-&gt;next = *nl;
+	rcu_assign_pointer(*nl, n);
+	return 0;
+}
+</code></pre>
+<p>This function just inserts new <code>notifier_block</code> (given by a subsystem which wants to get notifications) to the notification chain list. Besides subscribing on an event, subscriber may unsubscribe from a certain events with the set of <code>unsubscribe</code> functions:</p>
+<pre><code class="language-C">extern int atomic_notifier_chain_unregister(struct atomic_notifier_head *nh,
+		struct notifier_block *nb);
+
+extern int blocking_notifier_chain_unregister(struct blocking_notifier_head *nh,
+		struct notifier_block *nb);
+
+extern int raw_notifier_chain_unregister(struct raw_notifier_head *nh,
+		struct notifier_block *nb);
+
+extern int srcu_notifier_chain_unregister(struct srcu_notifier_head *nh,
+		struct notifier_block *nb);
+</code></pre>
+<p>When a producer of notifications wants to notify subscribers about an event, the <code>*.notifier_call_chain</code> function will be called. As you already may guess each type of notification chains provides own function to produce notification:</p>
+<pre><code class="language-C">extern int atomic_notifier_call_chain(struct atomic_notifier_head *nh,
+		unsigned long val, void *v);
+
+extern int blocking_notifier_call_chain(struct blocking_notifier_head *nh,
+		unsigned long val, void *v);
+
+extern int raw_notifier_call_chain(struct raw_notifier_head *nh,
+		unsigned long val, void *v);
+
+extern int srcu_notifier_call_chain(struct srcu_notifier_head *nh,
+		unsigned long val, void *v);
+</code></pre>
+<p>Let's consider implementation of the <code>blocking_notifier_call_chain</code> function. This function is defined in the <a href="https://github.com/torvalds/linux/blob/master/kernel/notifier.c">kernel/notifier.c</a> source code file:</p>
+<pre><code class="language-C">int blocking_notifier_call_chain(struct blocking_notifier_head *nh,
+		unsigned long val, void *v)
+{
+	return __blocking_notifier_call_chain(nh, val, v, -1, NULL);
+}
+</code></pre>
+<p>and as we may see it just returns result of the <code>__blocking_notifier_call_chain</code> function. As we may see, the <code>blocking_notifer_call_chain</code> takes three parameters:</p>
+<ul>
+<li><code>nh</code> - head of notification chain list;</li>
+<li><code>val</code> - type of a notification;</li>
+<li><code>v</code> -  input parameter which may be used by handlers.</li>
+</ul>
+<p>But the <code>__blocking_notifier_call_chain</code> function takes five parameters:</p>
+<pre><code class="language-C">int __blocking_notifier_call_chain(struct blocking_notifier_head *nh,
+				   unsigned long val, void *v,
+				   int nr_to_call, int *nr_calls)
+{
+    ...
+    ...
+    ...
+}
+</code></pre>
+<p>Where <code>nr_to_call</code> and <code>nr_calls</code> are number of notifier functions to be called and number of sent notifications. As you may guess the main goal of the <code>__blocking_notifer_call_chain</code> function and other functions for other notification types is to call callback function when an event occurs. Implementation of the <code>__blocking_notifier_call_chain</code> is pretty simple, it just calls the <code>notifier_call_chain</code> function from the same source code file protected with read/write semaphore:</p>
+<pre><code class="language-C">int __blocking_notifier_call_chain(struct blocking_notifier_head *nh,
+				   unsigned long val, void *v,
+				   int nr_to_call, int *nr_calls)
+{
+	int ret = NOTIFY_DONE;
+
+	if (rcu_access_pointer(nh-&gt;head)) {
+		down_read(&amp;nh-&gt;rwsem);
+		ret = notifier_call_chain(&amp;nh-&gt;head, val, v, nr_to_call,
+					nr_calls);
+		up_read(&amp;nh-&gt;rwsem);
+	}
+	return ret;
+}
+</code></pre>
+<p>and returns its result. In this case all job is done by the <code>notifier_call_chain</code> function. Main purpose of this function is to inform registered notifiers about an asynchronous event:</p>
+<pre><code class="language-C">static int notifier_call_chain(struct notifier_block **nl,
+			       unsigned long val, void *v,
+			       int nr_to_call, int *nr_calls)
+{
+    ...
+    ...
+    ...
+    ret = nb-&gt;notifier_call(nb, val, v);
+    ...
+    ...
+    ...
+    return ret;
+}
+</code></pre>
+<p>That's all. In general all looks pretty simple.</p>
+<p>Now let's consider on a simple example related to <a href="https://en.wikipedia.org/wiki/Loadable_kernel_module">loadable modules</a>. If we will look in the <a href="https://github.com/torvalds/linux/blob/master/kernel/module.c">kernel/module.c</a>. As we already saw in this part, there is:</p>
+<pre><code class="language-C">static BLOCKING_NOTIFIER_HEAD(module_notify_list);
+</code></pre>
+<p>definition of the <code>module_notify_list</code> in the <a href="https://github.com/torvalds/linux/blob/master/kernel/module.c">kernel/module.c</a> source code file. This definition determines head of list of blocking notifier chains related to kernel modules. There are at least three following events:</p>
+<ul>
+<li>MODULE_STATE_LIVE</li>
+<li>MODULE_STATE_COMING</li>
+<li>MODULE_STATE_GOING</li>
+</ul>
+<p>in which maybe interested some subsystems of the Linux kernel. For example tracing of kernel modules states. Instead of direct call of the <code>atomic_notifier_chain_register</code>, <code>blocking_notifier_chain_register</code> and etc., most notification chains come with a set of wrappers used to register to them. Registration on these modules events is going with the help of such wrapper:</p>
+<pre><code class="language-C">int register_module_notifier(struct notifier_block *nb)
+{
+	return blocking_notifier_chain_register(&amp;module_notify_list, nb);
+}
+</code></pre>
+<p>If we will look in the <a href="https://github.com/torvalds/linux/blob/master/kernel/tracepoint.c">kernel/tracepoint.c</a> source code file, we will see such registration during initialization of <a href="https://www.kernel.org/doc/Documentation/trace/tracepoints.txt">tracepoints</a>:</p>
+<pre><code class="language-C">static __init int init_tracepoints(void)
+{
+	int ret;
+
+	ret = register_module_notifier(&amp;tracepoint_module_nb);
+	if (ret)
+		pr_warn(&quot;Failed to register tracepoint module enter notifier\n&quot;);
+
+	return ret;
+}
+</code></pre>
+<p>Where <code>tracepoint_module_nb</code> provides callback function:</p>
+<pre><code class="language-C">static struct notifier_block tracepoint_module_nb = {
+	.notifier_call = tracepoint_module_notify,
+	.priority = 0,
+};
+</code></pre>
+<p>When one of the <code>MODULE_STATE_LIVE</code>, <code>MODULE_STATE_COMING</code> or <code>MODULE_STATE_GOING</code> events occurred. For example the <code>MODULE_STATE_LIVE</code> the <code>MODULE_STATE_COMING</code> notifications will be sent during execution of the <a href="http://man7.org/linux/man-pages/man2/init_module.2.html">init_module</a> <a href="https://0xax.gitbook.io/linux-insides/summary/syscall/linux-syscall-1">system call</a>. Or for example <code>MODULE_STATE_GOING</code> will be sent during execution of the <a href="http://man7.org/linux/man-pages/man2/delete_module.2.html">delete_module</a> <code>system call</code>:</p>
+<pre><code class="language-C">SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+		unsigned int, flags)
+{
+    ...
+    ...
+    ...
+    blocking_notifier_call_chain(&amp;module_notify_list,
+				     MODULE_STATE_GOING, mod);
+    ...
+    ...
+    ...
+}
+</code></pre>
+<p>Thus when one of these system call will be called from userspace, the Linux kernel will send certain notification depending on a system call and the <code>tracepoint_module_notify</code> callback function will be called.</p>
+<p>That's all.</p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C programming language</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Callback_%28computer_programming%29">callback</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Read-copy-update">RCU</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">spinlock</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Loadable_kernel_module">loadable modules</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-3">semaphore</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/trace/tracepoints.txt">tracepoints</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/syscall/linux-syscall-1">system call</a></li>
+<li><a href="http://man7.org/linux/man-pages/man2/init_module.2.html">init_module system call</a></li>
+<li><a href="http://man7.org/linux/man-pages/man2/delete_module.2.html">delete_module</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-3">previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Concepts/linux-cpu-3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../DataStructures/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Concepts/linux-cpu-3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../DataStructures/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

@@ -1,0 +1,666 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Linkers - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html" class="active">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>During the writing of the <a href="https://github.com/0xAX/linux-insides/blob/master/SUMMARY.md">linux-insides</a> book I have received many emails with questions related to the <a href="https://en.wikipedia.org/wiki/Linker_%28computing%29">linker</a> script and linker-related subjects. So I've decided to write this to cover some aspects of the linker and the linking of object files.</p>
+<p>If we open the <code>Linker</code> page on Wikipedia, we will see following definition:</p>
+<blockquote>
+<p>In computer science, a linker or link editor is a computer program that takes one or more object files generated by a compiler and combines them into a single executable file, library file, or another object file.</p>
+</blockquote>
+<p>If you've written at least one program on C in your life, you will have seen files with the <code>*.o</code> extension. These files are <a href="https://en.wikipedia.org/wiki/Object_file">object files</a>. Object files are blocks of machine code and data with placeholder addresses that reference data and functions in other object files or libraries, as well as a list of its own functions and data. The main purpose of the linker is collect/handle the code and data of each object file, turning it into the final executable file or library. In this post we will try to go through all aspects of this process. Let's start.</p>
+<h2 id="linking-process"><a class="header" href="#linking-process">Linking process</a></h2>
+<p>Let's create a simple project with the following structure:</p>
+<pre><code>*-linkers
+*--main.c
+*--lib.c
+*--lib.h
+</code></pre>
+<p>Our <code>main.c</code> source code file contains:</p>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+#include &quot;lib.h&quot;
+
+int main(int argc, char **argv) {
+	printf(&quot;factorial of 5 is: %d\n&quot;, factorial(5));
+	return 0;
+}
+</code></pre>
+<p>The <code>lib.c</code> file contains:</p>
+<pre><code class="language-C">int factorial(int base) {
+	int res,i = 1;
+
+	if (base == 0) {
+		return 1;
+	}
+
+	while (i &lt;= base) {
+		res *= i;
+		i++;
+	}
+
+	return res;
+}
+</code></pre>
+<p>And the <code>lib.h</code> file contains:</p>
+<pre><code class="language-C">#ifndef LIB_H
+#define LIB_H
+
+int factorial(int base);
+
+#endif
+</code></pre>
+<p>Now let's compile only the <code>main.c</code> source code file with:</p>
+<pre><code>$ gcc -c main.c
+</code></pre>
+<p>If we look inside the outputted object file with the <code>nm</code> util, we will see the
+following output:</p>
+<pre><code>$ nm -A main.o
+main.o:                 U factorial
+main.o:0000000000000000 T main
+main.o:                 U printf
+</code></pre>
+<p>The <code>nm</code> util allows us to see the list of symbols from the given object file. It consists of three columns: the first is the name of the given object file and the address of any resolved symbols. The second column contains a character that represents the status of the given symbol. In this case the <code>U</code> means <code>undefined</code> and the <code>T</code> denotes that the symbols are placed in the <code>.text</code> section of the object. The <code>nm</code> utility shows us here that we have three symbols in the <code>main.c</code> source code file:</p>
+<ul>
+<li><code>factorial</code> - the factorial function defined in the <code>lib.c</code> source code file. It is marked as <code>undefined</code> here because we compiled only the <code>main.c</code> source code file, and it does not know anything about code from the <code>lib.c</code> file for now;</li>
+<li><code>main</code> - the main function;</li>
+<li><code>printf</code> - the function from the <a href="https://en.wikipedia.org/wiki/GNU_C_Library">glibc</a> library. <code>main.c</code> does not know anything about it for now either.</li>
+</ul>
+<p>What can we understand from the output of <code>nm</code> so far? The <code>main.o</code> object file contains the local symbol <code>main</code> at address <code>0000000000000000</code> (it will be filled with the correct address after it is linked), and two unresolved symbols. We can see all of this information in the disassembly output of the <code>main.o</code> object file:</p>
+<pre><code>$ objdump -S main.o
+
+main.o:     file format elf64-x86-64
+Disassembly of section .text:
+
+0000000000000000 &lt;main&gt;:
+   0:	55                   	push   %rbp
+   1:	48 89 e5             	mov    %rsp,%rbp
+   4:	48 83 ec 10          	sub    $0x10,%rsp
+   8:	89 7d fc             	mov    %edi,-0x4(%rbp)
+   b:	48 89 75 f0          	mov    %rsi,-0x10(%rbp)
+   f:	bf 05 00 00 00       	mov    $0x5,%edi
+  14:	e8 00 00 00 00       	callq  19 &lt;main+0x19&gt;
+  19:	89 c6                	mov    %eax,%esi
+  1b:	bf 00 00 00 00       	mov    $0x0,%edi
+  20:	b8 00 00 00 00       	mov    $0x0,%eax
+  25:	e8 00 00 00 00       	callq  2a &lt;main+0x2a&gt;
+  2a:	b8 00 00 00 00       	mov    $0x0,%eax
+  2f:	c9                   	leaveq
+  30:	c3                   	retq
+</code></pre>
+<p>Here we are interested only in the two <code>callq</code> operations. The two <code>callq</code> operations contain <code>linker stubs</code>, or the function name and offset from it to the next instruction. These stubs will be updated to the real addresses of the functions. We can see these functions' names within the following <code>objdump</code> output:</p>
+<pre><code>$ objdump -S -r main.o
+
+...
+  14:	e8 00 00 00 00       	callq  19 &lt;main+0x19&gt;
+  15: R_X86_64_PC32	               factorial-0x4
+  19:	89 c6                	mov    %eax,%esi
+...
+  25:	e8 00 00 00 00       	callq  2a &lt;main+0x2a&gt;
+  26:   R_X86_64_PC32	               printf-0x4
+  2a:	b8 00 00 00 00       	mov    $0x0,%eax
+...
+</code></pre>
+<p>The <code>-r</code> or <code>--reloc </code> flags of the <code>objdump</code> util print the <code>relocation</code> entries of the file. Now let's look in more detail at the relocation process.</p>
+<h2 id="relocation"><a class="header" href="#relocation">Relocation</a></h2>
+<p>Relocation is the process of connecting symbolic references with symbolic definitions. Let's look at the previous snippet from the <code>objdump</code> output:</p>
+<pre><code>  14:	e8 00 00 00 00       	callq  19 &lt;main+0x19&gt;
+  15:   R_X86_64_PC32	               factorial-0x4
+  19:	89 c6                	mov    %eax,%esi
+</code></pre>
+<p>Note the <code>e8 00 00 00 00</code> on the first line. The <code>e8</code> is the <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> of the <code>call</code>, and the remainder of the line is a relative offset. So the <code>e8 00 00 00 00</code> contains a one-byte operation code followed by a four-byte address. Note that the <code>00 00 00 00</code> is 4-bytes. Why only 4-bytes if an address can be 8-bytes in a <code>x86_64</code> (64-bit) machine? Actually, we compiled the <code>main.c</code> source code file with the <code>-mcmodel=small</code>! From the <code>gcc</code> man page:</p>
+<pre><code>-mcmodel=small
+
+Generate code for the small code model: the program and its symbols must be linked in the lower 2 GB of the address space. Pointers are 64 bits. Programs can be statically or dynamically linked. This is the default code model.
+</code></pre>
+<p>Of course we didn't pass this option to the <code>gcc</code> when we compiled the <code>main.c</code>, but it is the default. We know that our program will be linked in the lower 2 GB of the address space from the <code>gcc</code> manual extract above. Four bytes is therefore enough for this. So we have the opcode of the <code>call</code> instruction and an unknown address. When we compile <code>main.c</code> with all its dependencies to an executable file, and then look at the factorial call, we see:</p>
+<pre><code>$ gcc main.c lib.c -o factorial | objdump -S factorial | grep factorial
+
+factorial:     file format elf64-x86-64
+...
+...
+0000000000400506 &lt;main&gt;:
+	40051a:	e8 18 00 00 00       	callq  400537 &lt;factorial&gt;
+...
+...
+0000000000400537 &lt;factorial&gt;:
+	400550:	75 07                	jne    400559 &lt;factorial+0x22&gt;
+	400557:	eb 1b                	jmp    400574 &lt;factorial+0x3d&gt;
+	400559:	eb 0e                	jmp    400569 &lt;factorial+0x32&gt;
+	40056f:	7e ea                	jle    40055b &lt;factorial+0x24&gt;
+...
+...
+</code></pre>
+<p>As we can see in the previous output, the address of the <code>main</code> function is <code>0x0000000000400506</code>. Why doesn't it start from <code>0x0</code>? You may already know that standard C programs are linked with the <code>glibc</code> C standard library (assuming the <code>-nostdlib</code> was not passed to the <code>gcc</code>). The compiled code for a program includes constructor functions to initialize data in the program when the program is started. These functions need to be called before the program is started, or in another words before the <code>main</code> function is called. To make the initialization and termination functions work, the compiler must output something in the assembler code to cause those functions to be called at the appropriate time. Execution of this program will start from the code placed in the special <code>.init</code> section. We can see this in the beginning of the objdump output:</p>
+<pre><code>objdump -S factorial | less
+
+factorial:     file format elf64-x86-64
+
+Disassembly of section .init:
+
+00000000004003a8 &lt;_init&gt;:
+  4003a8:       48 83 ec 08             sub    $0x8,%rsp
+  4003ac:       48 8b 05 a5 05 20 00    mov    0x2005a5(%rip),%rax        # 600958 &lt;_DYNAMIC+0x1d0&gt;
+</code></pre>
+<p>Not that it starts at the <code>0x00000000004003a8</code> address relative to the <code>glibc</code> code. We can check it also in the <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a> output by running <code>readelf</code>:</p>
+<pre><code>$ readelf -d factorial | grep \(INIT\)
+ 0x000000000000000c (INIT)               0x4003a8
+</code></pre>
+<p>So, the address of the <code>main</code> function is <code>0000000000400506</code> and is offset from the <code>.init</code> section. As we can see from the output, the address of the <code>factorial</code> function is <code>0x0000000000400537</code> and binary code for the call of the <code>factorial</code> function now is <code>e8 18 00 00 00</code>. We already know that <code>e8</code> is opcode for the <code>call</code> instruction, the next <code>18 00 00 00</code> (note that address represented as little endian for <code>x86_64</code>, so it is <code>00 00 00 18</code>) is the offset from the <code>callq</code> to the <code>factorial</code> function:</p>
+<pre><code class="language-python">&gt;&gt;&gt; hex(0x40051a + 0x18 + 0x5) == hex(0x400537)
+True
+</code></pre>
+<p>So we add <code>0x18</code> and <code>0x5</code> to the address of the <code>call</code> instruction. The offset is measured from the address of the following instruction. Our call instruction is 5-bytes long (<code>e8 18 00 00 00</code>) and the <code>0x18</code> is the offset after the call instruction to the <code>factorial</code> function. A compiler generally creates each object file with the program addresses starting at zero. But if a program is created from multiple object files, these will overlap.</p>
+<p>What we have seen in this section is the <code>relocation</code> process. This process assigns load addresses to the various parts of the program, adjusting the code and data in the program to reflect the assigned addresses.</p>
+<p>Ok, now that we know a little about linkers and relocation, it is time to learn more about linkers by linking our object files.</p>
+<h2 id="gnu-linker"><a class="header" href="#gnu-linker">GNU linker</a></h2>
+<p>As you can understand from the title, I will use <a href="https://en.wikipedia.org/wiki/GNU_linker">GNU linker</a> or just <code>ld</code> in this post. Of course we can use <code>gcc</code> to link our <code>factorial</code> project:</p>
+<pre><code>$ gcc main.c lib.o -o factorial
+</code></pre>
+<p>and after it we will get executable file - <code>factorial</code> as a result:</p>
+<pre><code>./factorial
+factorial of 5 is: 120
+</code></pre>
+<p>But <code>gcc</code> does not link object files. Instead it uses <code>collect2</code> which is just wrapper for the <code>GNU ld</code> linker:</p>
+<pre><code>~$ /usr/lib/gcc/x86_64-linux-gnu/4.9/collect2 --version
+collect2 version 4.9.3
+/usr/bin/ld --version
+GNU ld (GNU Binutils for Debian) 2.25
+...
+...
+...
+</code></pre>
+<p>Ok, we can use gcc and it will produce executable file of our program for us. But let's look how to use <code>GNU ld</code> linker for the same purpose. First of all let's try to link these object files with the following example:</p>
+<pre><code>ld main.o lib.o -o factorial
+</code></pre>
+<p>Try to do it and you will get following error:</p>
+<pre><code>$ ld main.o lib.o -o factorial
+ld: warning: cannot find entry symbol _start; defaulting to 00000000004000b0
+main.o: In function `main':
+main.c:(.text+0x26): undefined reference to `printf'
+</code></pre>
+<p>Here we can see two problems:</p>
+<ul>
+<li>Linker can't find <code>_start</code> symbol;</li>
+<li>Linker does not know anything about <code>printf</code> function.</li>
+</ul>
+<p>First of all let's try to understand what is this <code>_start</code> entry symbol that appears to be required for our program to run? When I started to learn programming I learned that the <code>main</code> function is the entry point of the program. I think you learned this too :) But it actually isn't the entry point, it's <code>_start</code> instead. The <code>_start</code> symbol is defined in the <code>crt1.o</code> object file. We can find it with the following command:</p>
+<pre><code>$ objdump -S /usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o
+
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 &lt;_start&gt;:
+   0:	31 ed                	xor    %ebp,%ebp
+   2:	49 89 d1             	mov    %rdx,%r9
+   ...
+   ...
+   ...
+</code></pre>
+<p>We pass this object file to the <code>ld</code> command as its first argument (see above). Now let's try to link it and will look on result:</p>
+<pre><code>ld /usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o \
+main.o lib.o -o factorial
+
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o: In function `_start':
+/tmp/buildd/glibc-2.19/csu/../sysdeps/x86_64/start.S:115: undefined reference to `__libc_csu_fini'
+/tmp/buildd/glibc-2.19/csu/../sysdeps/x86_64/start.S:116: undefined reference to `__libc_csu_init'
+/tmp/buildd/glibc-2.19/csu/../sysdeps/x86_64/start.S:122: undefined reference to `__libc_start_main'
+main.o: In function `main':
+main.c:(.text+0x26): undefined reference to `printf'
+</code></pre>
+<p>Unfortunately we will see even more errors. We can see here old error about undefined <code>printf</code> and yet another three undefined references:</p>
+<ul>
+<li><code>__libc_csu_fini</code></li>
+<li><code>__libc_csu_init</code></li>
+<li><code>__libc_start_main</code></li>
+</ul>
+<p>The <code>_start</code> symbol is defined in the <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/x86_64/start.S;h=0d27a38e9c02835ce17d1c9287aa01be222e72eb;hb=HEAD">sysdeps/x86_64/start.S</a> assembly file in the <code>glibc</code> source code. We can find following assembly code lines there:</p>
+<pre><code class="language-assembly">mov $__libc_csu_fini, %R8_LP
+mov $__libc_csu_init, %RCX_LP
+...
+call __libc_start_main
+</code></pre>
+<p>Here we pass address of the entry point to the <code>.init</code> and <code>.fini</code> section that contain code that starts to execute when the program is ran and the code that executes when program terminates. And in the end we see the call of the <code>main</code> function from our program. These three symbols are defined in the <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=csu/elf-init.c;hb=1d4bbc54bd4f7d85d774871341b49f4357af1fb7">csu/elf-init.c</a> source code file. The following two object files:</p>
+<ul>
+<li><code>crtn.o</code>;</li>
+<li><code>crti.o</code>.</li>
+</ul>
+<p>define the function prologs/epilogs for the .init and .fini sections (with the <code>_init</code> and <code>_fini</code> symbols respectively).</p>
+<p>The <code>crtn.o</code> object file contains these <code>.init</code> and <code>.fini</code> sections:</p>
+<pre><code>$ objdump -S /usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crtn.o
+
+0000000000000000 &lt;.init&gt;:
+   0:	48 83 c4 08          	add    $0x8,%rsp
+   4:	c3                   	retq
+
+Disassembly of section .fini:
+
+0000000000000000 &lt;.fini&gt;:
+   0:	48 83 c4 08          	add    $0x8,%rsp
+   4:	c3                   	retq
+</code></pre>
+<p>And the <code>crti.o</code> object file contains the <code>_init</code> and <code>_fini</code> symbols. Let's try to link again with these two object files:</p>
+<pre><code>$ ld \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crti.o \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crtn.o main.o lib.o \
+-o factorial
+</code></pre>
+<p>And anyway we will get the same errors. Now we need to pass <code>-lc</code> option to the <code>ld</code>. This option will search for the standard library in the paths present in the <code>$LD_LIBRARY_PATH</code> environment variable. Let's try to link again with the <code>-lc</code> option:</p>
+<pre><code>$ ld \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crti.o \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crtn.o main.o lib.o -lc \
+-o factorial
+</code></pre>
+<p>Finally we get an executable file, but if we try to run it, we will get strange results:</p>
+<pre><code>$ ./factorial
+bash: ./factorial: No such file or directory
+</code></pre>
+<p>What's the problem here? Let's look on the executable file with the <a href="https://sourceware.org/binutils/docs/binutils/readelf.html">readelf</a> util:</p>
+<pre><code>$ readelf -l factorial
+
+Elf file type is EXEC (Executable file)
+Entry point 0x4003c0
+There are 7 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  PHDR           0x0000000000000040 0x0000000000400040 0x0000000000400040
+                 0x0000000000000188 0x0000000000000188  R E    8
+  INTERP         0x00000000000001c8 0x00000000004001c8 0x00000000004001c8
+                 0x000000000000001c 0x000000000000001c  R      1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+  LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000
+                 0x0000000000000610 0x0000000000000610  R E    200000
+  LOAD           0x0000000000000610 0x0000000000600610 0x0000000000600610
+                 0x00000000000001cc 0x00000000000001cc  RW     200000
+  DYNAMIC        0x0000000000000610 0x0000000000600610 0x0000000000600610
+                 0x0000000000000190 0x0000000000000190  RW     8
+  NOTE           0x00000000000001e4 0x00000000004001e4 0x00000000004001e4
+                 0x0000000000000020 0x0000000000000020  R      4
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     10
+
+ Section to Segment mapping:
+  Segment Sections...
+   00
+   01     .interp
+   02     .interp .note.ABI-tag .hash .dynsym .dynstr .gnu.version .gnu.version_r .rela.dyn .rela.plt .init .plt .text .fini .rodata .eh_frame
+   03     .dynamic .got .got.plt .data
+   04     .dynamic
+   05     .note.ABI-tag
+   06
+</code></pre>
+<p>Note on the strange line:</p>
+<pre><code>  INTERP         0x00000000000001c8 0x00000000004001c8 0x00000000004001c8
+                 0x000000000000001c 0x000000000000001c  R      1
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+</code></pre>
+<p>The <code>.interp</code> section in the <code>elf</code> file holds the path name of a program interpreter or in another words the <code>.interp</code> section simply contains an <code>ascii</code> string that is the name of the dynamic linker. The dynamic linker is the part of Linux that loads and links shared libraries needed by an executable when it is executed, by copying the content of libraries from disk to RAM. As we can see in the output of the <code>readelf</code> command it is placed in the <code>/lib64/ld-linux-x86-64.so.2</code> file for the <code>x86_64</code> architecture. Now let's add the <code>-dynamic-linker</code> option with the path of <code>ld-linux-x86-64.so.2</code> to the <code>ld</code> call and will see the following results:</p>
+<pre><code>$ gcc -c main.c lib.c
+
+$ ld \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crti.o \
+/usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crtn.o main.o lib.o \
+-dynamic-linker /lib64/ld-linux-x86-64.so.2 \
+-lc -o factorial
+</code></pre>
+<p>Now we can run it as normal executable file:</p>
+<pre><code>$ ./factorial
+
+factorial of 5 is: 120
+</code></pre>
+<p>It works! With the first line we compile the <code>main.c</code> and the <code>lib.c</code> source code files to object files. We will get the <code>main.o</code> and the <code>lib.o</code> after execution of the <code>gcc</code>:</p>
+<pre><code>$ file lib.o main.o
+lib.o:  ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+main.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+</code></pre>
+<p>and after this we link object files of our program with the needed system object files and libraries. We just saw a simple example of how to compile and link a C program with the <code>gcc</code> compiler and <code>GNU ld</code> linker. In this example we have used a couple command line options of the <code>GNU linker</code>, but it supports much more command line options than <code>-o</code>, <code>-dynamic-linker</code>, etc... Moreover <code>GNU ld</code> has its own language that allows to control the linking process. In the next two paragraphs we will look into it.</p>
+<h2 id="useful-command-line-options-of-the-gnu-linker"><a class="header" href="#useful-command-line-options-of-the-gnu-linker">Useful command line options of the GNU linker</a></h2>
+<p>As I already wrote and as you can see in the manual of the <code>GNU linker</code>, it has a big set of command line options. We've seen a couple of options in this post: <code>-o &lt;output&gt;</code> - that tells <code>ld</code> to produce an output file called <code>output</code> as the result of linking, <code>-l&lt;name&gt;</code> that adds the archive or object file specified by the name, <code>-dynamic-linker</code> that specifies the name of the dynamic linker. Of course <code>ld</code> supports much more command line options, let's look at some of them.</p>
+<p>The first useful command line option is <code>@file</code>. In this case the <code>file</code> specifies filename where command line options will be read. For example we can create file with the name <code>linker.ld</code>, put there our command line arguments from the previous example and execute it with:</p>
+<pre><code>$ ld @linker.ld
+</code></pre>
+<p>The next command line option is <code>-b</code> or <code>--format</code>. This command line option specifies format of the input object files <code>ELF</code>, <code>DJGPP/COFF</code> and etc. There is a command line option for the same purpose but for the output file: <code>--oformat=output-format</code>.</p>
+<p>The next command line option is <code>--defsym</code>. Full format of this command line option is the <code>--defsym=symbol=expression</code>. It allows to create global symbol in the output file containing the absolute address given by expression. We can find following case where this command line option can be useful: in the Linux kernel source code and more precisely in the Makefile that is related to the kernel decompression for the ARM architecture - <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/arm/boot/compressed/Makefile">arch/arm/boot/compressed/Makefile</a>, we can find following definition:</p>
+<pre><code>LDFLAGS_vmlinux = --defsym _kernel_bss_size=$(KBSS_SZ)
+</code></pre>
+<p>As we already know, it defines the <code>_kernel_bss_size</code> symbol with the size of the <code>.bss</code> section in the output file. This symbol will be used in the first <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/arm/boot/compressed/head.S">assembly file</a> that will be executed during kernel decompression:</p>
+<pre><code class="language-assembly">ldr r5, =_kernel_bss_size
+</code></pre>
+<p>The next command line options is the <code>-shared</code> that allows us to create shared library. The <code>-M</code> or <code>-map &lt;filename&gt;</code> command line option prints the linking map with the information about symbols. In our case:</p>
+<pre><code>$ ld -M @linker.ld
+...
+...
+...
+.text           0x00000000004003c0      0x112
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ *(.text.exit .text.exit.*)
+ *(.text.startup .text.startup.*)
+ *(.text.hot .text.hot.*)
+ *(.text .stub .text.* .gnu.linkonce.t.*)
+ .text          0x00000000004003c0       0x2a /usr/lib/gcc/x86_64-linux-gnu/4.9/../../../x86_64-linux-gnu/crt1.o
+...
+...
+...
+ .text          0x00000000004003ea       0x31 main.o
+                0x00000000004003ea                main
+ .text          0x000000000040041b       0x3f lib.o
+                0x000000000040041b                factorial
+</code></pre>
+<p>Of course the <code>GNU linker</code> supports standard command line options: <code>--help</code> and <code>--version</code> that prints common help of the usage of the <code>ld</code> and its version. That's all about command line options of the <code>GNU linker</code>. Of course it is not the full set of command line options supported by the <code>ld</code> util. You can find the complete documentation of the <code>ld</code> util in the manual.</p>
+<h2 id="control-language-linker"><a class="header" href="#control-language-linker">Control Language linker</a></h2>
+<p>As I wrote previously, <code>ld</code> has support for its own language. It accepts Linker Command Language files written in a superset of AT&amp;T's Link Editor Command Language syntax, to provide explicit and total control over the linking process. Let's look on its details.</p>
+<p>With the linker language we can control:</p>
+<ul>
+<li>input files;</li>
+<li>output files;</li>
+<li>file formats</li>
+<li>addresses of sections;</li>
+<li>etc...</li>
+</ul>
+<p>Commands written in the linker control language are usually placed in a file called linker script. We can pass it to <code>ld</code> with the <code>-T</code> command line option. The main command in a linker script is the <code>SECTIONS</code> command. Each linker script must contain this command and it determines the <code>map</code> of the output file. The special variable <code>.</code> contains current position of the output. Let's write a simple assembly program and we will look at how we can use a linker script to control linking of this program. We will take a hello world program for this example:</p>
+<pre><code class="language-assembly">.data
+        msg:    .ascii  &quot;hello, world!\n&quot;
+
+.text
+
+.global _start
+
+_start:
+        mov    $1,%rax
+        mov    $1,%rdi
+        mov    $msg,%rsi
+        mov    $14,%rdx
+        syscall
+
+        mov    $60,%rax
+        mov    $0,%rdi
+        syscall
+</code></pre>
+<p>We can compile and link it with the following commands:</p>
+<pre><code>$ as -o hello.o hello.asm
+$ ld -o hello hello.o
+</code></pre>
+<p>Our program consists from two sections: <code>.text</code> contains code of the program and <code>.data</code> contains initialized variables. Let's write simple linker script and try to link our <code>hello.asm</code> assembly file with it. Our script is:</p>
+<pre><code>/*
+ * Linker script for the factorial
+ */
+OUTPUT(hello)
+OUTPUT_FORMAT(&quot;elf64-x86-64&quot;)
+INPUT(hello.o)
+
+SECTIONS
+{
+	. = 0x200000;
+	.text : {
+	      *(.text)
+	}
+
+	. = 0x400000;
+	.data : {
+	      *(.data)
+	}
+}
+</code></pre>
+<p>On the first three lines you can see a comment written in <code>C</code> style. After it the <code>OUTPUT</code> and the <code>OUTPUT_FORMAT</code> commands specify the name of our executable file and its format. The next command, <code>INPUT</code>, specifies the input file to the <code>ld</code> linker. Then, we can see the main <code>SECTIONS</code> command, which, as I already wrote, must be present in every linker script. The <code>SECTIONS</code> command represents the set and order of the sections which will be in the output file. At the beginning of the <code>SECTIONS</code> command we can see following line <code>. = 0x200000</code>. I already wrote above that <code>.</code> command points to the current position of the output. This line says that the code should be loaded at address <code>0x200000</code> and the line <code>. = 0x400000</code> says that data section should be loaded at address <code>0x400000</code>. The second line after the <code>. = 0x200000</code> defines <code>.text</code> as an output section. We can see <code>*(.text)</code> expression inside it. The <code>*</code> symbol is wildcard that matches any file name. In other words, the <code>*(.text)</code> expression says all <code>.text</code> input sections in all input files. We can rewrite it as <code>hello.o(.text)</code> for our example. After the following location counter <code>. = 0x400000</code>, we can see definition of the data section.</p>
+<p>We can compile and link it with the following command:</p>
+<pre><code>$ as -o hello.o hello.S &amp;&amp; ld -T linker.script &amp;&amp; ./hello
+hello, world!
+</code></pre>
+<p>If we look inside it with the <code>objdump</code> util, we can see that <code>.text</code> section starts from the address <code>0x200000</code> and the <code>.data</code> sections starts from the address <code>0x400000</code>:</p>
+<pre><code>$ objdump -D hello
+
+Disassembly of section .text:
+
+0000000000200000 &lt;_start&gt;:
+  200000:	48 c7 c0 01 00 00 00 	mov    $0x1,%rax
+  ...
+
+Disassembly of section .data:
+
+0000000000400000 &lt;msg&gt;:
+  400000:	68 65 6c 6c 6f       	pushq  $0x6f6c6c65
+  ...
+</code></pre>
+<p>Apart from the commands we have already seen, there are a few others. The first is the <code>ASSERT(exp, message)</code> that ensures that given expression is not zero. If it is zero, then exit the linker with an error code and print the given error message. If you've read about Linux kernel booting process in the <a href="https://github.com/0xAX/linux-insides/blob/master/SUMMARY.md">linux-insides</a> book, you may know that the setup header of the Linux kernel has offset <code>0x1f1</code>. In the linker script of the Linux kernel we can find a check for this:</p>
+<pre><code>. = ASSERT(hdr == 0x1f1, &quot;The setup header has the wrong offset!&quot;);
+</code></pre>
+<p>The <code>INCLUDE filename</code> command allows to include external linker script symbols in the current one. In a linker script we can assign a value to a symbol. <code>ld</code> supports a couple of assignment operators:</p>
+<ul>
+<li>symbol = expression   ;</li>
+<li>symbol += expression  ;</li>
+<li>symbol -= expression  ;</li>
+<li>symbol *= expression  ;</li>
+<li>symbol /= expression  ;</li>
+<li>symbol &lt;&lt;= expression ;</li>
+<li>symbol &gt;&gt;= expression ;</li>
+<li>symbol &amp;= expression  ;</li>
+<li>symbol |= expression  ;</li>
+</ul>
+<p>As you can note all operators are C assignment operators. For example we can use it in our linker script as:</p>
+<pre><code>START_ADDRESS = 0x200000;
+DATA_OFFSET   = 0x200000;
+
+SECTIONS
+{
+	. = START_ADDRESS;
+	.text : {
+	      *(.text)
+	}
+
+	. = START_ADDRESS + DATA_OFFSET;
+	.data : {
+	      *(.data)
+	}
+}
+</code></pre>
+<p>As you already may have noted, the syntax for expressions in the linker script language is identical to that of C expressions. Besides this the control language of the linking supports following builtin functions:</p>
+<ul>
+<li><code>ABSOLUTE</code> - returns absolute value of the given expression;</li>
+<li><code>ADDR</code> - takes the section and returns its address;</li>
+<li><code>ALIGN</code> - returns the value of the location counter (<code>.</code> operator) that aligned by the boundary of the next expression after the given expression;</li>
+<li><code>DEFINED</code> - returns <code>1</code> if the given symbol placed in the global symbol table and <code>0</code> otherwise;</li>
+<li><code>MAX</code> and <code>MIN</code> - return maximum and minimum of the two given expressions;</li>
+<li><code>NEXT</code> - returns the next unallocated address that is a multiple of the given expression;</li>
+<li><code>SIZEOF</code> - returns the size in bytes of the given named section.</li>
+</ul>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the post about linkers. We learned many things about linkers in this post, such as what is a linker and why it is needed, how to use it, etc..</p>
+<p>If you have any questions or suggestions, write me an <a href="mailto:kuleshovmail@gmail.com">email</a> or ping <a href="https://twitter.com/0xAX">me</a> on twitter.</p>
+<p>Please note that English is not my first language, and I am really sorry for any inconvenience. If you find any mistakes please let me know via email or send a PR.</p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://github.com/0xAX/linux-insides/blob/master/SUMMARY.md">Book about Linux kernel insides</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Linker_%28computing%29">linker</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Object_file">object files</a></li>
+<li><a href="https://en.wikipedia.org/wiki/GNU_C_Library">glibc</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Opcode">opcode</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a></li>
+<li><a href="https://en.wikipedia.org/wiki/GNU_linker">GNU linker</a></li>
+<li><a href="https://0xax.github.io/categories/assembler/">My posts about assembly programming for x86_64</a></li>
+<li><a href="https://sourceware.org/binutils/docs/binutils/readelf.html">readelf</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Misc/linux-misc-2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Misc/linux-misc-4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Misc/linux-misc-2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Misc/linux-misc-4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

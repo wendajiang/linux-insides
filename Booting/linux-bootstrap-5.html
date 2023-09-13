@@ -1,0 +1,480 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Kernel decompression - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html" class="active">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-booting-process-part-5"><a class="header" href="#kernel-booting-process-part-5">Kernel booting process. Part 5.</a></h1>
+<h2 id="kernel-decompression"><a class="header" href="#kernel-decompression">Kernel Decompression</a></h2>
+<p>This is the fifth part of the <code>Kernel booting process</code> series. We went over the transition to 64-bit mode in the previous <a href="https://github.com/0xAX/linux-insides/blob/v4.16/Booting/linux-bootstrap-4.md#transition-to-the-long-mode">part</a> and we will continue where we left off in this part. We will study the steps taken to prepare for kernel decompression, relocation and the process of  kernel decompression itself. So... let's dive into the kernel code again.</p>
+<h2 id="preparing-to-decompress-the-kernel"><a class="header" href="#preparing-to-decompress-the-kernel">Preparing to Decompress the Kernel</a></h2>
+<p>We stopped right before the jump to the <code>64-bit</code> entry point - <code>startup_64</code> which is located in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a> source code file. We already covered the jump to <code>startup_64</code> from <code>startup_32</code> in the previous part:</p>
+<pre><code class="language-assembly">	pushl	$__KERNEL_CS
+	leal	startup_64(%ebp), %eax
+	...
+	...
+	...
+	pushl	%eax
+	...
+	...
+	...
+	lret
+</code></pre>
+<p>Since we have loaded a new <code>Global Descriptor Table</code> and the CPU has transitioned to a new mode (<code>64-bit</code> mode in our case), we set up the segment registers again at the beginning of the <code>startup_64</code> function:</p>
+<pre><code class="language-assembly">	.code64
+	.org 0x200
+ENTRY(startup_64)
+	xorl	%eax, %eax
+	movl	%eax, %ds
+	movl	%eax, %es
+	movl	%eax, %ss
+	movl	%eax, %fs
+	movl	%eax, %gs
+</code></pre>
+<p>All segment registers besides the <code>cs</code> register are now reset in <code>long mode</code>.</p>
+<p>The next step is to compute the difference between the location the kernel was compiled to be loaded at and the location where it is actually loaded:</p>
+<pre><code class="language-assembly">#ifdef CONFIG_RELOCATABLE
+	leaq	startup_32(%rip), %rbp
+	movl	BP_kernel_alignment(%rsi), %eax
+	decl	%eax
+	addq	%rax, %rbp
+	notq	%rax
+	andq	%rax, %rbp
+	cmpq	$LOAD_PHYSICAL_ADDR, %rbp
+	jge	1f
+#endif
+	movq	$LOAD_PHYSICAL_ADDR, %rbp
+1:
+	movl	BP_init_size(%rsi), %ebx
+	subl	$_end, %ebx
+	addq	%rbp, %rbx
+</code></pre>
+<p>The <code>rbp</code> register contains the decompressed kernel's start address. After this code executes, the <code>rbx</code> register will contain the address where the kernel code will be relocated to for decompression. We've already done this before in the <code>startup_32</code> function ( you can read about this in the previous part - <a href="https://github.com/0xAX/linux-insides/blob/v4.16/Booting/linux-bootstrap-4.md#calculate-relocation-address">Calculate relocation address</a>), but we need to do this calculation again because the bootloader can use the 64-bit boot protocol now and <code>startup_32</code> is no longer being executed.</p>
+<p>In the next step we set up the stack pointer, reset the flags register and set up the <code>GDT</code> again to overwrite the <code>32-bit</code> specific values with those from the <code>64-bit</code> protocol:</p>
+<pre><code class="language-assembly">    leaq	boot_stack_end(%rbx), %rsp
+
+    leaq	gdt(%rip), %rax
+    movq	%rax, gdt64+2(%rip)
+    lgdt	gdt64(%rip)
+
+    pushq	$0
+    popfq
+</code></pre>
+<p>If you take a look at the code after the <code>lgdt gdt64(%rip)</code> instruction, you will see that there is some additional code. This code builds the trampoline to enable <a href="https://lwn.net/Articles/708526/">5-level paging</a> if needed. We will only consider 4-level paging in this book, so this code will be omitted.</p>
+<p>As you can see above, the <code>rbx</code> register contains the start address of the kernel decompressor code and we just put this address with an offset of <code>boot_stack_end</code> in the <code>rsp</code> register which points to the top of the stack. After this step, the stack will be correct. You can find the definition of the <code>boot_stack_end</code> constant in the end of the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a> assembly source code file:</p>
+<pre><code class="language-assembly">	.bss
+	.balign 4
+boot_heap:
+	.fill BOOT_HEAP_SIZE, 1, 0
+boot_stack:
+	.fill BOOT_STACK_SIZE, 1, 0
+boot_stack_end:
+</code></pre>
+<p>It located in the end of the <code>.bss</code> section, right before <code>.pgtable</code>. If you peek inside the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/vmlinux.lds.S">arch/x86/boot/compressed/vmlinux.lds.S</a> linker script, you will find the definitions of <code>.bss</code> and <code>.pgtable</code> there.</p>
+<p>Since the stack is now correct, we can copy the compressed kernel to the address that we got above, when we calculated the relocation address of the decompressed kernel. Before we get into the details, let's take a look at this assembly code:</p>
+<pre><code class="language-assembly">	pushq	%rsi
+	leaq	(_bss-8)(%rip), %rsi
+	leaq	(_bss-8)(%rbx), %rdi
+	movq	$_bss, %rcx
+	shrq	$3, %rcx
+	std
+	rep	movsq
+	cld
+	popq	%rsi
+</code></pre>
+<p>This set of instructions copies the compressed kernel over to where it will be decompressed.</p>
+<p>First of all we push <code>rsi</code> to the stack. We need preserve the value of <code>rsi</code>, because this register now stores a pointer to <code>boot_params</code>  which is a real mode structure that contains booting related data (remember,  this structure was populated at the start of the kernel setup). We pop the pointer to <code>boot_params</code> back to <code>rsi</code> after we execute this code.</p>
+<p>The next two <code>leaq</code> instructions calculate the effective addresses of the <code>rip</code> and <code>rbx</code> registers with an offset of <code>_bss - 8</code> and assign the results to <code>rsi</code> and <code>rdi</code> respectively. Why do we calculate these addresses? The compressed kernel image is located between this code (from <code>startup_32</code> to the current code) and the decompression code. You can verify this by looking at this linker script - <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/vmlinux.lds.S">arch/x86/boot/compressed/vmlinux.lds.S</a>:</p>
+<pre><code>	. = 0;
+	.head.text : {
+		_head = . ;
+		HEAD_TEXT
+		_ehead = . ;
+	}
+	.rodata..compressed : {
+		*(.rodata..compressed)
+	}
+	.text :	{
+		_text = .; 	/* Text */
+		*(.text)
+		*(.text.*)
+		_etext = . ;
+	}
+</code></pre>
+<p>Note that the <code>.head.text</code> section contains <code>startup_32</code>. You may remember it from the previous part:</p>
+<pre><code class="language-assembly">	__HEAD
+	.code32
+ENTRY(startup_32)
+...
+...
+...
+</code></pre>
+<p>The <code>.text</code> section contains the decompression code:</p>
+<pre><code class="language-assembly">	.text
+relocated:
+...
+...
+...
+/*
+ * Do the decompression, and jump to the new kernel..
+ */
+...
+</code></pre>
+<p>And <code>.rodata..compressed</code> contains the compressed kernel image. So <code>rsi</code> will contain the absolute address of <code>_bss - 8</code>, and <code>rdi</code> will contain the relocation relative address of <code>_bss - 8</code>. In the same way we store these addresses in registers, we put the address of <code>_bss</code> in the <code>rcx</code> register. As you can see in the <code>vmlinux.lds.S</code> linker script, it's located at the end of all sections with the setup/kernel code. Now we can start copying data from <code>rsi</code> to <code>rdi</code>, <code>8</code> bytes at a time, with the <code>movsq</code> instruction.</p>
+<p>Note that we execute an <code>std</code> instruction before copying the data. This sets the <code>DF</code> flag, which means that <code>rsi</code> and <code>rdi</code> will be decremented. In other words, we will copy the bytes backwards. At the end, we clear the <code>DF</code> flag with the <code>cld</code> instruction, and restore the <code>boot_params</code> structure to <code>rsi</code>.</p>
+<p>Now we have a pointer to the <code>.text</code> section's address after relocation, and we can jump to it:</p>
+<pre><code class="language-assembly">	leaq	relocated(%rbx), %rax
+	jmp	*%rax
+</code></pre>
+<h2 id="the-final-touches-before-kernel-decompression"><a class="header" href="#the-final-touches-before-kernel-decompression">The final touches before kernel decompression</a></h2>
+<p>In the previous paragraph we saw that the <code>.text</code> section starts with the <code>relocated</code> label. The first thing we do is to clear the <code>bss</code> section with:</p>
+<pre><code class="language-assembly">	xorl	%eax, %eax
+	leaq    _bss(%rip), %rdi
+	leaq    _ebss(%rip), %rcx
+	subq	%rdi, %rcx
+	shrq	$3, %rcx
+	rep	stosq
+</code></pre>
+<p>We need to initialize the <code>.bss</code> section, because we'll soon jump to <a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> code. Here we just clear <code>eax</code>, put the addresses of <code>_bss</code> in <code>rdi</code> and <code>_ebss</code> in <code>rcx</code>, and fill <code>.bss</code> with zeros with the <code>rep stosq</code> instruction.</p>
+<p>At the end, we can see a call to the <code>extract_kernel</code> function:</p>
+<pre><code class="language-assembly">	pushq	%rsi
+	movq	%rsi, %rdi
+	leaq	boot_heap(%rip), %rsi
+	leaq	input_data(%rip), %rdx
+	movl	$z_input_len, %ecx
+	movq	%rbp, %r8
+	movq	$z_output_len, %r9
+	call	extract_kernel
+	popq	%rsi
+</code></pre>
+<p>Like before, we push <code>rsi</code> onto the stack to preserve the pointer to <code>boot_params</code>. We also copy the contents of <code>rsi</code> to <code>rdi</code>. Then, we set <code>rsi</code> to point to the area where the kernel will be decompressed. The last step is to prepare the parameters for the  <code>extract_kernel</code> function and call it to decompress the kernel. The <code>extract_kernel</code> function is defined in the  <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/misc.c">arch/x86/boot/compressed/misc.c</a> source code file and takes six arguments:</p>
+<ul>
+<li><code>rmode</code> - a pointer to the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/include/uapi/asm/bootparam.h">boot_params</a> structure which is filled by either the bootloader or during early kernel initialization;</li>
+<li><code>heap</code> - a pointer to <code>boot_heap</code> which represents the start address of the early boot heap;</li>
+<li><code>input_data</code> - a pointer to the start of the compressed kernel or in other words, a pointer to the <code>arch/x86/boot/compressed/vmlinux.bin.bz2</code> file;</li>
+<li><code>input_len</code> - the size of the compressed kernel;</li>
+<li><code>output</code> - the start address of the decompressed kernel;</li>
+<li><code>output_len</code> - the size of the decompressed kernel;</li>
+</ul>
+<p>All arguments will be passed through registers as per the <a href="https://github.com/hjl-tools/x86-psABI/wiki/x86-64-psABI-1.0.pdf">System V Application Binary Interface</a>. We've finished all the preparations and can now decompress the kernel.</p>
+<h2 id="kernel-decompression-1"><a class="header" href="#kernel-decompression-1">Kernel decompression</a></h2>
+<p>As we saw in the previous paragraph, the <code>extract_kernel</code> function is defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/misc.c">arch/x86/boot/compressed/misc.c</a> source code file and takes six arguments. This function starts with the video/console initialization that we already saw in the previous parts. We need to do this again because we don't know if we started in <a href="https://en.wikipedia.org/wiki/Real_mode">real mode</a> or if a bootloader was used, or whether the bootloader used the <code>32</code> or <code>64-bit</code> boot protocol.</p>
+<p>After the first initialization steps, we store pointers to the start of the free memory and to the end of it:</p>
+<pre><code class="language-C">free_mem_ptr     = heap;
+free_mem_end_ptr = heap + BOOT_HEAP_SIZE;
+</code></pre>
+<p>Here, <code>heap</code> is the second parameter of the <code>extract_kernel</code> function as passed to it in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a>:</p>
+<pre><code class="language-assembly">leaq	boot_heap(%rip), %rsi
+</code></pre>
+<p>As you saw above, <code>boot_heap</code> is defined as:</p>
+<pre><code class="language-assembly">boot_heap:
+	.fill BOOT_HEAP_SIZE, 1, 0
+</code></pre>
+<p>where <code>BOOT_HEAP_SIZE</code> is a macro which expands to <code>0x10000</code> (<code>0x400000</code> in the case of a <code>bzip2</code> kernel) and represents the size of the heap.</p>
+<p>After we initialize the heap pointers, the next step is to call the <code>choose_random_location</code> function from the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/kaslr.c">arch/x86/boot/compressed/kaslr.c</a> source code file. As we can guess from the function name, it chooses a memory location to write the decompressed kernel to. It may look weird that we need to find or even <code>choose</code> where to decompress the compressed kernel image, but the Linux kernel supports <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization">kASLR</a> which allows decompression of the kernel into a random address, for security reasons.</p>
+<p>We'll take a look at how the kernel's load address is randomized in the next part.</p>
+<p>Now let's get back to <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/misc.c">misc.c</a>. After getting the address for the kernel image, we need to check that the random address we got is correctly aligned, and in general, not wrong:</p>
+<pre><code class="language-C">if ((unsigned long)output &amp; (MIN_KERNEL_ALIGN - 1))
+	error(&quot;Destination physical address inappropriately aligned&quot;);
+
+if (virt_addr &amp; (MIN_KERNEL_ALIGN - 1))
+	error(&quot;Destination virtual address inappropriately aligned&quot;);
+
+if (heap &gt; 0x3fffffffffffUL)
+	error(&quot;Destination address too large&quot;);
+
+if (virt_addr + max(output_len, kernel_total_size) &gt; KERNEL_IMAGE_SIZE)
+	error(&quot;Destination virtual address is beyond the kernel mapping area&quot;);
+
+if ((unsigned long)output != LOAD_PHYSICAL_ADDR)
+    error(&quot;Destination address does not match LOAD_PHYSICAL_ADDR&quot;);
+
+if (virt_addr != LOAD_PHYSICAL_ADDR)
+	error(&quot;Destination virtual address changed when not relocatable&quot;);
+</code></pre>
+<p>After all these checks we will see the familiar message:</p>
+<pre><code>Decompressing Linux...
+</code></pre>
+<p>Now, we call the <code>__decompress</code> function to decompress the kernel:</p>
+<pre><code class="language-C">__decompress(input_data, input_len, NULL, NULL, output, output_len, NULL, error);
+</code></pre>
+<p>The implementation of the <code>__decompress</code> function depends on what decompression algorithm was chosen during kernel compilation:</p>
+<pre><code class="language-C">#ifdef CONFIG_KERNEL_GZIP
+#include &quot;../../../../lib/decompress_inflate.c&quot;
+#endif
+
+#ifdef CONFIG_KERNEL_BZIP2
+#include &quot;../../../../lib/decompress_bunzip2.c&quot;
+#endif
+
+#ifdef CONFIG_KERNEL_LZMA
+#include &quot;../../../../lib/decompress_unlzma.c&quot;
+#endif
+
+#ifdef CONFIG_KERNEL_XZ
+#include &quot;../../../../lib/decompress_unxz.c&quot;
+#endif
+
+#ifdef CONFIG_KERNEL_LZO
+#include &quot;../../../../lib/decompress_unlzo.c&quot;
+#endif
+
+#ifdef CONFIG_KERNEL_LZ4
+#include &quot;../../../../lib/decompress_unlz4.c&quot;
+#endif
+</code></pre>
+<p>After the kernel is decompressed, two more functions are called: <code>parse_elf</code> and <code>handle_relocations</code>. The main point of these functions is to move the decompressed kernel image to its correct place in memory. This is because the decompression is done <a href="https://en.wikipedia.org/wiki/In-place_algorithm">in-place</a>, and we still need to move the kernel to the correct address. As we already know, the kernel image is an <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a> executable. The main goal of the <code>parse_elf</code> function is to move loadable segments to the correct address. We can see the kernel's loadable segments in the output of the <code>readelf</code> program:</p>
+<pre><code>readelf -l vmlinux
+
+Elf file type is EXEC (Executable file)
+Entry point 0x1000000
+There are 5 program headers, starting at offset 64
+
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  LOAD           0x0000000000200000 0xffffffff81000000 0x0000000001000000
+                 0x0000000000893000 0x0000000000893000  R E    200000
+  LOAD           0x0000000000a93000 0xffffffff81893000 0x0000000001893000
+                 0x000000000016d000 0x000000000016d000  RW     200000
+  LOAD           0x0000000000c00000 0x0000000000000000 0x0000000001a00000
+                 0x00000000000152d8 0x00000000000152d8  RW     200000
+  LOAD           0x0000000000c16000 0xffffffff81a16000 0x0000000001a16000
+                 0x0000000000138000 0x000000000029b000  RWE    200000
+</code></pre>
+<p>The goal of the <code>parse_elf</code> function is to load these segments to the <code>output</code> address we got from the <code>choose_random_location</code> function. This function starts by checking the <a href="https://en.wikipedia.org/wiki/Executable_and_Linkable_Format">ELF</a> signature:</p>
+<pre><code class="language-C">Elf64_Ehdr ehdr;
+Elf64_Phdr *phdrs, *phdr;
+
+memcpy(&amp;ehdr, output, sizeof(ehdr));
+
+if (ehdr.e_ident[EI_MAG0] != ELFMAG0 ||
+    ehdr.e_ident[EI_MAG1] != ELFMAG1 ||
+    ehdr.e_ident[EI_MAG2] != ELFMAG2 ||
+    ehdr.e_ident[EI_MAG3] != ELFMAG3) {
+        error(&quot;Kernel is not a valid ELF file&quot;);
+        return;
+}
+</code></pre>
+<p>If the ELF header is not valid, it prints an error message and halts. If we have a valid <code>ELF</code> file, we go through all the program headers from the given <code>ELF</code> file and copy all loadable segments with correct 2 megabyte aligned addresses to the output buffer:</p>
+<pre><code class="language-C">	for (i = 0; i &lt; ehdr.e_phnum; i++) {
+		phdr = &amp;phdrs[i];
+
+		switch (phdr-&gt;p_type) {
+		case PT_LOAD:
+#ifdef CONFIG_X86_64
+			if ((phdr-&gt;p_align % 0x200000) != 0)
+				error(&quot;Alignment of LOAD segment isn't multiple of 2MB&quot;);
+#endif
+#ifdef CONFIG_RELOCATABLE
+			dest = output;
+			dest += (phdr-&gt;p_paddr - LOAD_PHYSICAL_ADDR);
+#else
+			dest = (void *)(phdr-&gt;p_paddr);
+#endif
+			memmove(dest, output + phdr-&gt;p_offset, phdr-&gt;p_filesz);
+			break;
+		default:
+			break;
+		}
+	}
+</code></pre>
+<p>That's all.</p>
+<p>From this moment, all loadable segments are in the correct place.</p>
+<p>The next step after the <code>parse_elf</code> function is to call the <code>handle_relocations</code> function. The implementation of this function depends on the <code>CONFIG_X86_NEED_RELOCS</code> kernel configuration option and if it is enabled, this function adjusts addresses in the kernel image. This function is also only called if the <code>CONFIG_RANDOMIZE_BASE</code> configuration option was enabled during kernel configuration. The implementation of the <code>handle_relocations</code> function is easy enough. This function subtracts the value of <code>LOAD_PHYSICAL_ADDR</code> from the value of the base load address of the kernel and thus we obtain the difference between where the kernel was linked to load and where it was actually loaded. After this we can relocate the kernel since we know the actual address where the kernel was loaded, the address where it was linked to run and the relocation table which is at the end of the kernel image.</p>
+<p>After the kernel is relocated, we return from the <code>extract_kernel</code> function to <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a>.</p>
+<p>The address of the kernel will be in the <code>rax</code> register and we jump to it:</p>
+<pre><code class="language-assembly">jmp	*%rax
+</code></pre>
+<p>That's all. Now we are in the kernel!</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the fifth part about the Linux kernel booting process. We will not see any more posts about the kernel booting process (there may be updates to this and previous posts though), but there will be many posts about other kernel internals.</p>
+<p>The Next chapter will describe more advanced details about Linux kernel booting process, like load address randomization and etc.</p>
+<p>If you have any questions or suggestions write me a comment or ping me in <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-internals">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization">address space layout randomization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Initrd">initrd</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a></li>
+<li><a href="http://www.bzip.org/">bzip2</a></li>
+<li><a href="https://en.wikipedia.org/wiki/RdRand">RdRand instruction</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">Time Stamp Counter</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Intel_8253">Programmable Interval Timers</a></li>
+<li><a href="https://github.com/0xAX/linux-insides/blob/v4.16/Booting/linux-bootstrap-4.md">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Booting/linux-bootstrap-4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Booting/linux-bootstrap-6.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Booting/linux-bootstrap-4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Booting/linux-bootstrap-6.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Video mode initialization and transition to protected mode - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html" class="active">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-booting-process-part-3"><a class="header" href="#kernel-booting-process-part-3">Kernel booting process. Part 3.</a></h1>
+<h2 id="video-mode-initialization-and-transition-to-protected-mode"><a class="header" href="#video-mode-initialization-and-transition-to-protected-mode">Video mode initialization and transition to protected mode</a></h2>
+<p>This is the third part of the <code>Kernel booting process</code> series. In the previous <a href="linux-bootstrap-2.html#kernel-booting-process-part-2">part</a>, we stopped right before the call to the <code>set_video</code> routine from <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/main.c">main.c</a>.</p>
+<p>In this part, we will look at:</p>
+<ul>
+<li>Video mode initialization in the kernel setup code,</li>
+<li>the preparations made before switching into protected mode,</li>
+<li>the transition to protected mode</li>
+</ul>
+<p><strong>NOTE</strong> If you don't know anything about protected mode, you can find some information about it in the previous <a href="linux-bootstrap-2.html#protected-mode">part</a>. Also, there are a couple of <a href="linux-bootstrap-2.html#links">links</a> which can help you.</p>
+<p>As I wrote above, we will start from the <code>set_video</code> function which is defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/video.c">arch/x86/boot/video.c</a> source code file. We can see that it starts by first getting the video mode from the <code>boot_params.hdr</code> structure:</p>
+<pre><code class="language-C">u16 mode = boot_params.hdr.vid_mode;
+</code></pre>
+<p>which we filled in the <code>copy_boot_params</code> function (you can read about it in the previous post). <code>vid_mode</code> is an obligatory field which is filled by the bootloader. You can find information about it in the kernel <code>boot protocol</code>:</p>
+<pre><code>Offset	Proto	Name		Meaning
+/Size
+01FA/2	ALL	    vid_mode	Video mode control
+</code></pre>
+<p>As we can read from the Linux kernel boot protocol:</p>
+<pre><code>vga=&lt;mode&gt;
+	&lt;mode&gt; here is either an integer (in C notation, either
+	decimal, octal, or hexadecimal) or one of the strings
+	&quot;normal&quot; (meaning 0xFFFF), &quot;ext&quot; (meaning 0xFFFE) or &quot;ask&quot;
+	(meaning 0xFFFD). This value should be entered into the
+	vid_mode field, as it is used by the kernel before the command
+	line is parsed.
+</code></pre>
+<p>So we can add the <code>vga</code> option to the grub (or another bootloader's) configuration file and it will pass this option to the kernel command line. This option can have different values as mentioned in the description. For example, it can be an integer number <code>0xFFFD</code> or <code>ask</code>. If you pass <code>ask</code> to <code>vga</code>, you will see a menu like this:</p>
+<p><img src="images/video_mode_setup_menu.png" alt="video mode setup menu" /></p>
+<p>which will ask to select a video mode. We will look at its implementation, but before diving into the implementation we have to look at some other things.</p>
+<h2 id="kernel-data-types"><a class="header" href="#kernel-data-types">Kernel data types</a></h2>
+<p>Earlier we saw definitions of different data types like <code>u16</code> etc. in the kernel setup code. Let's look at a couple of data types provided by the kernel:</p>
+<table><thead><tr><th>Type</th><th>char</th><th>short</th><th>int</th><th>long</th><th>u8</th><th>u16</th><th>u32</th><th>u64</th></tr></thead><tbody>
+<tr><td>Size</td><td>1</td><td>2</td><td>4</td><td>8</td><td>1</td><td>2</td><td>4</td><td>8</td></tr>
+</tbody></table>
+<p>If you read the source code of the kernel, you'll see these very often and so it will be good to remember them.</p>
+<h2 id="heap-api"><a class="header" href="#heap-api">Heap API</a></h2>
+<p>After we get <code>vid_mode</code> from <code>boot_params.hdr</code> in the <code>set_video</code> function, we can see the call to the <code>RESET_HEAP</code> function. <code>RESET_HEAP</code> is a macro which is defined in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/boot.h">arch/x86/boot/boot.h</a> header file.</p>
+<p>This macro is defined as:</p>
+<pre><code class="language-C">#define RESET_HEAP() ((void *)( HEAP = _end ))
+</code></pre>
+<p>If you have read the second part, you will remember that we initialized the heap with the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/main.c"><code>init_heap</code></a> function. We have a couple of utility macros and functions for managing the heap which are defined in <code>arch/x86/boot/boot.h</code> header file.</p>
+<p>They are:</p>
+<pre><code class="language-C">#define RESET_HEAP()
+</code></pre>
+<p>As we saw just above, it resets the heap by setting the <code>HEAP</code> variable to <code>_end</code>, where <code>_end</code> is just <code>extern char _end[];</code></p>
+<p>Next is the <code>GET_HEAP</code> macro:</p>
+<pre><code class="language-C">#define GET_HEAP(type, n) \
+	((type *)__get_heap(sizeof(type),__alignof__(type),(n)))
+</code></pre>
+<p>for heap allocation. It calls the internal function <code>__get_heap</code> with 3 parameters:</p>
+<ul>
+<li>the size of the datatype to be allocated for</li>
+<li><code>__alignof__(type)</code> specifies how variables of this type are to be aligned</li>
+<li><code>n</code> specifies how many items to allocate</li>
+</ul>
+<p>The implementation of <code>__get_heap</code> is:</p>
+<pre><code class="language-C">static inline char *__get_heap(size_t s, size_t a, size_t n)
+{
+	char *tmp;
+
+	HEAP = (char *)(((size_t)HEAP+(a-1)) &amp; ~(a-1));
+	tmp = HEAP;
+	HEAP += s*n;
+	return tmp;
+}
+</code></pre>
+<p>and we will further see its usage, something like:</p>
+<pre><code class="language-C">saved.data = GET_HEAP(u16, saved.x * saved.y);
+</code></pre>
+<p>Let's try to understand how <code>__get_heap</code> works. We can see here that <code>HEAP</code> (which is equal to <code>_end</code> after <code>RESET_HEAP()</code>) is assigned the address of the aligned memory according to the <code>a</code> parameter. After this we save the memory address from <code>HEAP</code> to the <code>tmp</code> variable, move <code>HEAP</code> to the end of the allocated block and return <code>tmp</code> which is the start address of allocated memory.</p>
+<p>And the last function is:</p>
+<pre><code class="language-C">static inline bool heap_free(size_t n)
+{
+	return (int)(heap_end - HEAP) &gt;= (int)n;
+}
+</code></pre>
+<p>which subtracts value of the <code>HEAP</code> pointer from the <code>heap_end</code> (we calculated it in the previous <a href="linux-bootstrap-2.html">part</a>) and returns 1 if there is enough memory available for <code>n</code>.</p>
+<p>That's all. Now we have a simple API for heap and can setup video mode.</p>
+<h2 id="set-up-video-mode"><a class="header" href="#set-up-video-mode">Set up video mode</a></h2>
+<p>Now we can move directly to video mode initialization. We stopped at the <code>RESET_HEAP()</code> call in the <code>set_video</code> function. Next is the call to  <code>store_mode_params</code> which stores video mode parameters in the <code>boot_params.screen_info</code> structure which is defined in <a href="https://github.com/torvalds/linux/blob/v4.16/include/uapi/linux/screen_info.h">include/uapi/linux/screen_info.h</a> header file.</p>
+<p>If we look at the <code>store_mode_params</code> function, we can see that it starts with a call to the <code>store_cursor_position</code> function. As you can understand from the function name, it gets information about the cursor and stores it.</p>
+<p>First of all, <code>store_cursor_position</code> initializes two variables which have type <code>biosregs</code> with <code>AH = 0x3</code>, and calls the <code>0x10</code> BIOS interruption. After the interruption is successfully executed, it returns row and column in the <code>DL</code> and <code>DH</code> registers. Row and column will be stored in the <code>orig_x</code> and <code>orig_y</code> fields of the <code>boot_params.screen_info</code> structure.</p>
+<p>After <code>store_cursor_position</code> is executed, the <code>store_video_mode</code> function will be called. It just gets the current video mode and stores it in <code>boot_params.screen_info.orig_video_mode</code>.</p>
+<p>After this, <code>store_mode_params</code> checks the current video mode and sets the <code>video_segment</code>. After the BIOS transfers control to the boot sector, the following addresses are for video memory:</p>
+<pre><code>0xB000:0x0000 	32 Kb 	Monochrome Text Video Memory
+0xB800:0x0000 	32 Kb 	Color Text Video Memory
+</code></pre>
+<p>So we set the <code>video_segment</code> variable to <code>0xb000</code> if the current video mode is MDA, HGC, or VGA in monochrome mode and to <code>0xb800</code> if the current video mode is in color mode. After setting up the address of the video segment, the font size needs to be stored in <code>boot_params.screen_info.orig_video_points</code> with:</p>
+<pre><code class="language-C">set_fs(0);
+font_size = rdfs16(0x485);
+boot_params.screen_info.orig_video_points = font_size;
+</code></pre>
+<p>First of all, we put 0 in the <code>FS</code> register with the <code>set_fs</code> function. We already saw functions like <code>set_fs</code> in the previous part. They are all defined in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/boot.h">arch/x86/boot/boot.h</a>. Next, we read the value which is located at address <code>0x485</code> (this memory location is used to get the font size) and save the font size in <code>boot_params.screen_info.orig_video_points</code>.</p>
+<pre><code class="language-C">x = rdfs16(0x44a);
+y = (adapter == ADAPTER_CGA) ? 25 : rdfs8(0x484)+1;
+</code></pre>
+<p>Next, we get the amount of columns by address <code>0x44a</code> and rows by address <code>0x484</code> and store them in <code>boot_params.screen_info.orig_video_cols</code> and <code>boot_params.screen_info.orig_video_lines</code>. After this, execution of <code>store_mode_params</code> is finished.</p>
+<p>Next we can see the <code>save_screen</code> function which just saves the contents of the screen to the heap. This function collects all the data which we got in the previous functions (like the rows and columns, and stuff) and stores it in the <code>saved_screen</code> structure, which is defined as:</p>
+<pre><code class="language-C">static struct saved_screen {
+	int x, y;
+	int curx, cury;
+	u16 *data;
+} saved;
+</code></pre>
+<p>It then checks whether the heap has free space for it with:</p>
+<pre><code class="language-C">if (!heap_free(saved.x*saved.y*sizeof(u16)+512))
+		return;
+</code></pre>
+<p>and allocates space in the heap if it is enough and stores <code>saved_screen</code> in it.</p>
+<p>The next call is <code>probe_cards(0)</code> from <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/video-mode.c">arch/x86/boot/video-mode.c</a> source code file. It goes over all video_cards and collects the number of modes provided by the cards. Here is the interesting part, we can see the loop:</p>
+<pre><code class="language-C">for (card = video_cards; card &lt; video_cards_end; card++) {
+  /* collecting number of modes here */
+}
+</code></pre>
+<p>but <code>video_cards</code> is not declared anywhere. The answer is simple: every video mode presented in the x86 kernel setup code has a definition that looks like this:</p>
+<pre><code class="language-C">static __videocard video_vga = {
+	.card_name	= &quot;VGA&quot;,
+	.probe		= vga_probe,
+	.set_mode	= vga_set_mode,
+};
+</code></pre>
+<p>where <code>__videocard</code> is a macro:</p>
+<pre><code class="language-C">#define __videocard struct card_info __attribute__((used,section(&quot;.videocards&quot;)))
+</code></pre>
+<p>which means that the <code>card_info</code> structure:</p>
+<pre><code class="language-C">struct card_info {
+	const char *card_name;
+	int (*set_mode)(struct mode_info *mode);
+	int (*probe)(void);
+	struct mode_info *modes;
+	int nmodes;
+	int unsafe;
+	u16 xmode_first;
+	u16 xmode_n;
+};
+</code></pre>
+<p>is in the <code>.videocards</code> segment. Let's look in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/setup.ld">arch/x86/boot/setup.ld</a> linker script, where we can find:</p>
+<pre><code>	.videocards	: {
+		video_cards = .;
+		*(.videocards)
+		video_cards_end = .;
+	}
+</code></pre>
+<p>It means that <code>video_cards</code> is just a memory address and all <code>card_info</code> structures are placed in this segment. It means that all <code>card_info</code> structures are placed between <code>video_cards</code> and <code>video_cards_end</code>, so we can use a loop to go over all of it. After <code>probe_cards</code> executes we have a bunch of structures like <code>static __videocard video_vga</code> with the <code>nmodes</code> (the number of video modes) filled in.</p>
+<p>After the <code>probe_cards</code> function is done, we move to the main loop in the <code>set_video</code> function. There is an infinite loop which tries to set up the video mode with the <code>set_mode</code> function or prints a menu if we passed <code>vid_mode=ask</code> to the kernel command line or if video mode is undefined.</p>
+<p>The <code>set_mode</code> function is defined in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/video-mode.c">video-mode.c</a> and gets only one parameter, <code>mode</code>, which is the number of video modes (we got this value from the menu or in the start of <code>setup_video</code>, from the kernel setup header).</p>
+<p>The <code>set_mode</code> function checks the <code>mode</code> and calls the <code>raw_set_mode</code> function. The <code>raw_set_mode</code> calls the selected card's <code>set_mode</code> function, i.e. <code>card-&gt;set_mode(struct mode_info*)</code>. We can get access to this function from the <code>card_info</code> structure. Every video mode defines this structure with values filled depending upon the video mode (for example for <code>vga</code> it is the <code>video_vga.set_mode</code> function. See the above example of the <code>card_info</code> structure for <code>vga</code>). <code>video_vga.set_mode</code> is <code>vga_set_mode</code>, which checks the vga mode and calls the respective function:</p>
+<pre><code class="language-C">static int vga_set_mode(struct mode_info *mode)
+{
+	vga_set_basic_mode();
+
+	force_x = mode-&gt;x;
+	force_y = mode-&gt;y;
+
+	switch (mode-&gt;mode) {
+	case VIDEO_80x25:
+		break;
+	case VIDEO_8POINT:
+		vga_set_8font();
+		break;
+	case VIDEO_80x43:
+		vga_set_80x43();
+		break;
+	case VIDEO_80x28:
+		vga_set_14font();
+		break;
+	case VIDEO_80x30:
+		vga_set_80x30();
+		break;
+	case VIDEO_80x34:
+		vga_set_80x34();
+		break;
+	case VIDEO_80x60:
+		vga_set_80x60();
+		break;
+	}
+	return 0;
+}
+</code></pre>
+<p>Every function which sets up video mode just calls the <code>0x10</code> BIOS interrupt with a certain value in the <code>AH</code> register.</p>
+<p>After we have set the video mode, we pass it to <code>boot_params.hdr.vid_mode</code>.</p>
+<p>Next, <code>vesa_store_edid</code> is called. This function simply stores the <a href="https://en.wikipedia.org/wiki/Extended_Display_Identification_Data">EDID</a> (<strong>E</strong>xtended <strong>D</strong>isplay <strong>I</strong>dentification <strong>D</strong>ata) information for kernel use. After this <code>store_mode_params</code> is called again. Lastly, if <code>do_restore</code> is set, the screen is restored to an earlier state.</p>
+<p>Having done this, the video mode setup is complete and now we can switch to the protected mode.</p>
+<h2 id="last-preparation-before-transition-into-protected-mode"><a class="header" href="#last-preparation-before-transition-into-protected-mode">Last preparation before transition into protected mode</a></h2>
+<p>We can see the last function call - <code>go_to_protected_mode</code> - in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/main.c">arch/x86/boot/main.c</a>. As the comment says: <code>Do the last things and invoke protected mode</code>, so let's see what these last things are and switch into protected mode.</p>
+<p>The <code>go_to_protected_mode</code> function is defined in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/pm.c">arch/x86/boot/pm.c</a>. It contains some functions which make the last preparations before we can jump into protected mode, so let's look at it and try to understand what it does and how it works.</p>
+<p>First is the call to the <code>realmode_switch_hook</code> function in <code>go_to_protected_mode</code>. This function invokes the real mode switch hook if it is present and disables <a href="http://en.wikipedia.org/wiki/Non-maskable_interrupt">NMI</a>. Hooks are used if the bootloader runs in a hostile environment. You can read more about hooks in the <a href="https://www.kernel.org/doc/Documentation/x86/boot.txt">boot protocol</a> (see <strong>ADVANCED BOOT LOADER HOOKS</strong>).</p>
+<p>The <code>realmode_switch</code> hook presents a pointer to the 16-bit real mode far subroutine which disables non-maskable interrupts. After the <code>realmode_switch</code> hook (it isn't present for me) is checked, Non-Maskable Interrupts(NMI) is disabled:</p>
+<pre><code class="language-assembly">asm volatile(&quot;cli&quot;);
+outb(0x80, 0x70);	/* Disable NMI */
+io_delay();
+</code></pre>
+<p>At first, there is an inline assembly statement with a <code>cli</code> instruction which clears the interrupt flag (<code>IF</code>). After this, external interrupts are disabled. The next line disables NMI (non-maskable interrupt).</p>
+<p>An interrupt is a signal to the CPU which is emitted by hardware or software. After getting such a signal, the CPU suspends the current instruction sequence, saves its state and transfers control to the interrupt handler. After the interrupt handler has finished its work, it transfers control back to the interrupted instruction. Non-maskable interrupts (NMI) are interrupts which are always processed, independently of permission. They cannot be ignored and are typically used to signal for non-recoverable hardware errors. We will not dive into the details of interrupts now but we will be discussing them in the coming posts.</p>
+<p>Let's get back to the code. We can see in the second line that we are writing the byte <code>0x80</code> (disabled bit) to <code>0x70</code> (the CMOS Address register). After that, a call to the <code>io_delay</code> function occurs. <code>io_delay</code> causes a small delay and looks like:</p>
+<pre><code class="language-C">static inline void io_delay(void)
+{
+	const u16 DELAY_PORT = 0x80;
+	asm volatile(&quot;outb %%al,%0&quot; : : &quot;dN&quot; (DELAY_PORT));
+}
+</code></pre>
+<p>To output any byte to the port <code>0x80</code> should delay exactly 1 microsecond. So we can write any value (the value from <code>AL</code> in our case) to the <code>0x80</code> port. After this delay the <code>realmode_switch_hook</code> function has finished execution and we can move to the next function.</p>
+<p>The next function is <code>enable_a20</code>, which enables the <a href="http://en.wikipedia.org/wiki/A20_line">A20 line</a>. This function is defined in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/a20.c">arch/x86/boot/a20.c</a> and it tries to enable the A20 gate with different methods. The first is the <code>a20_test_short</code> function which checks if A20 is already enabled or not with the <code>a20_test</code> function:</p>
+<pre><code class="language-C">static int a20_test(int loops)
+{
+	int ok = 0;
+	int saved, ctr;
+
+	set_fs(0x0000);
+	set_gs(0xffff);
+
+	saved = ctr = rdfs32(A20_TEST_ADDR);
+
+	while (loops--) {
+		wrfs32(++ctr, A20_TEST_ADDR);
+		io_delay();	/* Serialize and make delay constant */
+		ok = rdgs32(A20_TEST_ADDR+0x10) ^ ctr;
+		if (ok)
+			break;
+	}
+
+	wrfs32(saved, A20_TEST_ADDR);
+	return ok;
+}
+</code></pre>
+<p>First of all, we put <code>0x0000</code> in the <code>FS</code> register and <code>0xffff</code> in the <code>GS</code> register. Next, we read the value at the address <code>A20_TEST_ADDR</code> (it is <code>0x200</code>) and put this value into the variables <code>saved</code> and <code>ctr</code>.</p>
+<p>Next, we write an updated <code>ctr</code> value into <code>fs:A20_TEST_ADDR</code> or <code>fs:0x200</code> with the <code>wrfs32</code> function, then delay for 1ms, and then read the value from the <code>GS</code> register into the address <code>A20_TEST_ADDR+0x10</code>. In a case when <code>a20</code> line is disabled, the address will be overlapped, in other case if it's not zero <code>a20</code> line is already enabled the A20 line.</p>
+<p>If A20 is disabled, we try to enable it with a different method which you can find in <code>a20.c</code>. For example, it can be done with a call to the <code>0x15</code> BIOS interrupt with <code>AH=0x2041</code>.</p>
+<p>If the <code>enable_a20</code> function finished with a failure, print an error message and call the function <code>die</code>. You can remember it from the first source code file where we started - <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/header.S">arch/x86/boot/header.S</a>:</p>
+<pre><code class="language-assembly">die:
+	hlt
+	jmp	die
+	.size	die, .-die
+</code></pre>
+<p>After the A20 gate is successfully enabled, the <code>reset_coprocessor</code> function is called:</p>
+<pre><code class="language-C">outb(0, 0xf0);
+outb(0, 0xf1);
+</code></pre>
+<p>This function clears the Math Coprocessor by writing <code>0</code> to <code>0xf0</code> and then resets it by writing <code>0</code> to <code>0xf1</code>.</p>
+<p>After this, the <code>mask_all_interrupts</code> function is called:</p>
+<pre><code class="language-C">outb(0xff, 0xa1);       /* Mask all interrupts on the secondary PIC */
+outb(0xfb, 0x21);       /* Mask all but cascade on the primary PIC */
+</code></pre>
+<p>This masks all interrupts on the secondary PIC (Programmable Interrupt Controller) and primary PIC except for IRQ2 on the primary PIC.</p>
+<p>And after all of these preparations, we can see the actual transition into protected mode.</p>
+<h2 id="set-up-the-interrupt-descriptor-table"><a class="header" href="#set-up-the-interrupt-descriptor-table">Set up the Interrupt Descriptor Table</a></h2>
+<p>Now we set up the Interrupt Descriptor table (IDT) in the <code>setup_idt</code> function:</p>
+<pre><code class="language-C">static void setup_idt(void)
+{
+	static const struct gdt_ptr null_idt = {0, 0};
+	asm volatile(&quot;lidtl %0&quot; : : &quot;m&quot; (null_idt));
+}
+</code></pre>
+<p>which sets up the Interrupt Descriptor Table (describes interrupt handlers and etc.). For now, the IDT is not installed (we will see it later), but now we just load the IDT with the <code>lidtl</code> instruction. <code>null_idt</code> contains the address and size of the IDT, but for now they are just zero. <code>null_idt</code> is a <code>gdt_ptr</code> structure, it is defined as:</p>
+<pre><code class="language-C">struct gdt_ptr {
+	u16 len;
+	u32 ptr;
+} __attribute__((packed));
+</code></pre>
+<p>where we can see the 16-bit length(<code>len</code>) of the IDT and the 32-bit pointer to it (More details about the IDT and interruptions will be seen in the next posts). <code> __attribute__((packed))</code> means that the size of <code>gdt_ptr</code> is the minimum required size. So the size of the <code>gdt_ptr</code> will be 6 bytes here or 48 bits. (Next we will load the pointer to the <code>gdt_ptr</code> to the <code>GDTR</code> register and you might remember from the previous post that it is 48-bits in size).</p>
+<h2 id="set-up-global-descriptor-table"><a class="header" href="#set-up-global-descriptor-table">Set up Global Descriptor Table</a></h2>
+<p>Next is the setup of the Global Descriptor Table (GDT). We can see the <code>setup_gdt</code> function which sets up the GDT (you can read about it in the post <a href="linux-bootstrap-2.html#protected-mode">Kernel booting process. Part 2.</a>). There is a definition of the <code>boot_gdt</code> array in this function, which contains the definition of the three segments:</p>
+<pre><code class="language-C">static const u64 boot_gdt[] __attribute__((aligned(16))) = {
+	[GDT_ENTRY_BOOT_CS] = GDT_ENTRY(0xc09b, 0, 0xfffff),
+	[GDT_ENTRY_BOOT_DS] = GDT_ENTRY(0xc093, 0, 0xfffff),
+	[GDT_ENTRY_BOOT_TSS] = GDT_ENTRY(0x0089, 4096, 103),
+};
+</code></pre>
+<p>for code, data and TSS (Task State Segment). We will not use the task state segment for now, it was added there to make Intel VT happy as we can see in the comment line (if you're interested you can find the commit which describes it - <a href="https://github.com/torvalds/linux/commit/88089519f302f1296b4739be45699f06f728ec31">here</a>). Let's look at <code>boot_gdt</code>. First of all note that it has the <code>__attribute__((aligned(16)))</code> attribute. It means that this structure will be aligned by 16 bytes.</p>
+<p>Let's look at a simple example:</p>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+struct aligned {
+	int a;
+}__attribute__((aligned(16)));
+
+struct nonaligned {
+	int b;
+};
+
+int main(void)
+{
+	struct aligned    a;
+	struct nonaligned na;
+
+	printf(&quot;Not aligned - %zu \n&quot;, sizeof(na));
+	printf(&quot;Aligned - %zu \n&quot;, sizeof(a));
+
+	return 0;
+}
+</code></pre>
+<p>Technically a structure which contains one <code>int</code> field must be 4 bytes in size, but an <code>aligned</code> structure will need 16 bytes to store in memory:</p>
+<pre><code>$ gcc test.c -o test &amp;&amp; test
+Not aligned - 4
+Aligned - 16
+</code></pre>
+<p>The <code>GDT_ENTRY_BOOT_CS</code> has index - 2 here, <code>GDT_ENTRY_BOOT_DS</code> is <code>GDT_ENTRY_BOOT_CS + 1</code> and etc. It starts from 2, because the first is a mandatory null descriptor (index - 0) and the second is not used (index - 1).</p>
+<p><code>GDT_ENTRY</code> is a macro which takes flags, base, limit and builds a GDT entry. For example, let's look at the code segment entry. <code>GDT_ENTRY</code> takes the following values:</p>
+<ul>
+<li>base  - 0</li>
+<li>limit - 0xfffff</li>
+<li>flags - 0xc09b</li>
+</ul>
+<p>What does this mean? The segment's base address is 0, and the limit (size of segment) is - <code>0xfffff</code> (1 MB). Let's look at the flags. It is <code>0xc09b</code> and it will be:</p>
+<pre><code>1100 0000 1001 1011
+</code></pre>
+<p>in binary. Let's try to understand what every bit means. We will go through all bits from left to right:</p>
+<ul>
+<li>1    - (G) granularity bit</li>
+<li>1    - (D) if 0 16-bit segment; 1 = 32-bit segment</li>
+<li>0    - (L) executed in 64-bit mode if 1</li>
+<li>0    - (AVL) available for use by system software</li>
+<li>0000 - 4-bit length 19:16 bits in the descriptor</li>
+<li>1    - (P) segment presence in memory</li>
+<li>00   - (DPL) - privilege level, 0 is the highest privilege</li>
+<li>1    - (S) code or data segment, not a system segment</li>
+<li>101  - segment type execute/read/</li>
+<li>1    - accessed bit</li>
+</ul>
+<p>You can read more about every bit in the previous <a href="linux-bootstrap-2.html">post</a> or in the <a href="http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html">Intel® 64 and IA-32 Architectures Software Developer's Manuals 3A</a>.</p>
+<p>After this we get the length of the GDT with:</p>
+<pre><code class="language-C">gdt.len = sizeof(boot_gdt)-1;
+</code></pre>
+<p>We get the size of <code>boot_gdt</code> and subtract 1 (the last valid address in the GDT).</p>
+<p>Next we get a pointer to the GDT with:</p>
+<pre><code class="language-C">gdt.ptr = (u32)&amp;boot_gdt + (ds() &lt;&lt; 4);
+</code></pre>
+<p>Here we just get the address of <code>boot_gdt</code> and add it to the address of the data segment left-shifted by 4 bits (remember we're in real mode now).</p>
+<p>Lastly we execute the <code>lgdtl</code> instruction to load the GDT into the GDTR register:</p>
+<pre><code class="language-C">asm volatile(&quot;lgdtl %0&quot; : : &quot;m&quot; (gdt));
+</code></pre>
+<h2 id="actual-transition-into-protected-mode"><a class="header" href="#actual-transition-into-protected-mode">Actual transition into protected mode</a></h2>
+<p>This is the end of the <code>go_to_protected_mode</code> function. We loaded the IDT and GDT, disabled interrupts and now can switch the CPU into protected mode. The last step is calling the <code>protected_mode_jump</code> function with two parameters:</p>
+<pre><code class="language-C">protected_mode_jump(boot_params.hdr.code32_start, (u32)&amp;boot_params + (ds() &lt;&lt; 4));
+</code></pre>
+<p>which is defined in <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/pmjump.S">arch/x86/boot/pmjump.S</a>.</p>
+<p>It takes two parameters:</p>
+<ul>
+<li>address of the protected mode entry point</li>
+<li>address of <code>boot_params</code></li>
+</ul>
+<p>Let's look inside <code>protected_mode_jump</code>. As I wrote above, you can find it in <code>arch/x86/boot/pmjump.S</code>. The first parameter will be in the <code>eax</code> register and the second one is in <code>edx</code>.</p>
+<p>First of all, we put the address of <code>boot_params</code> in the <code>esi</code> register and the address of the code segment register <code>cs</code> in <code>bx</code>. </p>
+<pre><code class="language-assembly">GLOBAL(protected_mode_jump)
+	movl	%edx, %esi	# Pointer to boot_params table
+
+	xorl	%ebx, %ebx
+	movw	%cs, %bx
+</code></pre>
+<p>After this, we shift <code>bx</code> by 4 bits and add it to the memory location labeled <code>2</code> (which is <code>(cs &lt;&lt; 4) + in_pm32</code>, the physical address to jump after transitioned to 32-bit mode) and jump to label <code>1</code>. </p>
+<pre><code class="language-assembly">	shll	$4, %ebx
+	addl	%ebx, 2f 	# Add %ebx to the value stored at label 2
+	jmp	1f		# Short jump to serialize on 386/486
+</code></pre>
+<p>So after this <code>in_pm32</code> in label <code>2</code> will be overwritten with <code>(cs &lt;&lt; 4) + in_pm32</code>.</p>
+<p>Next we put the data segment and the task state segment in the <code>cx</code> and <code>di</code> registers with:</p>
+<pre><code class="language-assembly">	movw	$__BOOT_DS, %cx
+	movw	$__BOOT_TSS, %di
+</code></pre>
+<p>As you can read above <code>GDT_ENTRY_BOOT_CS</code> has index 2 and every GDT entry is 8 byte, so <code>CS</code> will be <code>2 * 8 = 16</code>, <code>__BOOT_DS</code> is 24 etc.</p>
+<p>Next, we set the <code>PE</code> (Protection Enable) bit in the <code>CR0</code> control register:</p>
+<pre><code class="language-assembly">	movl	%cr0, %edx
+	orb	$X86_CR0_PE, %dl
+	movl	%edx, %cr0
+</code></pre>
+<p>and make a long jump to protected mode:</p>
+<pre><code class="language-assembly">	.byte	0x66, 0xea
+2:	.long	in_pm32
+	.word	__BOOT_CS
+</code></pre>
+<p>where:</p>
+<ul>
+<li><code>0x66</code> is the operand-size prefix which allows us to mix 16-bit and 32-bit code</li>
+<li><code>0xea</code> - is the jump opcode</li>
+<li><code>in_pm32</code> is the segment offset under protect mode, which has value <code>(cs &lt;&lt; 4) + in_pm32</code> derived from real mode</li>
+<li><code>__BOOT_CS</code> is the code segment we want to jump to.</li>
+</ul>
+<p>After this we are finally in protected mode:</p>
+<pre><code class="language-assembly">.code32
+.section &quot;.text32&quot;,&quot;ax&quot;
+</code></pre>
+<p>Let's look at the first steps taken in protected mode. First of all we set up the data segment with:</p>
+<pre><code class="language-assembly">movl	%ecx, %ds
+movl	%ecx, %es
+movl	%ecx, %fs
+movl	%ecx, %gs
+movl	%ecx, %ss
+</code></pre>
+<p>If you paid attention, you can remember that we saved <code>$__BOOT_DS</code> in the <code>cx</code> register. Now we fill it with all segment registers besides <code>cs</code> (<code>cs</code> is already <code>__BOOT_CS</code>).</p>
+<p>And setup a valid stack for debugging purposes:</p>
+<pre><code class="language-assembly">addl	%ebx, %esp
+</code></pre>
+<p>The last step before the jump into 32-bit entry point is to clear the general purpose registers:</p>
+<pre><code class="language-assembly">xorl	%ecx, %ecx
+xorl	%edx, %edx
+xorl	%ebx, %ebx
+xorl	%ebp, %ebp
+xorl	%edi, %edi
+</code></pre>
+<p>And jump to the 32-bit entry point in the end:</p>
+<pre><code>jmpl	*%eax
+</code></pre>
+<p>Remember that <code>eax</code> contains the address of the 32-bit entry (we passed it as the first parameter into <code>protected_mode_jump</code>).</p>
+<p>That's all. We're in protected mode and stop at its entry point. We will see what happens next in the next part.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the third part about Linux kernel insides. In the next part, we will look at the first steps we take in protected mode and transition into <a href="http://en.wikipedia.org/wiki/Long_mode">long mode</a>.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes, please send me a PR with corrections at <a href="https://github.com/0xAX/linux-internals">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Video_Graphics_Array">VGA</a></li>
+<li><a href="http://en.wikipedia.org/wiki/VESA_BIOS_Extensions">VESA BIOS Extensions</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Data_structure_alignment">Data structure alignment</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Non-maskable_interrupt">Non-maskable interrupt</a></li>
+<li><a href="http://en.wikipedia.org/wiki/A20_line">A20</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc-4.1.2/gcc/Designated-Inits.html">GCC designated inits</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Type-Attributes.html">GCC type attributes</a></li>
+<li><a href="linux-bootstrap-2.html">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Booting/linux-bootstrap-2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Booting/linux-bootstrap-4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Booting/linux-bootstrap-2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Booting/linux-bootstrap-4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

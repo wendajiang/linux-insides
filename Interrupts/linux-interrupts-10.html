@@ -1,0 +1,523 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Last part - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html" class="active">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="interrupts-and-interrupt-handling-part-10"><a class="header" href="#interrupts-and-interrupt-handling-part-10">Interrupts and Interrupt Handling. Part 10.</a></h1>
+<h2 id="last-part"><a class="header" href="#last-part">Last part</a></h2>
+<p>This is the tenth part of the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">chapter</a> about interrupts and interrupt handling in the Linux kernel and in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-9">part</a> we saw a little about deferred interrupts and related concepts like <code>softirq</code>, <code>tasklet</code> and <code>workqeue</code>. In this part we will continue to dive into this theme and now it's time to look at real hardware driver.</p>
+<p>Let's consider serial driver of the <a href="http://netwinder.osuosl.org/pub/netwinder/docs/intel/datashts/27813501.pdf">StrongARM** SA-110/21285 Evaluation Board</a> board for example and will look how this driver requests an <a href="https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQ</a> line,
+what happens when an interrupt is triggered and etc. The source code of this driver is placed in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/drivers/tty/serial/21285.c">drivers/tty/serial/21285.c</a> source code file. Ok, we have source code, let's start.</p>
+<h2 id="initialization-of-a-kernel-module"><a class="header" href="#initialization-of-a-kernel-module">Initialization of a kernel module</a></h2>
+<p>We will start to consider this driver as we usually did it with all new concepts that we saw in this book. We will start to consider it from the initialization. As you already may know, the Linux kernel provides two macros for initialization and finalization of a driver or a kernel module:</p>
+<ul>
+<li><code>module_init</code>;</li>
+<li><code>module_exit</code>.</li>
+</ul>
+<p>And we can find usage of these macros in our driver source code:</p>
+<pre><code class="language-C">module_init(serial21285_init);
+module_exit(serial21285_exit);
+</code></pre>
+<p>The most part of device drivers can be compiled as a loadable kernel <a href="https://en.wikipedia.org/wiki/Loadable_kernel_module">module</a> or in another way they can be statically linked into the Linux kernel. In the first case initialization of a device driver will be produced via the <code>module_init</code> and <code>module_exit</code> macros that are defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/init.h">include/linux/init.h</a>:</p>
+<pre><code class="language-C">#define module_init(initfn)                                     \
+        static inline initcall_t __inittest(void)               \
+        { return initfn; }                                      \
+        int init_module(void) __attribute__((alias(#initfn)));
+
+#define module_exit(exitfn)                                     \
+        static inline exitcall_t __exittest(void)               \
+        { return exitfn; }                                      \
+        void cleanup_module(void) __attribute__((alias(#exitfn)));
+</code></pre>
+<p>and will be called by the <a href="http://kernelnewbies.org/Documents/InitcallMechanism">initcall</a> functions:</p>
+<ul>
+<li><code>early_initcall</code></li>
+<li><code>pure_initcall</code></li>
+<li><code>core_initcall</code></li>
+<li><code>postcore_initcall</code></li>
+<li><code>arch_initcall</code></li>
+<li><code>subsys_initcall</code></li>
+<li><code>fs_initcall</code></li>
+<li><code>rootfs_initcall</code></li>
+<li><code>device_initcall</code></li>
+<li><code>late_initcall</code></li>
+</ul>
+<p>that are called in the <code>do_initcalls</code> from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>. Otherwise, if a device driver is statically linked into the Linux kernel, implementation of these macros will be following:</p>
+<pre><code class="language-C">#define module_init(x)  __initcall(x);
+#define module_exit(x)  __exitcall(x);
+</code></pre>
+<p>In this way implementation of module loading placed in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/module.c">kernel/module.c</a> source code file and initialization occurs in the <code>do_init_module</code> function. We will not dive into details about loadable modules in this chapter, but will see it in the special chapter that will describe Linux kernel modules. Ok, the <code>module_init</code> macro takes one parameter - the <code>serial21285_init</code> in our case. As we can understand from function's name, this function does stuff related to the driver initialization. Let's look at it:</p>
+<pre><code class="language-C">static int __init serial21285_init(void)
+{
+	int ret;
+
+	printk(KERN_INFO &quot;Serial: 21285 driver\n&quot;);
+
+	serial21285_setup_ports();
+
+	ret = uart_register_driver(&amp;serial21285_reg);
+	if (ret == 0)
+		uart_add_one_port(&amp;serial21285_reg, &amp;serial21285_port);
+
+	return ret;
+}
+</code></pre>
+<p>As we can see, first of all it prints information about the driver to the kernel buffer and the call of the <code>serial21285_setup_ports</code> function. This function setups the base <a href="https://en.wikipedia.org/wiki/Universal_asynchronous_receiver/transmitter">uart</a> clock of the <code>serial21285_port</code> device:</p>
+<pre><code class="language-C">unsigned int mem_fclk_21285 = 50000000;
+
+static void serial21285_setup_ports(void)
+{
+	serial21285_port.uartclk = mem_fclk_21285 / 4;
+}
+</code></pre>
+<p>Here the <code>serial21285</code> is the structure that describes <code>uart</code> driver:</p>
+<pre><code class="language-C">static struct uart_driver serial21285_reg = {
+	.owner			= THIS_MODULE,
+	.driver_name	= &quot;ttyFB&quot;,
+	.dev_name		= &quot;ttyFB&quot;,
+	.major			= SERIAL_21285_MAJOR,
+	.minor			= SERIAL_21285_MINOR,
+	.nr			    = 1,
+	.cons			= SERIAL_21285_CONSOLE,
+};
+</code></pre>
+<p>If the driver registered successfully we attach the driver-defined port <code>serial21285_port</code> structure with the <code>uart_add_one_port</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/drivers/tty/serial/serial_core.c">drivers/tty/serial/serial_core.c</a> source code file and return from the <code>serial21285_init</code> function:</p>
+<pre><code class="language-C">if (ret == 0)
+	uart_add_one_port(&amp;serial21285_reg, &amp;serial21285_port);
+
+return ret;
+</code></pre>
+<p>That's all. Our driver is initialized. When an <code>uart</code> port is opened with the call of the <code>uart_open</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/drivers/tty/serial/serial_core.c">drivers/tty/serial/serial_core.c</a>, it will call the <code>uart_startup</code> function to start up the serial port. This function will call the <code>startup</code> function that is part of the <code>uart_ops</code> structure. Each <code>uart</code> driver has the definition of this structure, in our case it is:</p>
+<pre><code class="language-C">static struct uart_ops serial21285_ops = {
+	...
+	.startup	= serial21285_startup,
+	...
+}
+</code></pre>
+<p><code>serial21285</code> structure. As we can see the <code>.strartup</code> field references on the <code>serial21285_startup</code> function. Implementation of this function is very interesting for us, because it is related to the interrupts and interrupt handling.</p>
+<h2 id="requesting-irq-line"><a class="header" href="#requesting-irq-line">Requesting irq line</a></h2>
+<p>Let's look at the implementation of the <code>serial21285</code> function:</p>
+<pre><code class="language-C">static int serial21285_startup(struct uart_port *port)
+{
+	int ret;
+
+	tx_enabled(port) = 1;
+	rx_enabled(port) = 1;
+
+	ret = request_irq(IRQ_CONRX, serial21285_rx_chars, 0,
+			  serial21285_name, port);
+	if (ret == 0) {
+		ret = request_irq(IRQ_CONTX, serial21285_tx_chars, 0,
+				  serial21285_name, port);
+		if (ret)
+			free_irq(IRQ_CONRX, port);
+	}
+
+	return ret;
+}
+</code></pre>
+<p>First of all about <code>TX</code> and <code>RX</code>. A serial bus of a device consists of just two wires: one for sending data and another for receiving. As such, serial devices should have two serial pins: the receiver - <code>RX</code>, and the transmitter - <code>TX</code>. With the call of first two macros: <code>tx_enabled</code> and <code>rx_enabled</code>, we enable these wires. The following part of these function is the greatest interest for us. Note on <code>request_irq</code> functions. This function registers an interrupt handler and enables a given interrupt line. Let's look at the implementation of this function and get into the details. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/interrupt.h">include/linux/interrupt.h</a> header file and looks as:</p>
+<pre><code class="language-C">static inline int __must_check
+request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,
+            const char *name, void *dev)
+{
+        return request_threaded_irq(irq, handler, NULL, flags, name, dev);
+}
+</code></pre>
+<p>As we can see, the <code>request_irq</code> function takes five parameters:</p>
+<ul>
+<li><code>irq</code> - the interrupt number that being requested;</li>
+<li><code>handler</code> - the pointer to the interrupt handler;</li>
+<li><code>flags</code> - the bitmask options;</li>
+<li><code>name</code> - the name of the owner of an interrupt;</li>
+<li><code>dev</code> - the pointer used for shared interrupt lines;</li>
+</ul>
+<p>Now let's look at the calls of the <code>request_irq</code> functions in our example. As we can see the first parameter is <code>IRQ_CONRX</code>. We know that it is number of the interrupt, but what is it <code>CONRX</code>? This macro defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/arm/mach-footbridge/include/mach/irqs.h">arch/arm/mach-footbridge/include/mach/irqs.h</a> header file. We can find the full list of interrupts that the <code>21285</code> board can generate. Note that in the second call of the <code>request_irq</code> function we pass the <code>IRQ_CONTX</code> interrupt number. Both these interrupts will handle <code>RX</code> and <code>TX</code> event in our driver. Implementation of these macros is easy:</p>
+<pre><code class="language-C">#define IRQ_CONRX               _DC21285_IRQ(0)
+#define IRQ_CONTX               _DC21285_IRQ(1)
+...
+...
+...
+#define _DC21285_IRQ(x)         (16 + (x))
+</code></pre>
+<p>The <a href="https://en.wikipedia.org/wiki/Industry_Standard_Architecture">ISA</a> IRQs on this board are from <code>0</code> to <code>15</code>, so, our interrupts will have first two numbers: <code>16</code> and <code>17</code>. Second parameters for two calls of the <code>request_irq</code> functions are <code>serial21285_rx_chars</code> and <code>serial21285_tx_chars</code>. These functions will be called when an <code>RX</code> or <code>TX</code> interrupt occurred. We will not dive in this part into details of these functions, because this chapter covers the interrupts and interrupts handling but not device and drivers. The next parameter - <code>flags</code> and as we can see, it is zero in both calls of the <code>request_irq</code> function. All acceptable flags are defined as <code>IRQF_*</code> macros in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/interrupt.h">include/linux/interrupt.h</a>. Some of it:</p>
+<ul>
+<li><code>IRQF_SHARED</code> - allows sharing the irq among several devices;</li>
+<li><code>IRQF_PERCPU</code> - an interrupt is per cpu;</li>
+<li><code>IRQF_NO_THREAD</code> - an interrupt cannot be threaded;</li>
+<li><code>IRQF_NOBALANCING</code> - excludes this interrupt from irq balancing;</li>
+<li><code>IRQF_IRQPOLL</code> - an interrupt is used for polling;</li>
+<li>and etc.</li>
+</ul>
+<p>In our case we pass <code>0</code>, so it will be <code>IRQF_TRIGGER_NONE</code>. This flag means that it does not imply any kind of edge or level triggered interrupt behaviour. To the fourth parameter (<code>name</code>), we pass the <code>serial21285_name</code> that defined as:</p>
+<pre><code class="language-C">static const char serial21285_name[] = &quot;Footbridge UART&quot;;
+</code></pre>
+<p>and will be displayed in the output of the <code>/proc/interrupts</code>. And in the last parameter we pass the pointer to the our main <code>uart_port</code> structure. Now we know a little about <code>request_irq</code> function and its parameters, let's look at its implementation. As we can see above, the <code>request_irq</code> function just makes a call of the <code>request_threaded_irq</code> function inside. The <code>request_threaded_irq</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/irq/manage.c">kernel/irq/manage.c</a> source code file and allocates a given interrupt line. If we will look at this function, it starts from the definition of the <code>irqaction</code> and the <code>irq_desc</code>:</p>
+<pre><code class="language-C">int request_threaded_irq(unsigned int irq, irq_handler_t handler,
+                         irq_handler_t thread_fn, unsigned long irqflags,
+                         const char *devname, void *dev_id)
+{
+        struct irqaction *action;
+        struct irq_desc *desc;
+        int retval;
+		...
+		...
+		...
+}
+</code></pre>
+<p>We already saw the <code>irqaction</code> and the <code>irq_desc</code> structures in this chapter. The first structure represents per interrupt action descriptor and contains pointers to the interrupt handler, name of the device, interrupt number, etc. The second structure represents a descriptor of an interrupt and contains pointer to the <code>irqaction</code>, interrupt flags, etc. Note that the <code>request_threaded_irq</code> function called by the <code>request_irq</code> with the additional parameter: <code>irq_handler_t thread_fn</code>. If this parameter is not <code>NULL</code>, the <code>irq</code> thread will be created and the given <code>irq</code> handler will be executed in this thread. In the next step we need to make following checks:</p>
+<pre><code class="language-C">if (((irqflags &amp; IRQF_SHARED) &amp;&amp; !dev_id) ||
+            (!(irqflags &amp; IRQF_SHARED) &amp;&amp; (irqflags &amp; IRQF_COND_SUSPEND)) ||
+            ((irqflags &amp; IRQF_NO_SUSPEND) &amp;&amp; (irqflags &amp; IRQF_COND_SUSPEND)))
+               return -EINVAL;
+</code></pre>
+<p>First of all we check that real <code>dev_id</code> is passed for the shared interrupt and the <code>IRQF_COND_SUSPEND</code> only makes sense for shared interrupts. Otherwise we exit from this function with the <code>-EINVAL</code> error. After this we convert the given <code>irq</code> number to the <code>irq</code> descriptor with the help of the <code>irq_to_desc</code> function that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/irq/irqdesc.c">kernel/irq/irqdesc.c</a> source code file and exit from this function with the <code>-EINVAL</code> error if it was not successful:</p>
+<pre><code class="language-C">desc = irq_to_desc(irq);
+if (!desc)
+    return -EINVAL;
+</code></pre>
+<p>The <code>irq_to_desc</code> function checks that given <code>irq</code> number is less than maximum number of IRQs and returns the irq descriptor where the <code>irq</code> number is offset from the <code>irq_desc</code> array:</p>
+<pre><code class="language-C">struct irq_desc *irq_to_desc(unsigned int irq)
+{
+        return (irq &lt; NR_IRQS) ? irq_desc + irq : NULL;
+}
+</code></pre>
+<p>As we have converted <code>irq</code> number to the <code>irq</code> descriptor we make the check the status of the descriptor that an interrupt can be requested:</p>
+<pre><code class="language-C">if (!irq_settings_can_request(desc) || WARN_ON(irq_settings_is_per_cpu_devid(desc)))
+    return -EINVAL;
+</code></pre>
+<p>and exit with the <code>-EINVAL</code> otherwise. After this we check the given interrupt handler. If it was not passed to the <code>request_irq</code> function, we check the <code>thread_fn</code>. If both handlers are <code>NULL</code>, we return with the <code>-EINVAL</code>. If an interrupt handler was not passed to the <code>request_irq</code> function, but the <code>thread_fn</code> is not null, we set handler to the <code>irq_default_primary_handler</code>:</p>
+<pre><code class="language-C">if (!handler) {
+    if (!thread_fn)
+        return -EINVAL;
+	handler = irq_default_primary_handler;
+}
+</code></pre>
+<p>In the next step we allocate memory for our <code>irqaction</code> with the <code>kzalloc</code> function and return from the function if this operation was not successful:</p>
+<pre><code class="language-C">action = kzalloc(sizeof(struct irqaction), GFP_KERNEL);
+if (!action)
+    return -ENOMEM;
+</code></pre>
+<p>More about <code>kzalloc</code> will be in the separate chapter about <a href="https://0xax.gitbook.io/linux-insides/summary/mm">memory management</a> in the Linux kernel. As we allocated space for the <code>irqaction</code>, we start to initialize this structure with the values of interrupt handler, interrupt flags, device name, etc:</p>
+<pre><code class="language-C">action-&gt;handler = handler;
+action-&gt;thread_fn = thread_fn;
+action-&gt;flags = irqflags;
+action-&gt;name = devname;
+action-&gt;dev_id = dev_id;
+</code></pre>
+<p>In the end of the <code>request_threaded_irq</code> function we call the <code>__setup_irq</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/irq/manage.c">kernel/irq/manage.c</a> and registers a given <code>irqaction</code>. Release memory for the <code>irqaction</code> and return:</p>
+<pre><code class="language-C">chip_bus_lock(desc);
+retval = __setup_irq(irq, desc, action);
+chip_bus_sync_unlock(desc);
+
+if (retval)
+	kfree(action);
+
+return retval;
+</code></pre>
+<p>Note that the call of the <code>__setup_irq</code> function is placed between the <code>chip_bus_lock</code> and the <code>chip_bus_sync_unlock</code> functions. These functions lock/unlock access to slow buses (like <a href="https://en.wikipedia.org/wiki/I%C2%B2C">i2c</a>) chips. Now let's look at the implementation of the <code>__setup_irq</code> function. In the beginning of the <code>__setup_irq</code> function we can see a couple of different checks. First of all we check that the given interrupt descriptor is not <code>NULL</code>, <code>irqchip</code> is not <code>NULL</code> and that given interrupt descriptor module owner is not <code>NULL</code>. After this we check if the interrupt is nested into another interrupt thread or not, and if it is nested we replace the <code>irq_default_primary_handler</code> with the <code>irq_nested_primary_handler</code>.</p>
+<p>In the next step we create an irq handler thread with the <code>kthread_create</code> function, if the given interrupt is not nested and the <code>thread_fn</code> is not <code>NULL</code>:</p>
+<pre><code class="language-C">if (new-&gt;thread_fn &amp;&amp; !nested) {
+	struct task_struct *t;
+	t = kthread_create(irq_thread, new, &quot;irq/%d-%s&quot;, irq, new-&gt;name);
+	...
+}
+</code></pre>
+<p>And fill the rest of the given interrupt descriptor fields in the end. So, our <code>16</code> and <code>17</code> interrupt request lines are registered and the <code>serial21285_rx_chars</code> and <code>serial21285_tx_chars</code> functions will be invoked when an interrupt controller will get event related to these interrupts. Now let's look at what happens when an interrupt occurs.</p>
+<h2 id="prepare-to-handle-an-interrupt"><a class="header" href="#prepare-to-handle-an-interrupt">Prepare to handle an interrupt</a></h2>
+<p>In the previous paragraph we saw the requesting of the irq line for the given interrupt descriptor and registration of the <code>irqaction</code> structure for the given interrupt. We already know that when an interrupt event occurs, an interrupt controller notifies the processor about this event and processor tries to find appropriate interrupt gate for this interrupt. If you have read the eighth <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-8">part</a> of this chapter, you may remember the <code>native_init_IRQ</code> function. This function makes initialization of the local <a href="https://en.wikipedia.org/wiki/Advanced_Programmable_Interrupt_Controller">APIC</a>. The following part of this function is the most interesting part for us right now:</p>
+<pre><code class="language-C">for_each_clear_bit_from(i, used_vectors, first_system_vector) {
+	set_intr_gate(i, irq_entries_start +
+		8 * (i - FIRST_EXTERNAL_VECTOR));
+}
+</code></pre>
+<p>Here we iterate over all the cleared bit of the <code>used_vectors</code> bitmap starting at <code>first_system_vector</code> that is:</p>
+<pre><code class="language-C">int first_system_vector = FIRST_SYSTEM_VECTOR; // 0xef
+</code></pre>
+<p>and set interrupt gates with the <code>i</code> vector number and the <code>irq_entries_start + 8 * (i - FIRST_EXTERNAL_VECTOR)</code> start address. Only one thing is unclear here - the <code>irq_entries_start</code>. This symbol defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> assembly file and provides <code>irq</code> entries. Let's look at it:</p>
+<pre><code class="language-assembly">	.align 8
+ENTRY(irq_entries_start)
+    vector=FIRST_EXTERNAL_VECTOR
+    .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
+	pushq	$(~vector+0x80)
+    vector=vector+1
+	jmp	common_interrupt
+	.align	8
+    .endr
+END(irq_entries_start)
+</code></pre>
+<p>Here we can see the <a href="https://en.wikipedia.org/wiki/GNU_Assembler">GNU assembler</a> <code>.rept</code> instruction which repeats the sequence of lines that are before <code>.endr</code> - <code>FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR</code> times. As we already know, the <code>FIRST_SYSTEM_VECTOR</code> is <code>0xef</code>, and the <code>FIRST_EXTERNAL_VECTOR</code> is equal to <code>0x20</code>. So, it will work:</p>
+<pre><code class="language-python">&gt;&gt;&gt; 0xef - 0x20
+207
+</code></pre>
+<p>times. In the body of the <code>.rept</code> instruction we push entry stubs on the stack (note that we use negative numbers for the interrupt vector numbers, because positive numbers already reserved to identify <a href="https://en.wikipedia.org/wiki/System_call">system calls</a>), increase the <code>vector</code> variable and jump on the <code>common_interrupt</code> label. In the <code>common_interrupt</code> we adjust vector number on the stack and execute <code>interrupt</code> number with the <code>do_IRQ</code> parameter:</p>
+<pre><code class="language-assembly">common_interrupt:
+	addq	$-0x80, (%rsp)
+	interrupt do_IRQ
+</code></pre>
+<p>The macro <code>interrupt</code> defined in the same source code file and saves <a href="https://en.wikipedia.org/wiki/Processor_register">general purpose</a> registers on the stack, change the userspace <code>gs</code> on the kernel with the <code>SWAPGS</code> assembler instruction if need, increase <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a> - <code>irq_count</code> variable that shows that we are in interrupt and call the <code>do_IRQ</code> function. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/irq.c">arch/x86/kernel/irq.c</a> source code file and handles our device interrupt. Let's look at this function. The <code>do_IRQ</code> function takes one parameter - <code>pt_regs</code> structure that stores values of the userspace registers:</p>
+<pre><code class="language-C">__visible unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
+{
+    struct pt_regs *old_regs = set_irq_regs(regs);
+    unsigned vector = ~regs-&gt;orig_ax;
+    unsigned irq;
+
+	irq_enter();
+    exit_idle();
+	...
+	...
+	...
+}
+</code></pre>
+<p>At the beginning of this function we can see call of the <code>set_irq_regs</code> function that returns saved <code>per-cpu</code> irq register pointer and the calls of the <code>irq_enter</code> and <code>exit_idle</code> functions. The first function <code>irq_enter</code> enters to an interrupt context with the updating <code>__preempt_count</code> variable and the second function - <code>exit_idle</code> checks that current process is <code>idle</code> with <a href="https://en.wikipedia.org/wiki/Process_identifier">pid</a> - <code>0</code> and notify the <code>idle_notifier</code> with the <code>IDLE_END</code>.</p>
+<p>In the next step we read the <code>irq</code> for the current cpu and call the <code>handle_irq</code> function:</p>
+<pre><code class="language-C">irq = __this_cpu_read(vector_irq[vector]);
+
+if (!handle_irq(irq, regs)) {
+	...
+	...
+	...
+}
+...
+...
+...
+</code></pre>
+<p>The <code>handle_irq</code> function defined in the <a href="https://github.com/torvalds/linux/blob/arch/x86/kernel/irq_64.c">arch/x86/kernel/irq_64.c</a> source code file, checks the given interrupt descriptor and call the <code>generic_handle_irq_desc</code>:</p>
+<pre><code class="language-C">desc = irq_to_desc(irq);
+	if (unlikely(!desc))
+		return false;
+generic_handle_irq_desc(irq, desc);
+</code></pre>
+<p>Where the <code>generic_handle_irq_desc</code> calls the interrupt handler:</p>
+<pre><code class="language-C">static inline void generic_handle_irq_desc(unsigned int irq, struct irq_desc *desc)
+{
+       desc-&gt;handle_irq(irq, desc);
+}
+</code></pre>
+<p>But stop... What is it <code>handle_irq</code> and why do we call our interrupt handler from the interrupt descriptor when we know that <code>irqaction</code> points to the actual interrupt handler? Actually the <code>irq_desc-&gt;handle_irq</code> is a high-level API for the calling interrupt handler routine. It is setup during initialization of the <a href="https://en.wikipedia.org/wiki/Device_tree">device tree</a> and <a href="https://en.wikipedia.org/wiki/Advanced_Programmable_Interrupt_Controller">APIC</a> initialization. The kernel selects correct function and call chain of the <code>irq-&gt;action(s)</code> there. In this way, the <code>serial21285_tx_chars</code> or the <code>serial21285_rx_chars</code> function will be executed after an interrupt occurs.</p>
+<p>In the end of the <code>do_IRQ</code> function we call the <code>irq_exit</code> function that will exit from the interrupt context, the <code>set_irq_regs</code> with the old userspace registers and return:</p>
+<pre><code class="language-C">irq_exit();
+set_irq_regs(old_regs);
+return 1;
+</code></pre>
+<p>We already know that when an <code>IRQ</code> finishes its work, deferred interrupts will be executed if they exist.</p>
+<h2 id="exit-from-interrupt"><a class="header" href="#exit-from-interrupt">Exit from interrupt</a></h2>
+<p>Ok, the interrupt handler finished its execution and now we must return from the interrupt. When the work of the <code>do_IRQ</code> function is finished, we will return back to the assembler code in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> to the <code>ret_from_intr</code> label. First of all we disable interrupts with the <code>DISABLE_INTERRUPTS</code> macro that expands to the <code>cli</code> instruction and decreases value of the <code>irq_count</code> <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a> variable. Remember, this variable had value - <code>1</code>, when we were in interrupt context:</p>
+<pre><code class="language-assembly">DISABLE_INTERRUPTS(CLBR_NONE)
+TRACE_IRQS_OFF
+decl	PER_CPU_VAR(irq_count)
+</code></pre>
+<p>In the last step we check the previous context (user or kernel), restore it in a correct way and exit from an interrupt with the:</p>
+<pre><code class="language-assembly">INTERRUPT_RETURN
+</code></pre>
+<p>where the <code>INTERRUPT_RETURN</code> macro is:</p>
+<pre><code class="language-C">#define INTERRUPT_RETURN	jmp native_iret
+</code></pre>
+<p>and</p>
+<pre><code class="language-assembly">ENTRY(native_iret)
+
+.global native_irq_return_iret
+native_irq_return_iret:
+	iretq
+</code></pre>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the tenth part of the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">Interrupts and Interrupt Handling</a> chapter and as you have read in the beginning of this part - it is the last part of this chapter. This chapter started from the explanation of the theory of interrupts and we have learned what is it interrupt and kinds of interrupts, then we saw exceptions and handling of this kind of interrupts, deferred interrupts and finally we looked on the hardware interrupts and the handling of theirs in this part. Of course, this part and even this chapter does not cover full aspects of interrupts and interrupt handling in the Linux kernel. It is not realistic to do this. At least for me. It was the big part, I don't know how about you, but it was really big for me. This theme is much bigger than this chapter and I am not sure that somewhere there is a book that covers it. We have missed many part and aspects of interrupts and interrupt handling, but I think it will be good point to dive in the kernel code related to the interrupts and interrupts handling.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://www.kernel.org/doc/Documentation/serial/driver">Serial driver documentation</a></li>
+<li><a href="http://netwinder.osuosl.org/pub/netwinder/docs/intel/datashts/27813501.pdf">StrongARM** SA-110/21285 Evaluation Board</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQ</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Loadable_kernel_module">module</a></li>
+<li><a href="http://kernelnewbies.org/Documents/InitcallMechanism">initcall</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Universal_asynchronous_receiver/transmitter">uart</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Industry_Standard_Architecture">ISA</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/mm">memory management</a></li>
+<li><a href="https://en.wikipedia.org/wiki/I%C2%B2C">i2c</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Advanced_Programmable_Interrupt_Controller">APIC</a></li>
+<li><a href="https://en.wikipedia.org/wiki/GNU_Assembler">GNU assembler</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Processor_register">Processor register</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Process_identifier">pid</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Device_tree">device tree</a></li>
+<li><a href="https://en.wikipedia.org/wiki/System_call">system calls</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-9">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Interrupts/linux-interrupts-9.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../SysCall/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Interrupts/linux-interrupts-9.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../SysCall/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Implementation of some exception handlers - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html" class="active">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="interrupts-and-interrupt-handling-part-5"><a class="header" href="#interrupts-and-interrupt-handling-part-5">Interrupts and Interrupt Handling. Part 5.</a></h1>
+<h2 id="implementation-of-exception-handlers"><a class="header" href="#implementation-of-exception-handlers">Implementation of exception handlers</a></h2>
+<p>This is the fifth part about an interrupts and exceptions handling in the Linux kernel and in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-4">part</a> we stopped on the setting of interrupt gates to the <a href="https://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt descriptor Table</a>. We did it in the <code>trap_init</code> function from the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a> source code file. We saw only setting of these interrupt gates in the previous part and in the current part we will see implementation of the exception handlers for these gates. The preparation before an exception handler will be executed is in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> assembly file and occurs in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S#L820">idtentry</a> macro that defines exceptions entry points:</p>
+<pre><code class="language-assembly">idtentry divide_error		     do_divide_error		    has_error_code=0
+idtentry overflow		     do_overflow		    has_error_code=0
+idtentry invalid_op		     do_invalid_op		    has_error_code=0
+idtentry bounds			     do_bounds			    has_error_code=0
+idtentry device_not_available	     do_device_not_available	    has_error_code=0
+idtentry coprocessor_segment_overrun do_coprocessor_segment_overrun has_error_code=0
+idtentry invalid_TSS		     do_invalid_TSS		    has_error_code=1
+idtentry segment_not_present	     do_segment_not_present	    has_error_code=1
+idtentry spurious_interrupt_bug	     do_spurious_interrupt_bug      has_error_code=0
+idtentry coprocessor_error	     do_coprocessor_error	    has_error_code=0
+idtentry alignment_check	     do_alignment_check		    has_error_code=1
+idtentry simd_coprocessor_error	     do_simd_coprocessor_error      has_error_code=0
+</code></pre>
+<p>The <code>idtentry</code> macro does following preparation before an actual exception handler (<code>do_divide_error</code> for the <code>divide_error</code>, <code>do_overflow</code> for the <code>overflow</code>, etc.) will get control. In another words the <code>idtentry</code> macro allocates place for the registers (<a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/uapi/asm/ptrace.h#L43">pt_regs</a> structure) on the stack, pushes dummy error code for the stack consistency if an interrupt/exception has no error code, checks the segment selector in the <code>cs</code> segment register and switches depends on the previous state (userspace or kernelspace). After all of these preparations it makes a call to an actual interrupt/exception handler:</p>
+<pre><code class="language-assembly">.macro idtentry sym do_sym has_error_code:req paranoid=0 shift_ist=-1
+ENTRY(\sym)
+	...
+	...
+	...
+	call	\do_sym
+	...
+	...
+	...
+END(\sym)
+.endm
+</code></pre>
+<p>After an exception handler will finish its work, the <code>idtentry</code> macro restores stack and general purpose registers of an interrupted task and executes <a href="http://x86.renejeschke.de/html/file_module_x86_id_145.html">iret</a> instruction:</p>
+<pre><code class="language-assembly">ENTRY(paranoid_exit)
+	...
+	...
+	...
+	RESTORE_EXTRA_REGS
+	RESTORE_C_REGS
+	REMOVE_PT_GPREGS_FROM_STACK 8
+	INTERRUPT_RETURN
+END(paranoid_exit)
+</code></pre>
+<p>where <code>INTERRUPT_RETURN</code> is:</p>
+<pre><code class="language-assembly">#define INTERRUPT_RETURN	jmp native_iret
+...
+ENTRY(native_iret)
+.global native_irq_return_iret
+native_irq_return_iret:
+iretq
+</code></pre>
+<p>More about the <code>idtentry</code> macro you can read in the third part of the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">https://0xax.gitbooks.io/linux-insides/content/Interrupts/linux-interrupts-3.html</a> chapter. Ok, now we saw the preparation before an exception handler will be executed and now time to look on the handlers. First of all let's look on the following handlers:</p>
+<ul>
+<li>divide_error</li>
+<li>overflow</li>
+<li>invalid_op</li>
+<li>coprocessor_segment_overrun</li>
+<li>invalid_TSS</li>
+<li>segment_not_present</li>
+<li>stack_segment</li>
+<li>alignment_check</li>
+</ul>
+<p>All these handlers defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a> source code file with the <code>DO_ERROR</code> macro:</p>
+<pre><code class="language-C">DO_ERROR(X86_TRAP_DE,     SIGFPE,  &quot;divide error&quot;,                divide_error)
+DO_ERROR(X86_TRAP_OF,     SIGSEGV, &quot;overflow&quot;,                    overflow)
+DO_ERROR(X86_TRAP_UD,     SIGILL,  &quot;invalid opcode&quot;,              invalid_op)
+DO_ERROR(X86_TRAP_OLD_MF, SIGFPE,  &quot;coprocessor segment overrun&quot;, coprocessor_segment_overrun)
+DO_ERROR(X86_TRAP_TS,     SIGSEGV, &quot;invalid TSS&quot;,                 invalid_TSS)
+DO_ERROR(X86_TRAP_NP,     SIGBUS,  &quot;segment not present&quot;,         segment_not_present)
+DO_ERROR(X86_TRAP_SS,     SIGBUS,  &quot;stack segment&quot;,               stack_segment)
+DO_ERROR(X86_TRAP_AC,     SIGBUS,  &quot;alignment check&quot;,             alignment_check)
+</code></pre>
+<p>As we can see the <code>DO_ERROR</code> macro takes 4 parameters:</p>
+<ul>
+<li>Vector number of an interrupt;</li>
+<li>Signal number which will be sent to the interrupted process;</li>
+<li>String which describes an exception;</li>
+<li>Exception handler entry point.</li>
+</ul>
+<p>This macro defined in the same source code file and expands to the function with the <code>do_handler</code> name:</p>
+<pre><code class="language-C">#define DO_ERROR(trapnr, signr, str, name)                              \
+dotraplinkage void do_##name(struct pt_regs *regs, long error_code)     \
+{                                                                       \
+        do_error_trap(regs, error_code, str, trapnr, signr);            \
+}
+</code></pre>
+<p>Note on the <code>##</code> tokens. This is special feature - <a href="https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html#Concatenation">GCC macro Concatenation</a> which concatenates two given strings. For example, first <code>DO_ERROR</code> in our example will expands to the:</p>
+<pre><code class="language-C">dotraplinkage void do_divide_error(struct pt_regs *regs, long error_code)     \
+{
+	...
+}
+</code></pre>
+<p>We can see that all functions which are generated by the <code>DO_ERROR</code> macro just make a call to the <code>do_error_trap</code> function from the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a>. Let's look on implementation of the <code>do_error_trap</code> function.</p>
+<h2 id="trap-handlers"><a class="header" href="#trap-handlers">Trap handlers</a></h2>
+<p>The <code>do_error_trap</code> function starts and ends from the two following functions:</p>
+<pre><code class="language-C">enum ctx_state prev_state = exception_enter();
+...
+...
+...
+exception_exit(prev_state);
+</code></pre>
+<p>from the <a href="https://github.com/torvalds/linux/tree/master/include/linux/context_tracking.h">include/linux/context_tracking.h</a>. The context tracking in the Linux kernel subsystem which provide kernel boundaries probes to keep track of the transitions between level contexts with two basic initial contexts: <code>user</code> or <code>kernel</code>. The <code>exception_enter</code> function checks that context tracking is enabled. After this if it is enabled, the <code>exception_enter</code> reads previous context and compares it with the <code>CONTEXT_KERNEL</code>. If the previous context is <code>user</code>, we call <code>context_tracking_exit</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/context_tracking.c">kernel/context_tracking.c</a> which inform the context tracking subsystem that a processor is exiting user mode and entering the kernel mode:</p>
+<pre><code class="language-C">if (!context_tracking_is_enabled())
+	return 0;
+
+prev_ctx = this_cpu_read(context_tracking.state);
+if (prev_ctx != CONTEXT_KERNEL)
+	context_tracking_exit(prev_ctx);
+
+return prev_ctx;
+</code></pre>
+<p>If previous context is non <code>user</code>, we just return it. The <code>pre_ctx</code> has <code>enum ctx_state</code> type which defined in the <a href="https://github.com/torvalds/linux/tree/master/include/linux/context_tracking_state.h">include/linux/context_tracking_state.h</a> and looks as:</p>
+<pre><code class="language-C">enum ctx_state {
+	CONTEXT_KERNEL = 0,
+	CONTEXT_USER,
+	CONTEXT_GUEST,
+} state;
+</code></pre>
+<p>The second function is <code>exception_exit</code> defined in the same <a href="https://github.com/torvalds/linux/tree/master/include/linux/context_tracking.h">include/linux/context_tracking.h</a> file and checks that context tracking is enabled and call the <code>context_tracking_enter</code> function if the previous context was <code>user</code>:</p>
+<pre><code class="language-C">static inline void exception_exit(enum ctx_state prev_ctx)
+{
+	if (context_tracking_is_enabled()) {
+		if (prev_ctx != CONTEXT_KERNEL)
+			context_tracking_enter(prev_ctx);
+	}
+}
+</code></pre>
+<p>The <code>context_tracking_enter</code> function informs the context tracking subsystem that a processor is going to enter to the user mode from the kernel mode. We can see the following code between the <code>exception_enter</code> and <code>exception_exit</code>:</p>
+<pre><code class="language-C">if (notify_die(DIE_TRAP, str, regs, error_code, trapnr, signr) !=
+		NOTIFY_STOP) {
+	conditional_sti(regs);
+	do_trap(trapnr, signr, str, regs, error_code,
+		fill_trap_info(regs, signr, trapnr, &amp;info));
+}
+</code></pre>
+<p>First of all it calls the <code>notify_die</code> function which defined in the <a href="https://github.com/torvalds/linux/tree/master/kernel/notifier.c">kernel/notifier.c</a>. To get notified for <a href="https://en.wikipedia.org/wiki/Kernel_panic">kernel panic</a>, <a href="https://en.wikipedia.org/wiki/Linux_kernel_oops">kernel oops</a>, <a href="https://en.wikipedia.org/wiki/Non-maskable_interrupt">Non-Maskable Interrupt</a> or other events the caller needs to insert itself in the <code>notify_die</code> chain and the <code>notify_die</code> function does it. The Linux kernel has special mechanism that allows kernel to ask when something happens and this mechanism called <code>notifiers</code> or <code>notifier chains</code>. This mechanism used for example for the <code>USB</code> hotplug events (look on the <a href="https://github.com/torvalds/linux/tree/master/drivers/usb/core/notify.c">drivers/usb/core/notify.c</a>), for the memory <a href="https://en.wikipedia.org/wiki/Hot_swapping">hotplug</a> (look on the <a href="https://github.com/torvalds/linux/tree/master/include/linux/memory.h">include/linux/memory.h</a>, the <code>hotplug_memory_notifier</code> macro, etc...), system reboots, etc. A notifier chain is thus a simple, singly-linked list. When a Linux kernel subsystem wants to be notified of specific events, it fills out a special <code>notifier_block</code> structure and passes it to the <code>notifier_chain_register</code> function. An event can be sent with the call of the <code>notifier_call_chain</code> function. First of all the <code>notify_die</code> function fills <code>die_args</code> structure with the trap number, trap string, registers and other values:</p>
+<pre><code class="language-C">struct die_args args = {
+       .regs   = regs,
+       .str    = str,
+       .err    = err,
+       .trapnr = trap,
+       .signr  = sig,
+}
+</code></pre>
+<p>and returns the result of the <code>atomic_notifier_call_chain</code> function with the <code>die_chain</code>:</p>
+<pre><code class="language-C">static ATOMIC_NOTIFIER_HEAD(die_chain);
+return atomic_notifier_call_chain(&amp;die_chain, val, &amp;args);
+</code></pre>
+<p>which just expands to the <code>atomic_notifier_head</code> structure that contains lock and <code>notifier_block</code>:</p>
+<pre><code class="language-C">struct atomic_notifier_head {
+        spinlock_t lock;
+        struct notifier_block __rcu *head;
+};
+</code></pre>
+<p>The <code>atomic_notifier_call_chain</code> function calls each function in a notifier chain in turn and returns the value of the last notifier function called. If the <code>notify_die</code> in the <code>do_error_trap</code> does not return <code>NOTIFY_STOP</code> we execute <code>conditional_sti</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a> that checks the value of the <a href="https://en.wikipedia.org/wiki/Interrupt_flag">interrupt flag</a> and enables interrupt depends on it:</p>
+<pre><code class="language-C">static inline void conditional_sti(struct pt_regs *regs)
+{
+        if (regs-&gt;flags &amp; X86_EFLAGS_IF)
+                local_irq_enable();
+}
+</code></pre>
+<p>more about <code>local_irq_enable</code> macro you can read in the second <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-2">part</a> of this chapter. The next and last call in the <code>do_error_trap</code> is the <code>do_trap</code> function. First of all the <code>do_trap</code> function defined the <code>tsk</code> variable which has <code>task_struct</code> type and represents the current interrupted process. After the definition of the <code>tsk</code>, we can see the call of the <code>do_trap_no_signal</code> function:</p>
+<pre><code class="language-C">struct task_struct *tsk = current;
+
+if (!do_trap_no_signal(tsk, trapnr, str, regs, error_code))
+	return;
+</code></pre>
+<p>The <code>do_trap_no_signal</code> function makes two checks:</p>
+<ul>
+<li>Did we come from the <a href="https://en.wikipedia.org/wiki/Virtual_8086_mode">Virtual 8086</a> mode;</li>
+<li>Did we come from the kernelspace.</li>
+</ul>
+<pre><code class="language-C">if (v8086_mode(regs)) {
+	...
+}
+
+if (!user_mode(regs)) {
+	...
+}
+
+return -1;
+</code></pre>
+<p>We will not consider first case because the <a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a> does not support the <a href="https://en.wikipedia.org/wiki/Virtual_8086_mode">Virtual 8086</a> mode. In the second case we invoke <code>fixup_exception</code> function which will try to recover a fault and <code>die</code> if we can't:</p>
+<pre><code class="language-C">if (!fixup_exception(regs)) {
+	tsk-&gt;thread.error_code = error_code;
+	tsk-&gt;thread.trap_nr = trapnr;
+	die(str, regs, error_code);
+}
+</code></pre>
+<p>The <code>die</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/dumpstack.c">arch/x86/kernel/dumpstack.c</a> source code file, prints useful information about stack, registers, kernel modules and caused kernel <a href="https://en.wikipedia.org/wiki/Linux_kernel_oops">oops</a>. If we came from the userspace the <code>do_trap_no_signal</code> function will return <code>-1</code> and the execution of the <code>do_trap</code> function will continue. If we passed through the <code>do_trap_no_signal</code> function and did not exit from the <code>do_trap</code> after this, it means that previous context was - <code>user</code>.  Most exceptions caused by the processor are interpreted by Linux as error conditions, for example division by zero, invalid opcode, etc. When an exception occurs the Linux kernel sends a <a href="https://en.wikipedia.org/wiki/Unix_signal">signal</a> to the interrupted process that caused the exception to notify it of an incorrect condition. So, in the <code>do_trap</code> function we need to send a signal with the given number (<code>SIGFPE</code> for the divide error, <code>SIGILL</code> for a illegal instruction, etc.). First of all we save error code and vector number in the current interrupts process with the filling <code>thread.error_code</code> and <code>thread_trap_nr</code>:</p>
+<pre><code class="language-C">tsk-&gt;thread.error_code = error_code;
+tsk-&gt;thread.trap_nr = trapnr;
+</code></pre>
+<p>After this we make a check do we need to print information about unhandled signals for the interrupted process. We check that <code>show_unhandled_signals</code> variable is set, that <code>unhandled_signal</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/signal.c">kernel/signal.c</a> will return unhandled signal(s) and <a href="https://en.wikipedia.org/wiki/Printk">printk</a> rate limit:</p>
+<pre><code class="language-C">#ifdef CONFIG_X86_64
+	if (show_unhandled_signals &amp;&amp; unhandled_signal(tsk, signr) &amp;&amp;
+	    printk_ratelimit()) {
+		pr_info(&quot;%s[%d] trap %s ip:%lx sp:%lx error:%lx&quot;,
+			tsk-&gt;comm, tsk-&gt;pid, str,
+			regs-&gt;ip, regs-&gt;sp, error_code);
+		print_vma_addr(&quot; in &quot;, regs-&gt;ip);
+		pr_cont(&quot;\n&quot;);
+	}
+#endif
+</code></pre>
+<p>And send a given signal to interrupted process:</p>
+<pre><code class="language-C">force_sig_info(signr, info ?: SEND_SIG_PRIV, tsk);
+</code></pre>
+<p>This is the end of the <code>do_trap</code>. We just saw generic implementation for eight different exceptions which are defined with the <code>DO_ERROR</code> macro. Now let's look at other exception handlers.</p>
+<h2 id="double-fault"><a class="header" href="#double-fault">Double fault</a></h2>
+<p>The next exception is <code>#DF</code> or <code>Double fault</code>. This exception occurs when the processor detected a second exception while calling an exception handler for a prior exception. We set the trap gate for this exception in the previous part:</p>
+<pre><code class="language-C">set_intr_gate_ist(X86_TRAP_DF, &amp;double_fault, DOUBLEFAULT_STACK);
+</code></pre>
+<p>Note that this exception runs on the <code>DOUBLEFAULT_STACK</code> <a href="https://www.kernel.org/doc/Documentation/x86/x86_64/kernel-stacks">Interrupt Stack Table</a> which has index - <code>1</code>:</p>
+<pre><code class="language-C">#define DOUBLEFAULT_STACK 1
+</code></pre>
+<p>The <code>double_fault</code> is handler for this exception and defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a>. The <code>double_fault</code> handler starts from the definition of two variables: string that describes exception and interrupted process, as other exception handlers:</p>
+<pre><code class="language-C">static const char str[] = &quot;double fault&quot;;
+struct task_struct *tsk = current;
+</code></pre>
+<p>The handler of the double fault exception split on two parts. The first part is the check which checks that a fault is a <code>non-IST</code> fault on the <code>espfix64</code> stack. Actually the <code>iret</code> instruction restores only the bottom <code>16</code> bits when returning to a <code>16</code> bit segment. The <code>espfix</code> feature solves this problem. So if the <code>non-IST</code> fault on the espfix64 stack we modify the stack to make it look like <code>General Protection Fault</code>:</p>
+<pre><code class="language-C">struct pt_regs *normal_regs = task_pt_regs(current);
+
+memmove(&amp;normal_regs-&gt;ip, (void *)regs-&gt;sp, 5*8);
+ormal_regs-&gt;orig_ax = 0;
+regs-&gt;ip = (unsigned long)general_protection;
+regs-&gt;sp = (unsigned long)&amp;normal_regs-&gt;orig_ax;
+return;
+</code></pre>
+<p>In the second case we do almost the same that we did in the previous exception handlers. The first is the call of the <code>ist_enter</code> function that discards previous context, <code>user</code> in our case:</p>
+<pre><code class="language-C">ist_enter(regs);
+</code></pre>
+<p>And after this we fill the interrupted process with the vector number of the <code>Double fault</code> exception and error code as we did it in the previous handlers:</p>
+<pre><code class="language-C">tsk-&gt;thread.error_code = error_code;
+tsk-&gt;thread.trap_nr = X86_TRAP_DF;
+</code></pre>
+<p>Next we print useful information about the double fault (<a href="https://en.wikipedia.org/wiki/Process_identifier">PID</a> number, registers content):</p>
+<pre><code class="language-C">#ifdef CONFIG_DOUBLEFAULT
+	df_debug(regs, error_code);
+#endif
+</code></pre>
+<p>And die:</p>
+<pre><code>	for (;;)
+		die(str, regs, error_code);
+</code></pre>
+<p>That's all.</p>
+<h2 id="device-not-available-exception-handler"><a class="header" href="#device-not-available-exception-handler">Device not available exception handler</a></h2>
+<p>The next exception is the <code>#NM</code> or <code>Device not available</code>. The <code>Device not available</code> exception can occur depending on these things:</p>
+<ul>
+<li>The processor executed an <a href="https://en.wikipedia.org/wiki/X87">x87 FPU</a> floating-point instruction while the EM flag in <a href="https://en.wikipedia.org/wiki/Control_register">control register</a> <code>cr0</code> was set;</li>
+<li>The processor executed a <code>wait</code> or <code>fwait</code> instruction while the <code>MP</code> and <code>TS</code> flags of register <code>cr0</code> were set;</li>
+<li>The processor executed an <a href="https://en.wikipedia.org/wiki/X87">x87 FPU</a>, <a href="https://en.wikipedia.org/wiki/MMX_%28instruction_set%29">MMX</a> or <a href="https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions">SSE</a> instruction while the <code>TS</code> flag in control register <code>cr0</code> was set and the <code>EM</code> flag is clear.</li>
+</ul>
+<p>The handler of the <code>Device not available</code> exception is the <code>do_device_not_available</code> function and it defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a> source code file too. It starts and ends from the getting of the previous context, as other traps which we saw in the beginning of this part:</p>
+<pre><code class="language-C">enum ctx_state prev_state;
+prev_state = exception_enter();
+...
+...
+...
+exception_exit(prev_state);
+</code></pre>
+<p>In the next step we check that <code>FPU</code> is not eager:</p>
+<pre><code class="language-C">BUG_ON(use_eager_fpu());
+</code></pre>
+<p>When we switch into a task or interrupt we may avoid loading the <code>FPU</code> state. If a task will use it, we catch <code>Device not Available exception</code> exception. If we loading the <code>FPU</code> state during task switching, the <code>FPU</code> is eager. In the next step we check <code>cr0</code> control register on the <code>EM</code> flag which can show us is <code>x87</code> floating point unit present (flag clear) or not (flag set):</p>
+<pre><code class="language-C">#ifdef CONFIG_MATH_EMULATION
+	if (read_cr0() &amp; X86_CR0_EM) {
+		struct math_emu_info info = { };
+
+		conditional_sti(regs);
+
+		info.regs = regs;
+		math_emulate(&amp;info);
+		exception_exit(prev_state);
+		return;
+	}
+#endif
+</code></pre>
+<p>If the <code>x87</code> floating point unit not presented, we enable interrupts with the <code>conditional_sti</code>, fill the <code>math_emu_info</code> (defined in the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/include/asm/math_emu.h">arch/x86/include/asm/math_emu.h</a>) structure with the registers of an interrupt task and call <code>math_emulate</code> function from the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/math-emu/fpu_entry.c">arch/x86/math-emu/fpu_entry.c</a>. As you can understand from function's name, it emulates <code>X87 FPU</code> unit (more about the <code>x87</code> we will know in the special chapter). In other way, if <code>X86_CR0_EM</code> flag is clear which means that <code>x87 FPU</code> unit is presented, we call the <code>fpu__restore</code> function from the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/fpu/core.c">arch/x86/kernel/fpu/core.c</a> which copies the <code>FPU</code> registers from the <code>fpustate</code> to the live hardware registers. After this <code>FPU</code> instructions can be used:</p>
+<pre><code class="language-C">fpu__restore(&amp;current-&gt;thread.fpu);
+</code></pre>
+<h2 id="general-protection-fault-exception-handler"><a class="header" href="#general-protection-fault-exception-handler">General protection fault exception handler</a></h2>
+<p>The next exception is the <code>#GP</code> or <code>General protection fault</code>. This exception occurs when the processor detected one of a class of protection violations called <code>general-protection violations</code>. It can be:</p>
+<ul>
+<li>Exceeding the segment limit when accessing the <code>cs</code>, <code>ds</code>, <code>es</code>, <code>fs</code> or <code>gs</code> segments;</li>
+<li>Loading the <code>ss</code>, <code>ds</code>, <code>es</code>, <code>fs</code> or <code>gs</code> register with a segment selector for a system segment.;</li>
+<li>Violating any of the privilege rules;</li>
+<li>and other...</li>
+</ul>
+<p>The exception handler for this exception is the <code>do_general_protection</code> from the <a href="https://github.com/torvalds/linux/tree/master/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a>. The <code>do_general_protection</code> function starts and ends as other exception handlers from the getting of the previous context:</p>
+<pre><code class="language-C">prev_state = exception_enter();
+...
+exception_exit(prev_state);
+</code></pre>
+<p>After this we enable interrupts if they were disabled and check that we came from the <a href="https://en.wikipedia.org/wiki/Virtual_8086_mode">Virtual 8086</a> mode:</p>
+<pre><code class="language-C">conditional_sti(regs);
+
+if (v8086_mode(regs)) {
+	local_irq_enable();
+	handle_vm86_fault((struct kernel_vm86_regs *) regs, error_code);
+	goto exit;
+}
+</code></pre>
+<p>As long mode does not support this mode, we will not consider exception handling for this case. In the next step check that previous mode was kernel mode and try to fix the trap. If we can't fix the current general protection fault exception we fill the interrupted process with the vector number and error code of the exception and add it to the <code>notify_die</code> chain:</p>
+<pre><code class="language-C">if (!user_mode(regs)) {
+	if (fixup_exception(regs))
+		goto exit;
+
+	tsk-&gt;thread.error_code = error_code;
+	tsk-&gt;thread.trap_nr = X86_TRAP_GP;
+	if (notify_die(DIE_GPF, &quot;general protection fault&quot;, regs, error_code,
+		       X86_TRAP_GP, SIGSEGV) != NOTIFY_STOP)
+		die(&quot;general protection fault&quot;, regs, error_code);
+	goto exit;
+}
+</code></pre>
+<p>If we can fix exception we go to the <code>exit</code> label which exits from exception state:</p>
+<pre><code class="language-C">exit:
+	exception_exit(prev_state);
+</code></pre>
+<p>If we came from user mode we send <code>SIGSEGV</code> signal to the interrupted process from user mode as we did it in the <code>do_trap</code> function:</p>
+<pre><code class="language-C">if (show_unhandled_signals &amp;&amp; unhandled_signal(tsk, SIGSEGV) &amp;&amp;
+		printk_ratelimit()) {
+	pr_info(&quot;%s[%d] general protection ip:%lx sp:%lx error:%lx&quot;,
+		tsk-&gt;comm, task_pid_nr(tsk),
+		regs-&gt;ip, regs-&gt;sp, error_code);
+	print_vma_addr(&quot; in &quot;, regs-&gt;ip);
+	pr_cont(&quot;\n&quot;);
+}
+
+force_sig_info(SIGSEGV, SEND_SIG_PRIV, tsk);
+</code></pre>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the fifth part of the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">Interrupts and Interrupt Handling</a> chapter and we saw implementation of some interrupt handlers in this part. In the next part we will continue to dive into interrupt and exception handlers and will see handler for the <a href="https://en.wikipedia.org/wiki/Non-maskable_interrupt">Non-Maskable Interrupts</a>, handling of the math <a href="https://en.wikipedia.org/wiki/Coprocessor">coprocessor</a> and <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> coprocessor exceptions and many many more.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt descriptor Table</a></li>
+<li><a href="http://x86.renejeschke.de/html/file_module_x86_id_145.html">iret instruction</a></li>
+<li><a href="https://gcc.gnu.org/onlinedocs/cpp/Concatenation.html#Concatenation">GCC macro Concatenation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Kernel_panic">kernel panic</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Linux_kernel_oops">kernel oops</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Non-maskable_interrupt">Non-Maskable Interrupt</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hot_swapping">hotplug</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_flag">interrupt flag</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Unix_signal">signal</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Printk">printk</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Coprocessor">coprocessor</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/x86/x86_64/kernel-stacks">Interrupt Stack Table</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Process_identifier">PID</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X87">x87 FPU</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Control_register">control register</a></li>
+<li><a href="https://en.wikipedia.org/wiki/MMX_%28instruction_set%29">MMX</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-4">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Interrupts/linux-interrupts-4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Interrupts/linux-interrupts-6.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Interrupts/linux-interrupts-4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Interrupts/linux-interrupts-6.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

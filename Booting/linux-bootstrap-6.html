@@ -1,0 +1,463 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Kernel load address randomization - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html" class="active">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-booting-process-part-6"><a class="header" href="#kernel-booting-process-part-6">Kernel booting process. Part 6.</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>This is the sixth part of the <code>Kernel booting process</code> series. In the <a href="linux-bootstrap-5.html">previous part</a> we took a look at the final stages of the Linux kernel boot process. But we have skipped some important, more advanced parts.</p>
+<p>As you may remember, the entry point of the Linux kernel is the <code>start_kernel</code> function defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/init/main.c">main.c</a> source code file. This function is executed  at the address stored in <code>LOAD_PHYSICAL_ADDR</code>. and depends on the <code>CONFIG_PHYSICAL_START</code> kernel configuration option, which is <code>0x1000000</code> by default:</p>
+<pre><code>config PHYSICAL_START
+	hex &quot;Physical address where the kernel is loaded&quot; if (EXPERT || CRASH_DUMP)
+	default &quot;0x1000000&quot;
+	---help---
+	  This gives the physical address where the kernel is loaded.
+      ...
+      ...
+      ...
+</code></pre>
+<p>This value may be changed during kernel configuration, but the load address can also be configured to be a random value. For this purpose, the <code>CONFIG_RANDOMIZE_BASE</code> kernel configuration option should be enabled during kernel configuration.</p>
+<p>Now, the physical address where the Linux kernel image will be decompressed and loaded will be randomized. This part considers the case when the <code>CONFIG_RANDOMIZE_BASE</code> option is enabled and the load address of the kernel image is randomized for <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization">security reasons</a>.</p>
+<h2 id="page-table-initialization"><a class="header" href="#page-table-initialization">Page Table Initialization</a></h2>
+<p>Before the kernel decompressor can look for a random memory range to decompress and load the kernel to, the identity mapped page tables should be initialized. If the <a href="https://en.wikipedia.org/wiki/Booting">bootloader</a> used the <a href="https://github.com/torvalds/linux/blob/v4.16/Documentation/x86/boot.txt">16-bit or 32-bit boot protocol</a>, we already have page tables. But, there may be problems if the kernel decompressor selects a memory range which is valid only in a 64-bit context. That's why we need to build new identity mapped page tables.</p>
+<p>Indeed, the first step in randomizing the kernel load address is to build new identity mapped page tables. But first, let's reflect on how we got to this point.</p>
+<p>In the <a href="linux-bootstrap-5.html">previous part</a>, we followed the transition to <a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a> and jumped to the kernel decompressor entry point - the <code>extract_kernel</code> function. The randomization stuff begins with a call to this function:</p>
+<pre><code class="language-C">void choose_random_location(unsigned long input,
+                            unsigned long input_size,
+                            unsigned long *output,
+                            unsigned long output_size,
+                            unsigned long *virt_addr)
+{}
+</code></pre>
+<p>This function takes five parameters:</p>
+<ul>
+<li><code>input</code>;</li>
+<li><code>input_size</code>;</li>
+<li><code>output</code>;</li>
+<li><code>output_size</code>;</li>
+<li><code>virt_addr</code>.</li>
+</ul>
+<p>Let's try to understand what these parameters are. The first parameter, <code>input</code> is just the <code>input_data</code> parameter of the <code>extract_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/misc.c">arch/x86/boot/compressed/misc.c</a> source code file, cast to <code>unsigned long</code>:</p>
+<pre><code class="language-C">asmlinkage __visible void *extract_kernel(void *rmode, memptr heap,
+				                          unsigned char *input_data,
+				                          unsigned long input_len,
+				                          unsigned char *output,
+				                          unsigned long output_len)
+{
+  ...
+  ...
+  ...
+  choose_random_location((unsigned long)input_data, input_len,
+                         (unsigned long *)&amp;output,
+				         max(output_len, kernel_total_size),
+				         &amp;virt_addr);
+  ...
+  ...
+  ...
+}
+</code></pre>
+<p>This parameter is passed through assembly from the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a> source code file:</p>
+<pre><code class="language-C">leaq	input_data(%rip), %rdx
+</code></pre>
+<p><code>input_data</code> is generated by the little <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/mkpiggy.c">mkpiggy</a> program. If you've tried compiling the Linux kernel yourself, you may find the output generated by this program in the <code>linux/arch/x86/boot/compressed/piggy.S</code> source code file. In my case this file looks like this:</p>
+<pre><code class="language-assembly">.section &quot;.rodata..compressed&quot;,&quot;a&quot;,@progbits
+.globl z_input_len
+z_input_len = 6988196
+.globl z_output_len
+z_output_len = 29207032
+.globl input_data, input_data_end
+input_data:
+.incbin &quot;arch/x86/boot/compressed/vmlinux.bin.gz&quot;
+input_data_end:
+</code></pre>
+<p>As you can see, it contains four global symbols. The first two, <code>z_input_len</code> and <code>z_output_len</code> are the sizes of the compressed and uncompressed <code>vmlinux.bin.gz</code> archive. The third is our <code>input_data</code> parameter which points to the Linux kernel image's raw binary (stripped of all debugging symbols, comments and relocation information). The last parameter,  <code>input_data_end</code>, points to the end of the compressed linux image.</p>
+<p>So, the first parameter to the <code>choose_random_location</code> function is the pointer to the compressed kernel image that is embedded into the <code>piggy.o</code> object file.</p>
+<p>The second parameter of the <code>choose_random_location</code> function is <code>z_input_len</code>.</p>
+<p>The third and fourth parameters of the <code>choose_random_location</code> function are the address of the decompressed kernel image and its length respectively. The decompressed kernel's address came from the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a> source code file and is the address of the <code>startup_32</code> function  aligned to a 2 megabyte boundary. The size of the decompressed kernel is given by <code>z_output_len</code> which, again, is found in <code>piggy.S</code>.</p>
+<p>The last parameter of the <code>choose_random_location</code> function is the virtual address of the kernel load address. As can be seen, by default, it coincides with the default physical load address:</p>
+<pre><code class="language-C">unsigned long virt_addr = LOAD_PHYSICAL_ADDR;
+</code></pre>
+<p>The physical load address is defined by the configuration options:</p>
+<pre><code class="language-C">#define LOAD_PHYSICAL_ADDR ((CONFIG_PHYSICAL_START \
+				+ (CONFIG_PHYSICAL_ALIGN - 1)) \
+				&amp; ~(CONFIG_PHYSICAL_ALIGN - 1))
+</code></pre>
+<p>We've covered <code>choose_random_location</code>'s parameters, so let's look at its implementation. This function starts by checking the <code>nokaslr</code> option in the kernel command line:</p>
+<pre><code class="language-C">if (cmdline_find_option_bool(&quot;nokaslr&quot;)) {
+	warn(&quot;KASLR disabled: 'nokaslr' on cmdline.&quot;);
+	return;
+}
+</code></pre>
+<p>We exit <code>choose_random_location</code> if the option is specified, leaving the kernel load address unrandomized. Information related to this can be found in the <a href="https://github.com/torvalds/linux/blob/v4.16/Documentation/admin-guide/kernel-parameters.rst">kernel's documentation</a>:</p>
+<pre><code>kaslr/nokaslr [X86]
+
+Enable/disable kernel and module base offset ASLR
+(Address Space Layout Randomization) if built into
+the kernel. When CONFIG_HIBERNATION is selected,
+kASLR is disabled by default. When kASLR is enabled,
+hibernation will be disabled.
+</code></pre>
+<p>Let's assume that we didn't pass <code>nokaslr</code> to the kernel command line and the <code>CONFIG_RANDOMIZE_BASE</code> kernel configuration option is enabled. In this case we add <code>kASLR</code> flag to kernel load flags:</p>
+<pre><code class="language-C">boot_params-&gt;hdr.loadflags |= KASLR_FLAG;
+</code></pre>
+<p>Now, we call another function:</p>
+<pre><code class="language-C">initialize_identity_maps();
+</code></pre>
+<p>The <code>initialize_identity_maps</code> function is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/boot/compressed/kaslr_64.c">arch/x86/boot/compressed/kaslr_64.c</a> source code file. This function starts by initializing an instance of the <code>x86_mapping_info</code> structure called <code>mapping_info</code>:</p>
+<pre><code class="language-C">mapping_info.alloc_pgt_page = alloc_pgt_page;
+mapping_info.context = &amp;pgt_data;
+mapping_info.page_flag = __PAGE_KERNEL_LARGE_EXEC | sev_me_mask;
+mapping_info.kernpg_flag = _KERNPG_TABLE;
+</code></pre>
+<p>The <code>x86_mapping_info</code> structure is defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/include/asm/init.h">arch/x86/include/asm/init.h</a> header file and looks like this:</p>
+<pre><code class="language-C">struct x86_mapping_info {
+	void *(*alloc_pgt_page)(void *);
+	void *context;
+	unsigned long page_flag;
+	unsigned long offset;
+	bool direct_gbpages;
+	unsigned long kernpg_flag;
+};
+</code></pre>
+<p>This structure provides information about memory mappings. As you may remember from the previous part, we have already set up page tables to cover the range <code>0</code> to <code>4G</code>. This won't do since we might generate a randomized address outside of the 4 gigabyte range. So, the <code>initialize_identity_maps</code> function initializes the memory for a new page table entry. First, let's take a look at the definition of the <code>x86_mapping_info</code> structure.</p>
+<p><code>alloc_pgt_page</code> is a callback function that is called to allocate space for a page table entry. The <code>context</code> field is an instance of the <code>alloc_pgt_data</code> structure. We use it to track allocated page tables. The <code>page_flag</code> and <code>kernpg_flag</code> fields are page flags. The first represents flags for <code>PMD</code> or <code>PUD</code> entries. The <code>kernpg_flag</code> field represents overridable flags for kernel pages. The <code>direct_gbpages</code> field is used to check if huge pages are supported and the last field,  <code>offset</code>, represents the offset between the kernel's virtual addresses and its physical addresses up to the <code>PMD</code> level.</p>
+<p>The <code>alloc_pgt_page</code> callback just checks that there is space for a new page, allocates it in the <code>pgt_buf</code> field of the <code>alloc_pgt_data</code> structure and returns the address of the new page:</p>
+<pre><code class="language-C">entry = pages-&gt;pgt_buf + pages-&gt;pgt_buf_offset;
+pages-&gt;pgt_buf_offset += PAGE_SIZE;
+</code></pre>
+<p>Here's what the <code>alloc_pgt_data</code> structure looks like:</p>
+<pre><code class="language-C">struct alloc_pgt_data {
+	unsigned char *pgt_buf;
+	unsigned long pgt_buf_size;
+	unsigned long pgt_buf_offset;
+};
+</code></pre>
+<p>The last goal of the <code>initialize_identity_maps</code> function is to initialize <code>pgdt_buf_size</code> and <code>pgt_buf_offset</code>. As we are only in the initialization phase, the <code>initialze_identity_maps</code> function sets <code>pgt_buf_offset</code> to zero:</p>
+<pre><code class="language-C">pgt_data.pgt_buf_offset = 0;
+</code></pre>
+<p><code>pgt_data.pgt_buf_size</code> will be set to <code>77824</code> or <code>69632</code> depending on which boot protocol was used by the bootloader (64-bit or 32-bit). The same is done for <code>pgt_data.pgt_buf</code>. If a bootloader loaded the kernel at <code>startup_32</code>, <code>pgdt_data.pgdt_buf</code> will point to the end of the already initialized page table in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a> source code file:</p>
+<pre><code class="language-C">pgt_data.pgt_buf = _pgtable + BOOT_INIT_PGT_SIZE;
+</code></pre>
+<p>Here, <code>_pgtable</code> points to the beginning of <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/vmlinux.lds.S">_pgtable</a>. On the other hand, if the bootloader used the 64-bit boot protocol and loaded the kernel at <code>startup_64</code>, the early page tables should already be built by the bootloader itself and <code>_pgtable</code> will just point to those instead:</p>
+<pre><code class="language-C">pgt_data.pgt_buf = _pgtable
+</code></pre>
+<p>As the buffer for new page tables is initialized, we may return to the <code>choose_random_location</code> function.</p>
+<h2 id="avoiding-reserved-memory-ranges"><a class="header" href="#avoiding-reserved-memory-ranges">Avoiding Reserved Memory Ranges</a></h2>
+<p>After the stuff related to identity page tables is initialized, we can choose a random memory location to extract the kernel image to. But as you may have guessed, we can't just choose any address. There are certain reserved memory regions which are occupied by important things like the <a href="https://en.wikipedia.org/wiki/Initial_ramdisk">initrd</a> and the kernel command line which must be avoided. The <code>mem_avoid_init</code> function will help us do this:</p>
+<pre><code class="language-C">mem_avoid_init(input, input_size, *output);
+</code></pre>
+<p>All unsafe memory regions will be collected in an array called <code>mem_avoid</code>:</p>
+<pre><code class="language-C">struct mem_vector {
+	unsigned long long start;
+	unsigned long long size;
+};
+
+static struct mem_vector mem_avoid[MEM_AVOID_MAX];
+</code></pre>
+<p>Here, <code>MEM_AVOID_MAX</code> is from the <code>mem_avoid_index</code> <a href="https://en.wikipedia.org/wiki/Enumerated_type#C">enum</a> which represents different types of reserved memory regions:</p>
+<pre><code class="language-C">enum mem_avoid_index {
+	MEM_AVOID_ZO_RANGE = 0,
+	MEM_AVOID_INITRD,
+	MEM_AVOID_CMDLINE,
+	MEM_AVOID_BOOTPARAMS,
+	MEM_AVOID_MEMMAP_BEGIN,
+	MEM_AVOID_MEMMAP_END = MEM_AVOID_MEMMAP_BEGIN + MAX_MEMMAP_REGIONS - 1,
+	MEM_AVOID_MAX,
+};
+</code></pre>
+<p>Both are defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/kaslr.c">arch/x86/boot/compressed/kaslr.c</a> source code file.</p>
+<p>Let's look at the implementation of the <code>mem_avoid_init</code> function. The main goal of this function is to store information about reserved memory regions with descriptions given by the <code>mem_avoid_index</code> enum in the <code>mem_avoid</code> array and to create new pages for such regions in our new identity mapped buffer. The <code>mem_avoid_index</code> function does the same thing for all elements in the <code>mem_avoid_index</code>enum, so let's look at a typical example of the process:</p>
+<pre><code class="language-C">mem_avoid[MEM_AVOID_ZO_RANGE].start = input;
+mem_avoid[MEM_AVOID_ZO_RANGE].size = (output + init_size) - input;
+add_identity_map(mem_avoid[MEM_AVOID_ZO_RANGE].start,
+		 mem_avoid[MEM_AVOID_ZO_RANGE].size);
+</code></pre>
+<p>The <code>mem_avoid_init</code> function first tries to avoid memory regions currently used to decompress the kernel. We fill an entry from the <code>mem_avoid</code> array with the start address and the size of the relevant region and call the <code>add_identity_map</code> function, which  builds the identity mapped pages for this region. The <code>add_identity_map</code> function is defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/kaslr_64.c">arch/x86/boot/compressed/kaslr_64.c</a> source code file and looks like this:</p>
+<pre><code class="language-C">void add_identity_map(unsigned long start, unsigned long size)
+{
+	unsigned long end = start + size;
+
+	start = round_down(start, PMD_SIZE);
+	end = round_up(end, PMD_SIZE);
+	if (start &gt;= end)
+		return;
+
+	kernel_ident_mapping_init(&amp;mapping_info, (pgd_t *)top_level_pgt,
+				  start, end);
+}
+</code></pre>
+<p>The <code>round_up</code> and <code>round_down</code> functions are used to align the start and end addresses to a 2 megabyte boundary.</p>
+<p>In the end this function calls the <code>kernel_ident_mapping_init</code> function from the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/mm/ident_map.c">arch/x86/mm/ident_map.c</a> source code file and passes the previously initialized <code>mapping_info</code> instance, the address of the top level page table and the start and end addresses of the memory region for which a new identity mapping should be built.</p>
+<p>The <code>kernel_ident_mapping_init</code> function sets default flags for new pages if they were not already set:</p>
+<pre><code class="language-C">if (!info-&gt;kernpg_flag)
+	info-&gt;kernpg_flag = _KERNPG_TABLE;
+</code></pre>
+<p>It then starts to build new 2-megabyte (because of the <code>PSE</code> bit in <code>mapping_info.page_flag</code>) page entries (<code>PGD -&gt; P4D -&gt; PUD -&gt; PMD</code> if we're using <a href="https://lwn.net/Articles/717293/">five-level page tables</a> or <code>PGD -&gt; PUD -&gt; PMD</code> if <a href="https://lwn.net/Articles/117749/">four-level page tables</a> are used) associated with the given addresses.</p>
+<pre><code class="language-C">for (; addr &lt; end; addr = next) {
+	p4d_t *p4d;
+
+	next = (addr &amp; PGDIR_MASK) + PGDIR_SIZE;
+	if (next &gt; end)
+		next = end;
+
+    p4d = (p4d_t *)info-&gt;alloc_pgt_page(info-&gt;context);
+	result = ident_p4d_init(info, p4d, addr, next);
+
+    return result;
+}
+</code></pre>
+<p>The first thing this for loop does is to find the next entry of the <code>Page Global Directory</code> for the given address. If the entry's address is greater than the <code>end</code> of the given memory region, we set its size to <code>end</code>. After this, we allocate a new page with the  <code>x86_mapping_info</code> callback that we looked at previously and call the <code>ident_p4d_init</code> function. The <code>ident_p4d_init</code> function will do the same thing, but for the lower level page directories (<code>p4d</code> -&gt; <code>pud</code> -&gt; <code>pmd</code>).</p>
+<p>That's all.</p>
+<p>We now have new page entries related to reserved addresses in our page tables. We haven't reached the end of the <code>mem_avoid_init</code> function, but the rest is similar. It builds pages for the <a href="https://en.wikipedia.org/wiki/Initial_ramdisk">initrd</a> and the kernel command line, among other things.</p>
+<p>Now we may return to the <code>choose_random_location</code> function.</p>
+<h2 id="physical-address-randomization"><a class="header" href="#physical-address-randomization">Physical address randomization</a></h2>
+<p>After the reserved memory regions have been stored in the <code>mem_avoid</code> array and identity mapped pages are built for them, we select the region with the lowest available address to decompress the kernel to:</p>
+<pre><code class="language-C">min_addr = min(*output, 512UL &lt;&lt; 20);
+</code></pre>
+<p>You will notice that the address should be within the first <code>512</code> megabytes. A limit of <code>512</code> megabytes was selected to avoid unknown things in lower memory.</p>
+<p>The next step is to select random physical and virtual addresses to load the kernel to. The first is the physical addresses:</p>
+<pre><code class="language-C">random_addr = find_random_phys_addr(min_addr, output_size);
+</code></pre>
+<p>The <code>find_random_phys_addr</code> function is defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/boot/compressed/kaslr.c">same</a> source code file as <code>choose_random_location</code>:</p>
+<pre><code>static unsigned long find_random_phys_addr(unsigned long minimum,
+                                           unsigned long image_size)
+{
+	minimum = ALIGN(minimum, CONFIG_PHYSICAL_ALIGN);
+
+	if (process_efi_entries(minimum, image_size))
+		return slots_fetch_random();
+
+	process_e820_entries(minimum, image_size);
+	return slots_fetch_random();
+}
+</code></pre>
+<p>The main goal of the <code>process_efi_entries</code> function is to find all suitable memory ranges in fully accessible memory to load kernel. If the kernel is compiled and run on a system without <a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">EFI</a> support, we continue to search for such memory regions in the <a href="https://en.wikipedia.org/wiki/E820">e820</a> region. All memory regions found will be stored in the <code>slot_areas</code> array:</p>
+<pre><code class="language-C">struct slot_area {
+	unsigned long addr;
+	int num;
+};
+
+#define MAX_SLOT_AREA 100
+
+static struct slot_area slot_areas[MAX_SLOT_AREA];
+</code></pre>
+<p>The kernel will select a random index from this array to decompress the kernel to. The selection process is conducted by the  <code>slots_fetch_random</code> function. The main goal of the <code>slots_fetch_random</code> function is to select a random memory range from the <code>slot_areas</code> array via the <code>kaslr_get_random_long</code> function:</p>
+<pre><code class="language-C">slot = kaslr_get_random_long(&quot;Physical&quot;) % slot_max;
+</code></pre>
+<p>The <code>kaslr_get_random_long</code> function is defined in the <a href="https://github.com/torvalds/linux/blob/v4.16/arch/x86/lib/kaslr.c">arch/x86/lib/kaslr.c</a> source code file and as its name suggests, returns a random number. Note that the random number can be generated in a number of ways depending on kernel configuration and features present in the system (For example, using the <a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">time stamp counter</a>, or <a href="https://en.wikipedia.org/wiki/RdRand">rdrand</a> or some other method).</p>
+<p>We now have a random physical address to decompress the kernel to.</p>
+<h2 id="virtual-address-randomization"><a class="header" href="#virtual-address-randomization">Virtual address randomization</a></h2>
+<p>After selecting a random physical address for the decompressed kernel, we generate identity mapped pages for the region:</p>
+<pre><code class="language-C">random_addr = find_random_phys_addr(min_addr, output_size);
+
+if (*output != random_addr) {
+		add_identity_map(random_addr, output_size);
+		*output = random_addr;
+}
+</code></pre>
+<p>From now on, <code>output</code> will store the base address of the memory region where kernel will be decompressed. Currently, we have only randomized the physical address. We can randomize the virtual address as well on the <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> architecture:</p>
+<pre><code class="language-C">if (IS_ENABLED(CONFIG_X86_64))
+	random_addr = find_random_virt_addr(LOAD_PHYSICAL_ADDR, output_size);
+
+*virt_addr = random_addr;
+</code></pre>
+<p>In architectures other than <code>x86_64</code>, the randomized physical and virtual addresses are the same. The <code>find_random_virt_addr</code> function calculates the number of virtual memory ranges needed to hold the kernel image. It calls the <code>kaslr_get_random_long</code> function, which we have already seen being used to generate a random <code>physical</code> address.</p>
+<p>At this point we have randomized both the base physical (<code>*output</code>) and virtual (<code>*virt_addr</code>) addresses for the decompressed kernel.</p>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the sixth and last part concerning the Linux kernel's booting process. We will not see any more posts about kernel booting (though there may be updates to this and previous posts). We will now turn to other parts of the linux kernel instead.</p>
+<p>The next chapter will be about kernel initialization and we will study the first steps take in the Linux kernel initialization code.</p>
+<p>If you have any questions or suggestions write me a comment or ping me in <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-internals">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization">Address space layout randomization</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/v4.16/Documentation/x86/boot.txt">Linux kernel boot protocol</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Long_mode">long mode</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Initial_ramdisk">initrd</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Enumerated_type#C">Enumerated type</a></li>
+<li><a href="https://lwn.net/Articles/117749/">four-level page tables</a></li>
+<li><a href="https://lwn.net/Articles/717293/">five-level page tables</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">EFI</a></li>
+<li><a href="https://en.wikipedia.org/wiki/E820">e820</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">time stamp counter</a></li>
+<li><a href="https://en.wikipedia.org/wiki/RdRand">rdrand</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a></li>
+<li><a href="linux-bootstrap-5.html">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Booting/linux-bootstrap-5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Initialization/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Booting/linux-bootstrap-5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Initialization/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

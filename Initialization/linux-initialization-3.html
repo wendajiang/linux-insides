@@ -1,0 +1,465 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Last preparations before the kernel entry point - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html" class="active">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-initialization-part-3"><a class="header" href="#kernel-initialization-part-3">Kernel initialization. Part 3.</a></h1>
+<h2 id="last-preparations-before-the-kernel-entry-point"><a class="header" href="#last-preparations-before-the-kernel-entry-point">Last preparations before the kernel entry point</a></h2>
+<p>This is the third part of the Linux kernel initialization process series. In the previous <a href="https://github.com/0xAX/linux-insides/blob/master/Initialization/linux-initialization-2.md">part</a> we saw early interrupt and exception handling and will continue to dive into the Linux kernel initialization process in the current part. Our next point is 'kernel entry point' - <code>start_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> source code file. Yes, technically it is not kernel's entry point but the start of the generic kernel code which does not depend on certain architecture. But before we call the <code>start_kernel</code> function, we must do some preparations. So let's continue.</p>
+<h2 id="boot_params-again"><a class="header" href="#boot_params-again">boot_params again</a></h2>
+<p>In the previous part we stopped at setting Interrupt Descriptor Table and loading it in the <code>IDTR</code> register. At the next step after this we can see a call of the <code>copy_bootdata</code> function:</p>
+<pre><code class="language-C">copy_bootdata(__va(real_mode_data));
+</code></pre>
+<p>This function takes one argument - virtual address of the <code>real_mode_data</code>. Remember that we passed the address of the <code>boot_params</code> structure from <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/uapi/asm/bootparam.h#L114">arch/x86/include/uapi/asm/bootparam.h</a>  to the <code>x86_64_start_kernel</code> function as first argument in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a>:</p>
+<pre><code>	/* rsi is pointer to real mode structure with interesting info.
+	   pass it to C */
+	movq	%rsi, %rdi
+</code></pre>
+<p>Now let's look at <code>__va</code> macro. This macro defined in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>:</p>
+<pre><code class="language-C">#define __va(x)                 ((void *)((unsigned long)(x)+PAGE_OFFSET))
+</code></pre>
+<p>where <code>PAGE_OFFSET</code> is <code>__PAGE_OFFSET</code> which is <code>0xffff880000000000</code> and the base virtual address of the direct mapping of all physical memory. So we're getting virtual address of variable <code>boot_params</code> which come along from real mode, and pass it to the <code>copy_bootdata</code> function, where we copy <code>real_mode_data</code> to the <code>boot_params</code> which is defined in the <a href="https://github.com/torvalds/linux/blob/d9919d43cbf6790d2bc0c0a2743c51fc25f26919/arch/x86/kernel/setup.c">arch/x86/kernel/setup.c</a></p>
+<pre><code class="language-C">struct boot_params boot_params;
+</code></pre>
+<p>Let's look at the <code>copy_boot_data</code> implementation:</p>
+<pre><code class="language-C">static void __init copy_bootdata(char *real_mode_data)
+{
+	char * command_line;
+	unsigned long cmd_line_ptr;
+
+	memcpy(&amp;boot_params, real_mode_data, sizeof boot_params);
+	sanitize_boot_params(&amp;boot_params);
+	cmd_line_ptr = get_cmd_line_ptr();
+	if (cmd_line_ptr) {
+		command_line = __va(cmd_line_ptr);
+		memcpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
+	}
+}
+</code></pre>
+<p>First of all, note that this function is declared with <code>__init</code> prefix. It means that this function will be used only during the initialization and used memory will be freed.</p>
+<p>We can see declaration of two variables for the kernel command line and copying <code>real_mode_data</code> to the <code>boot_params</code> with the <code>memcpy</code> function. The next call of the <code>sanitize_boot_params</code> function which fills some fields of the <code>boot_params</code> structure like <code>ext_ramdisk_image</code> and etc... if bootloaders which fail to initialize unknown fields in <code>boot_params</code> to zero. After this we're getting address of the command line with the call of the <code>get_cmd_line_ptr</code> function:</p>
+<pre><code class="language-C">unsigned long cmd_line_ptr = boot_params.hdr.cmd_line_ptr;
+cmd_line_ptr |= (u64)boot_params.ext_cmd_line_ptr &lt;&lt; 32;
+return cmd_line_ptr;
+</code></pre>
+<p>which gets the 64-bit address of the command line from the kernel boot header and returns it. In the last step we check <code>cmd_line_ptr</code>, getting its virtual address and copy it to the <code>boot_command_line</code> which is just an array of bytes:</p>
+<pre><code class="language-C">extern char __initdata boot_command_line[];
+</code></pre>
+<p>After this we will have copied kernel command line and <code>boot_params</code> structure. In the next step we can see call of the <code>load_ucode_bsp</code> function which loads processor microcode, but we will not see it here.</p>
+<p>After microcode was loaded we can see the check of the <code>console_loglevel</code> and the <code>early_printk</code> function which prints <code>Kernel Alive</code> string. But you'll never see this output because <code>early_printk</code> is not initialized yet. It is a minor bug in the kernel and i sent the patch - <a href="http://git.kernel.org/cgit/linux/kernel/git/tip/tip.git/commit/?id=91d8f0416f3989e248d3a3d3efb821eda10a85d2">commit</a> and you will see it in the mainline soon. So you can skip this code.</p>
+<h2 id="move-on-init-pages"><a class="header" href="#move-on-init-pages">Move on init pages</a></h2>
+<p>In the next step, as we have copied <code>boot_params</code> structure, we need to move from the early page tables to the page tables for initialization process. We already set early page tables for switchover, you can read about it in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-1">part</a> and dropped all it in the <code>reset_early_page_tables</code> function (you can read about it in the previous part too) and kept only kernel high mapping. After this we call:</p>
+<pre><code class="language-C">	clear_page(init_level4_pgt);
+</code></pre>
+<p>function and pass <code>init_level4_pgt</code> which also defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a> and looks:</p>
+<pre><code class="language-assembly">NEXT_PAGE(init_level4_pgt)
+	.quad   level3_ident_pgt - __START_KERNEL_map + _KERNPG_TABLE
+	.org    init_level4_pgt + L4_PAGE_OFFSET*8, 0
+	.quad   level3_ident_pgt - __START_KERNEL_map + _KERNPG_TABLE
+	.org    init_level4_pgt + L4_START_KERNEL*8, 0
+	.quad   level3_kernel_pgt - __START_KERNEL_map + _PAGE_TABLE
+</code></pre>
+<p>which maps first 2 gigabytes and 512 megabytes for the kernel code, data and bss. <code>clear_page</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/lib/clear_page_64.S">arch/x86/lib/clear_page_64.S</a> let's look on this function:</p>
+<pre><code class="language-assembly">ENTRY(clear_page)
+	CFI_STARTPROC
+	xorl %eax,%eax
+	movl $4096/64,%ecx
+	.p2align 4
+	.Lloop:
+    decl	%ecx
+#define PUT(x) movq %rax,x*8(%rdi)
+	movq %rax,(%rdi)
+	PUT(1)
+	PUT(2)
+	PUT(3)
+	PUT(4)
+	PUT(5)
+	PUT(6)
+	PUT(7)
+	leaq 64(%rdi),%rdi
+	jnz	.Lloop
+	nop
+	ret
+	CFI_ENDPROC
+	.Lclear_page_end:
+	ENDPROC(clear_page)
+</code></pre>
+<p>As you can understand from the function name it clears or fills with zeros page tables. First of all note that this function starts with the <code>CFI_STARTPROC</code> and <code>CFI_ENDPROC</code> which are expands to GNU assembly directives:</p>
+<pre><code class="language-C">#define CFI_STARTPROC           .cfi_startproc
+#define CFI_ENDPROC             .cfi_endproc
+</code></pre>
+<p>and used for debugging. After <code>CFI_STARTPROC</code> macro we zero out <code>eax</code> register and put 64 to the <code>ecx</code> (it will be a counter). Next we can see loop which starts with the <code>.Lloop</code> label and it starts from the <code>ecx</code> decrement. After it we put zero from the <code>rax</code> register to the <code>rdi</code> which contains the base address of the <code>init_level4_pgt</code> now and do the same procedure seven times but every time move <code>rdi</code> offset on 8. After this we will have first 64 bytes of the <code>init_level4_pgt</code> filled with zeros. In the next step we put the address of the <code>init_level4_pgt</code> with 64-bytes offset to the <code>rdi</code> again and repeat all operations until <code>ecx</code> reaches zero. In the end we will have <code>init_level4_pgt</code> filled with zeros.</p>
+<p>As we have <code>init_level4_pgt</code> filled with zeros, we set the last <code>init_level4_pgt</code> entry to kernel high mapping with the:</p>
+<pre><code class="language-C">init_level4_pgt[511] = early_top_pgt[511];
+</code></pre>
+<p>Remember that we dropped all <code>early_top_pgt</code> entries in the <code>reset_early_page_table</code> function and kept only kernel high mapping there.</p>
+<p>The last step in the <code>x86_64_start_kernel</code> function is the call of the:</p>
+<pre><code class="language-C">x86_64_start_reservations(real_mode_data);
+</code></pre>
+<p>function with the <code>real_mode_data</code> as argument. The <code>x86_64_start_reservations</code> function defined in the same source code file as the <code>x86_64_start_kernel</code> function and looks:</p>
+<pre><code class="language-C">void __init x86_64_start_reservations(char *real_mode_data)
+{
+	if (!boot_params.hdr.version)
+		copy_bootdata(__va(real_mode_data));
+
+	reserve_ebda_region();
+
+	start_kernel();
+}
+</code></pre>
+<p>You can see that it is the last function before we are in the kernel entry point - <code>start_kernel</code> function. Let's look what it does and how it works.</p>
+<h2 id="last-step-before-kernel-entry-point"><a class="header" href="#last-step-before-kernel-entry-point">Last step before kernel entry point</a></h2>
+<p>First of all we can see in the <code>x86_64_start_reservations</code> function the check for <code>boot_params.hdr.version</code>:</p>
+<pre><code class="language-C">if (!boot_params.hdr.version)
+	copy_bootdata(__va(real_mode_data));
+</code></pre>
+<p>and if it is zero we call <code>copy_bootdata</code> function again with the virtual address of the <code>real_mode_data</code> (read about its implementation).</p>
+<p>In the next step we can see the call of the <code>reserve_ebda_region</code> function which defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head.c">arch/x86/kernel/head.c</a>. This function reserves memory block for the <code>EBDA</code> or Extended BIOS Data Area. The Extended BIOS Data Area located in the top of conventional memory and contains data about ports, disk parameters and etc...</p>
+<p>Let's look on the <code>reserve_ebda_region</code> function. It starts from the checking is paravirtualization enabled or not:</p>
+<pre><code class="language-C">if (paravirt_enabled())
+	return;
+</code></pre>
+<p>we exit from the <code>reserve_ebda_region</code> function if paravirtualization is enabled because if it enabled the extended BIOS data area is absent. In the next step we need to get the end of the low memory:</p>
+<pre><code class="language-C">lowmem = *(unsigned short *)__va(BIOS_LOWMEM_KILOBYTES);
+lowmem &lt;&lt;= 10;
+</code></pre>
+<p>We're getting the virtual address of the BIOS low memory in kilobytes and convert it to bytes with shifting it on 10 (multiply on 1024 in other words). After this we need to get the address of the extended BIOS data are with the:</p>
+<pre><code class="language-C">ebda_addr = get_bios_ebda();
+</code></pre>
+<p>where <code>get_bios_ebda</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/bios_ebda.h">arch/x86/include/asm/bios_ebda.h</a> and looks like:</p>
+<pre><code class="language-C">static inline unsigned int get_bios_ebda(void)
+{
+	unsigned int address = *(unsigned short *)phys_to_virt(0x40E);
+	address &lt;&lt;= 4;
+	return address;
+}
+</code></pre>
+<p>Let's try to understand how it works. Here we can see that we are converting physical address <code>0x40E</code> to the virtual, where <code>0x0040:0x000e</code> is the segment which contains base address of the extended BIOS data area. Don't worry that we are using <code>phys_to_virt</code> function for converting a physical address to virtual address. You can note that previously we have used <code>__va</code> macro for the same point, but <code>phys_to_virt</code> is the same:</p>
+<pre><code class="language-C">static inline void *phys_to_virt(phys_addr_t address)
+{
+         return __va(address);
+}
+</code></pre>
+<p>only with one difference: we pass argument with the <code>phys_addr_t</code> which depends on <code>CONFIG_PHYS_ADDR_T_64BIT</code>:</p>
+<pre><code class="language-C">#ifdef CONFIG_PHYS_ADDR_T_64BIT
+	typedef u64 phys_addr_t;
+#else
+	typedef u32 phys_addr_t;
+#endif
+</code></pre>
+<p>This configuration option is enabled by <code>CONFIG_PHYS_ADDR_T_64BIT</code>. After that we got virtual address of the segment which stores the base address of the extended BIOS data area, we shift it on 4 and return. After this <code>ebda_addr</code> variables contains the base address of the extended BIOS data area.</p>
+<p>In the next step we check that address of the extended BIOS data area and low memory is not less than <code>INSANE_CUTOFF</code> macro</p>
+<pre><code class="language-C">if (ebda_addr &lt; INSANE_CUTOFF)
+	ebda_addr = LOWMEM_CAP;
+
+if (lowmem &lt; INSANE_CUTOFF)
+	lowmem = LOWMEM_CAP;
+</code></pre>
+<p>which is:</p>
+<pre><code class="language-C">#define INSANE_CUTOFF		0x20000U
+</code></pre>
+<p>or 128 kilobytes. In the last step we get lower part in the low memory and extended BIOS data area and call <code>memblock_reserve</code> function which will reserve memory region for extended BIOS data between low memory and one megabyte mark:</p>
+<pre><code class="language-C">lowmem = min(lowmem, ebda_addr);
+lowmem = min(lowmem, LOWMEM_CAP);
+memblock_reserve(lowmem, 0x100000 - lowmem);
+</code></pre>
+<p><code>memblock_reserve</code> function is defined at <a href="https://github.com/torvalds/linux/blob/master/mm/memblock.c">mm/memblock.c</a> and takes two parameters:</p>
+<ul>
+<li>base physical address;</li>
+<li>region size.</li>
+</ul>
+<p>and reserves memory region for the given base address and size. <code>memblock_reserve</code> is the first function in this book from Linux kernel memory manager framework. We will take a closer look on memory manager soon, but now let's look at its implementation.</p>
+<h2 id="first-touch-of-the-linux-kernel-memory-manager-framework"><a class="header" href="#first-touch-of-the-linux-kernel-memory-manager-framework">First touch of the Linux kernel memory manager framework</a></h2>
+<p>In the previous paragraph we stopped at the call of the <code>memblock_reserve</code> function and as I said before it is the first function from the memory manager framework. Let's try to understand how it works. <code>memblock_reserve</code> function just calls:</p>
+<pre><code class="language-C">memblock_reserve_region(base, size, MAX_NUMNODES, 0);
+</code></pre>
+<p>function and passes 4 parameters there:</p>
+<ul>
+<li>physical base address of the memory region;</li>
+<li>size of the memory region;</li>
+<li>maximum number of numa nodes;</li>
+<li>flags.</li>
+</ul>
+<p>At the start of the <code>memblock_reserve_region</code> body we can see definition of the <code>memblock_type</code> structure:</p>
+<pre><code class="language-C">struct memblock_type *_rgn = &amp;memblock.reserved;
+</code></pre>
+<p>which presents the type of the memory block and looks:</p>
+<pre><code class="language-C">struct memblock_type {
+         unsigned long cnt;
+         unsigned long max;
+         phys_addr_t total_size;
+         struct memblock_region *regions;
+};
+</code></pre>
+<p>As we need to reserve memory block for extended BIOS data area, the type of the current memory region is reserved where <code>memblock</code> structure is:</p>
+<pre><code class="language-C">struct memblock {
+         bool bottom_up;
+         phys_addr_t current_limit;
+         struct memblock_type memory;
+         struct memblock_type reserved;
+#ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+         struct memblock_type physmem;
+#endif
+};
+</code></pre>
+<p>and describes generic memory block. You can see that we initialize <code>_rgn</code> by assigning it to the address of the <code>memblock.reserved</code>. <code>memblock</code> is the global variable which looks:</p>
+<pre><code class="language-C">struct memblock memblock __initdata_memblock = {
+	.memory.regions		= memblock_memory_init_regions,
+	.memory.cnt		= 1,
+	.memory.max		= INIT_MEMBLOCK_REGIONS,
+	.reserved.regions	= memblock_reserved_init_regions,
+	.reserved.cnt		= 1,
+	.reserved.max		= INIT_MEMBLOCK_REGIONS,
+#ifdef CONFIG_HAVE_MEMBLOCK_PHYS_MAP
+	.physmem.regions	= memblock_physmem_init_regions,
+	.physmem.cnt		= 1,
+	.physmem.max		= INIT_PHYSMEM_REGIONS,
+#endif
+	.bottom_up		= false,
+	.current_limit		= MEMBLOCK_ALLOC_ANYWHERE,
+};
+</code></pre>
+<p>We will not dive into detail of this variable, but we will see all details about it in the parts about memory manager. Just note that <code>memblock</code> variable defined with the <code>__initdata_memblock</code> which is:</p>
+<pre><code class="language-C">#define __initdata_memblock __meminitdata
+</code></pre>
+<p>and <code>__meminit_data</code> is:</p>
+<pre><code class="language-C">#define __meminitdata    __section(.meminit.data)
+</code></pre>
+<p>From this we can conclude that all memory blocks will be in the <code>.meminit.data</code> section. After we defined <code>_rgn</code> we print information about it with <code>memblock_dbg</code> macros. You can enable it by passing <code>memblock=debug</code> to the kernel command line.</p>
+<p>After debugging lines were printed next is the call of the following function:</p>
+<pre><code class="language-C">memblock_add_range(_rgn, base, size, nid, flags);
+</code></pre>
+<p>which adds new memory block region into the <code>.meminit.data</code> section. As we do not initialize <code>_rgn</code> but it just contains <code>&amp;memblock.reserved</code>, we just fill passed <code>_rgn</code> with the base address of the extended BIOS data area region, size of this region and flags:</p>
+<pre><code class="language-C">if (type-&gt;regions[0].size == 0) {
+    WARN_ON(type-&gt;cnt != 1 || type-&gt;total_size);
+    type-&gt;regions[0].base = base;
+    type-&gt;regions[0].size = size;
+    type-&gt;regions[0].flags = flags;
+    memblock_set_region_node(&amp;type-&gt;regions[0], nid);
+    type-&gt;total_size = size;
+    return 0;
+}
+</code></pre>
+<p>After we filled our region we can see the call of the <code>memblock_set_region_node</code> function with two parameters:</p>
+<ul>
+<li>address of the filled memory region;</li>
+<li>NUMA node id.</li>
+</ul>
+<p>where our regions represented by the <code>memblock_region</code> structure:</p>
+<pre><code class="language-C">struct memblock_region {
+    phys_addr_t base;
+	phys_addr_t size;
+	unsigned long flags;
+#ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
+    int nid;
+#endif
+};
+</code></pre>
+<p>NUMA node id depends on <code>MAX_NUMNODES</code> macro which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/numa.h">include/linux/numa.h</a>:</p>
+<pre><code class="language-C">#define MAX_NUMNODES    (1 &lt;&lt; NODES_SHIFT)
+</code></pre>
+<p>where <code>NODES_SHIFT</code> depends on <code>CONFIG_NODES_SHIFT</code> configuration parameter and defined as:</p>
+<pre><code class="language-C">#ifdef CONFIG_NODES_SHIFT
+  #define NODES_SHIFT     CONFIG_NODES_SHIFT
+#else
+  #define NODES_SHIFT     0
+#endif
+</code></pre>
+<p><code>memblock_set_region_node</code> function just fills <code>nid</code> field from <code>memblock_region</code> with the given value:</p>
+<pre><code class="language-C">static inline void memblock_set_region_node(struct memblock_region *r, int nid)
+{
+         r-&gt;nid = nid;
+}
+</code></pre>
+<p>After this we will have first reserved <code>memblock</code> for the extended BIOS data area in the <code>.meminit.data</code> section. <code>reserve_ebda_region</code> function finished its work on this step and we can go back to the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head64.c">arch/x86/kernel/head64.c</a>.</p>
+<p>We finished all preparations before the kernel entry point! The last step in the <code>x86_64_start_reservations</code> function is the call of the:</p>
+<pre><code class="language-C">start_kernel()
+</code></pre>
+<p>function from <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> file.</p>
+<p>That's all for this part.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the third part about Linux kernel insides. In next part we will see the first initialization steps in the kernel entry point - <code>start_kernel</code> function. It will be the first step before we will see launch of the first <code>init</code> process.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="http://stanislavs.org/helppc/bios_data_area.html">BIOS data area</a></li>
+<li><a href="http://www.kryslix.com/nsfaq/Q.6.html">What is in the extended BIOS data area on a PC?</a></li>
+<li><a href="https://github.com/0xAX/linux-insides/blob/master/Initialization/linux-initialization-2.md">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Initialization/linux-initialization-2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Initialization/linux-initialization-4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Initialization/linux-initialization-2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Initialization/linux-initialization-4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

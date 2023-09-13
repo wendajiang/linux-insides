@@ -1,0 +1,378 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Paging - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html" class="active">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="paging"><a class="header" href="#paging">Paging</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>In the fifth <a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-5">part</a> of the series <code>Linux kernel booting process</code> we learned about what the kernel does in its earliest stage. In the next step the kernel will initialize different things like <code>initrd</code> mounting, lockdep initialization, and many many other things, before we can see how the kernel runs the first init process.</p>
+<p>Yeah, there will be many different things, but many many and once again many work with <strong>memory</strong>.</p>
+<p>In my view, memory management is one of the most complex parts of the Linux kernel and system programming in general. This is why we need to get acquainted with paging, before we proceed with the kernel initialization stuff.</p>
+<p><code>Paging</code> is a mechanism that translates a linear memory address to a physical address. If you have read the previous parts of this book, you may remember that we saw segmentation in real mode when physical addresses are calculated by shifting a segment register by four and adding an offset. We also saw segmentation in protected mode, where we used the descriptor tables and base addresses from descriptors with offsets to calculate the physical addresses. Now we will see paging in 64-bit mode.</p>
+<p>As the Intel manual says:</p>
+<blockquote>
+<p>Paging provides a mechanism for implementing a conventional demand-paged, virtual-memory system where sections of a program’s execution environment are mapped into physical memory as needed.</p>
+</blockquote>
+<p>So... In this post I will try to explain the theory behind paging. Of course it will be closely related to the <code>x86_64</code> version of the Linux kernel, but we will not go into too much details (at least in this post).</p>
+<h2 id="enabling-paging"><a class="header" href="#enabling-paging">Enabling paging</a></h2>
+<p>There are three paging modes:</p>
+<ul>
+<li>32-bit paging;</li>
+<li>PAE paging;</li>
+<li>IA-32e paging.</li>
+</ul>
+<p>We will only explain the last mode here. To enable the <code>IA-32e paging</code> paging mode we need to do the following things:</p>
+<ul>
+<li>set the <code>CR0.PG</code> bit;</li>
+<li>set the <code>CR4.PAE</code> bit;</li>
+<li>set the <code>IA32_EFER.LME</code> bit.</li>
+</ul>
+<p>We already saw where those bits were set in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a>:</p>
+<pre><code class="language-assembly">movl	$(X86_CR0_PG | X86_CR0_PE), %eax
+movl	%eax, %cr0
+</code></pre>
+<p>and</p>
+<pre><code class="language-assembly">movl	$MSR_EFER, %ecx
+rdmsr
+btsl	$_EFER_LME, %eax
+wrmsr
+</code></pre>
+<h2 id="paging-structures"><a class="header" href="#paging-structures">Paging structures</a></h2>
+<p>Paging divides the linear address space into fixed-size pages. Pages can be mapped into the physical address space or external storage. This fixed size is <code>4096</code> bytes for the <code>x86_64</code> Linux kernel. To perform the translation from linear address to physical address, special structures are used. Every structure is <code>4096</code> bytes and contains <code>512</code> entries (this only for <code>PAE</code> and <code>IA32_EFER.LME</code> modes). Paging structures are hierarchical and the Linux kernel uses 4 level of paging in the <code>x86_64</code> architecture. The CPU uses a part of linear addresses to identify the entry in another paging structure which is at the lower level, physical memory region (<code>page frame</code>) or physical address in this region (<code>page offset</code>). The address of the top level paging structure located in the <code>cr3</code> register. We have already seen this in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a>:</p>
+<pre><code class="language-assembly">leal	pgtable(%ebx), %eax
+movl	%eax, %cr3
+</code></pre>
+<p>We build the page table structures and put the address of the top-level structure in the <code>cr3</code> register. Here <code>cr3</code> is used to store the address of the top-level structure, the <code>PML4</code> or <code>Page Global Directory</code> as it is called in the Linux kernel. <code>cr3</code> is 64-bit register and has the following structure:</p>
+<pre><code>63                  52 51                                                        32
+ --------------------------------------------------------------------------------
+|                     |                                                          |
+|    Reserved MBZ     |            Address of the top level structure            |
+|                     |                                                          |
+ --------------------------------------------------------------------------------
+31                                  12 11            5     4     3 2             0
+ --------------------------------------------------------------------------------
+|                                     |               |  P  |  P  |              |
+|  Address of the top level structure |   Reserved    |  C  |  W  |    Reserved  |
+|                                     |               |  D  |  T  |              |
+ --------------------------------------------------------------------------------
+</code></pre>
+<p>These fields have the following meanings:</p>
+<ul>
+<li>Bits 63:52 - reserved must be 0.</li>
+<li>Bits 51:12 - stores the address of the top level paging structure;</li>
+<li>Bits 11: 5 - reserved must be 0;</li>
+<li>Bits 4 : 3 - PWT or Page-Level Writethrough and PCD or Page-level cache disable indicate. These bits control the way the page or Page Table is handled by the hardware cache;</li>
+<li>Bits 2 : 0 - ignored;</li>
+</ul>
+<p>The linear address translation is following:</p>
+<ul>
+<li>A given linear address arrives to the <a href="http://en.wikipedia.org/wiki/Memory_management_unit">MMU</a> instead of memory bus.</li>
+<li>64-bit linear address is split into some parts. Only low 48 bits are significant, it means that <code>2^48</code> or 256 TBytes of linear-address space may be accessed at any given time.</li>
+<li><code>cr3</code> register stores the address of the 4 top-level paging structure.</li>
+<li><code>47:39</code> bits of the given linear address store an index into the paging structure level-4, <code>38:30</code> bits store index into the paging structure level-3, <code>29:21</code> bits store an index into the paging structure level-2, <code>20:12</code> bits store an index into the paging structure level-1 and <code>11:0</code> bits provide the offset into the physical page in byte.</li>
+</ul>
+<p>schematically, we can imagine it like this:</p>
+<p><img src="images/4_level_paging.png" alt="4-level paging" /></p>
+<p>Every access to a linear address is either a supervisor-mode access or a user-mode access. This access is determined by the <code>CPL</code> (current privilege level). If <code>CPL &lt; 3</code> it is a supervisor mode access level, otherwise it is a user mode access level. For example, the top level page table entry contains access bits and has the following structure (See <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/pgtable_types.h">arch/x86/include/asm/pgtable_types.h</a> for the bit offset definitions):</p>
+<pre><code>63  62                  52 51                                                    32
+ --------------------------------------------------------------------------------
+| N |                     |                                                     |
+|   |     Available       |     Address of the paging structure on lower level  |
+| X |                     |                                                     |
+ --------------------------------------------------------------------------------
+31                                              12 11  9 8 7 6 5   4   3 2 1     0
+ --------------------------------------------------------------------------------
+|                                                |     | M |I| | P | P |U|W|    |
+| Address of the paging structure on lower level | AVL | B |G|A| C | W | | |  P |
+|                                                |     | Z |N| | D | T |S|R|    |
+ --------------------------------------------------------------------------------
+</code></pre>
+<p>Where:</p>
+<ul>
+<li>63 bit - N/X bit (No Execute Bit) which presents ability to execute the code from physical pages mapped by the table entry;</li>
+<li>62:52 bits - ignored by CPU, used by system software;</li>
+<li>51:12 bits - stores physical address of the lower level paging structure;</li>
+<li>11: 9 bits - ignored by CPU;</li>
+<li>MBZ - must be zero bits;</li>
+<li>Ignored bits;</li>
+<li>A - accessed bit indicates was physical page or page structure accessed;</li>
+<li>PWT and PCD used for cache;</li>
+<li>U/S - user/supervisor bit controls user access to all the physical pages mapped by this table entry;</li>
+<li>R/W - read/write bit controls read/write access to all the physical pages mapped by this table entry;</li>
+<li>P - present bit. Current bit indicates was page table or physical page loaded into primary memory or not.</li>
+</ul>
+<p>Ok, we know about the paging structures and their entries. Now let's see some details about 4-level paging in the Linux kernel.</p>
+<h2 id="paging-structures-in-the-linux-kernel"><a class="header" href="#paging-structures-in-the-linux-kernel">Paging structures in the Linux kernel</a></h2>
+<p>As we've seen, the Linux kernel in <code>x86_64</code> uses 4-level page tables. Their names are:</p>
+<ul>
+<li>Page Global Directory</li>
+<li>Page Upper  Directory</li>
+<li>Page Middle Directory</li>
+<li>Page Table Entry</li>
+</ul>
+<p>After you've compiled and installed the Linux kernel, you can see the <code>System.map</code> file which stores the virtual addresses of the functions that are used by the kernel. For example:</p>
+<pre><code>$ grep &quot;start_kernel&quot; System.map
+ffffffff81efe497 T x86_64_start_kernel
+ffffffff81efeaa2 T start_kernel
+</code></pre>
+<p>We can see <code>0xffffffff81efe497</code> here. I doubt you really have that much RAM installed. But anyway, <code>start_kernel</code> and <code>x86_64_start_kernel</code> will be executed. The address space in <code>x86_64</code> is <code>2^64</code> wide, but it's too large, that's why a smaller address space is used, only 48-bits wide. So we have a situation where the physical address space is limited to 48 bits, but addressing still performs with 64 bit pointers. How is this problem solved? Look at this diagram:</p>
+<pre><code>0xffffffffffffffff  +-----------+
+                    |           |
+                    |           | Kernelspace
+                    |           |
+0xffff800000000000  +-----------+
+                    |           |
+                    |           |
+                    |   hole    |
+                    |           |
+                    |           |
+0x00007fffffffffff  +-----------+
+                    |           |
+                    |           |  Userspace
+                    |           |
+0x0000000000000000  +-----------+
+</code></pre>
+<p>This solution is <code>sign extension</code>. Here we can see that the lower 48 bits of a virtual address can be used for addressing. Bits <code>63:48</code> can be either only zeroes or only ones. Note that the virtual address space is split into 2 parts:</p>
+<ul>
+<li>Kernel space</li>
+<li>Userspace</li>
+</ul>
+<p>Userspace occupies the lower part of the virtual address space, from <code>0x000000000000000</code> to <code>0x00007fffffffffff</code> and kernel space occupies the highest part from <code>0xffff8000000000</code> to <code>0xffffffffffffffff</code>. Note that bits <code>63:47</code> is 0 for userspace and 1 for kernel space. All addresses which are in kernel space and in userspace or in other words which higher <code>63:48</code> bits are zeroes or ones are called <code>canonical</code> addresses. There is a <code>non-canonical</code> area between these memory regions. Together these two memory regions (kernel space and user space) are exactly <code>2^48</code> bits wide. We can find the virtual memory map with 4 level page tables in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/x86/x86_64/mm.txt">Documentation/x86/x86_64/mm.txt</a>:</p>
+<pre><code>0000000000000000 - 00007fffffffffff (=47 bits) user space, different per mm
+hole caused by [48:63] sign extension
+ffff800000000000 - ffff87ffffffffff (=43 bits) guard hole, reserved for hypervisor
+ffff880000000000 - ffffc7ffffffffff (=64 TB) direct mapping of all phys. memory
+ffffc80000000000 - ffffc8ffffffffff (=40 bits) hole
+ffffc90000000000 - ffffe8ffffffffff (=45 bits) vmalloc/ioremap space
+ffffe90000000000 - ffffe9ffffffffff (=40 bits) hole
+ffffea0000000000 - ffffeaffffffffff (=40 bits) virtual memory map (1TB)
+... unused hole ...
+ffffec0000000000 - fffffc0000000000 (=44 bits) kasan shadow memory (16TB)
+... unused hole ...
+ffffff0000000000 - ffffff7fffffffff (=39 bits) %esp fixup stacks
+... unused hole ...
+ffffffff80000000 - ffffffffa0000000 (=512 MB)  kernel text mapping, from phys 0
+ffffffffa0000000 - ffffffffff5fffff (=1525 MB) module mapping space
+ffffffffff600000 - ffffffffffdfffff (=8 MB) vsyscalls
+ffffffffffe00000 - ffffffffffffffff (=2 MB) unused hole
+</code></pre>
+<p>We can see here the memory map for user space, kernel space and the non-canonical area in-between them. The user space memory map is simple. Let's take a closer look at the kernel space. We can see that it starts from the guard hole which is reserved for the hypervisor. We can find the definition of this guard hole in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/page_64_types.h">arch/x86/include/asm/page_64_types.h</a>:</p>
+<pre><code class="language-C">#define __PAGE_OFFSET _AC(0xffff880000000000, UL)
+</code></pre>
+<p>Previously this guard hole and <code>__PAGE_OFFSET</code> was from <code>0xffff800000000000</code> to <code>0xffff87ffffffffff</code> to prevent access to non-canonical area, but was later extended by 3 bits for the hypervisor.</p>
+<p>Next is the lowest usable address in kernel space - <code>ffff880000000000</code>. This virtual memory region is for direct mapping of all the physical memory. After the memory space which maps all the physical addresses, the guard hole. It needs to be between the direct mapping of all the physical memory and the vmalloc area. After the virtual memory map for the first terabyte and the unused hole after it, we can see the <code>kasan</code> shadow memory. It was added by <a href="https://github.com/torvalds/linux/commit/ef7f0d6a6ca8c9e4b27d78895af86c2fbfaeedb2">commit</a> and provides the kernel address sanitizer. After the next unused hole we can see the <code>esp</code> fixup stacks (we will talk about it in other parts of this book) and the start of the kernel text mapping from the physical address - <code>0</code>. We can find the definition of this address in the same file as the <code>__PAGE_OFFSET</code>:</p>
+<pre><code class="language-C">#define __START_KERNEL_map      _AC(0xffffffff80000000, UL)
+</code></pre>
+<p>Usually kernel's <code>.text</code> starts here with the <code>CONFIG_PHYSICAL_START</code> offset. We have seen it in the post about <a href="https://github.com/0xAX/linux-insides/blob/master/Theory/ELF.md">ELF64</a>:</p>
+<pre><code>readelf -s vmlinux | grep ffffffff81000000
+     1: ffffffff81000000     0 SECTION LOCAL  DEFAULT    1
+ 65099: ffffffff81000000     0 NOTYPE  GLOBAL DEFAULT    1 _text
+ 90766: ffffffff81000000     0 NOTYPE  GLOBAL DEFAULT    1 startup_64
+</code></pre>
+<p>Here I check <code>vmlinux</code> with <code>CONFIG_PHYSICAL_START</code> is <code>0x1000000</code>. So we have the start point of the kernel <code>.text</code> - <code>0xffffffff80000000</code> and offset - <code>0x1000000</code>, the resulted virtual address will be <code>0xffffffff80000000 + 1000000 = 0xffffffff81000000</code>.</p>
+<p>After the kernel <code>.text</code> region there is the virtual memory region for kernel module, <code>vsyscalls</code> and an unused hole of 2 megabytes.</p>
+<p>We've seen how virtual memory map in the kernel is laid out and how a virtual address is translated into a physical one. Let's take the following address as example:</p>
+<pre><code>0xffffffff81000000
+</code></pre>
+<p>In binary it will be:</p>
+<pre><code>1111111111111111 111111111 111111110 000001000 000000000 000000000000
+      63:48        47:39     38:30     29:21     20:12      11:0
+</code></pre>
+<p>This virtual address is split in parts as described above:</p>
+<ul>
+<li><code>63:48</code> - bits not used;</li>
+<li><code>47:39</code> - bits store an index into the paging structure level-4;</li>
+<li><code>38:30</code> - bits store index into the paging structure level-3;</li>
+<li><code>29:21</code> - bits store an index into the paging structure level-2;</li>
+<li><code>20:12</code> - bits store an index into the paging structure level-1;</li>
+<li><code>11:0</code>  - bits provide the offset into the physical page in byte.</li>
+</ul>
+<p>That is all. Now you know a little about theory of <code>paging</code> and we can go ahead in the kernel source code and see the first initialization steps.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It's the end of this short part about paging theory. Of course this post doesn't cover every detail of paging, but soon we'll see in practice how the Linux kernel builds paging structures and works with them.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you've found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Paging">Paging on Wikipedia</a></li>
+<li><a href="http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html">Intel 64 and IA-32 architectures software developer's manual volume 3A</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Memory_management_unit">MMU</a></li>
+<li><a href="https://github.com/0xAX/linux-insides/blob/master/Theory/ELF.md">ELF64</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/x86/x86_64/mm.txt">Documentation/x86/x86_64/mm.txt</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-5">Last part - Kernel booting process</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Theory/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Theory/linux-theory-2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Theory/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Theory/linux-theory-2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

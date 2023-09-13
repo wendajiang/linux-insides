@@ -1,0 +1,526 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Handling Non-Maskable interrupts - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html" class="active">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="interrupts-and-interrupt-handling-part-6"><a class="header" href="#interrupts-and-interrupt-handling-part-6">Interrupts and Interrupt Handling. Part 6.</a></h1>
+<h2 id="non-maskable-interrupt-handler"><a class="header" href="#non-maskable-interrupt-handler">Non-maskable interrupt handler</a></h2>
+<p>It is sixth part of the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">Interrupts and Interrupt Handling in the Linux kernel</a> chapter and in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-5">part</a> we saw implementation of some exception handlers for the <a href="https://en.wikipedia.org/wiki/General_protection_fault">General Protection Fault</a> exception, divide exception, invalid <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> exceptions, etc. As I wrote in the previous part we will see implementations of the rest exceptions in this part. We will see implementation of the following handlers:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Non-maskable_interrupt">Non-Maskable</a> interrupt;</li>
+<li><a href="http://pdos.csail.mit.edu/6.828/2005/readings/i386/BOUND.htm">BOUND</a> Range Exceeded Exception;</li>
+<li><a href="https://en.wikipedia.org/wiki/Coprocessor">Coprocessor</a> exception;</li>
+<li><a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> coprocessor exception.</li>
+</ul>
+<p>in this part. So, let's start.</p>
+<h2 id="non-maskable-interrupt-handling"><a class="header" href="#non-maskable-interrupt-handling">Non-Maskable interrupt handling</a></h2>
+<p>A <a href="https://en.wikipedia.org/wiki/Non-maskable_interrupt">Non-Maskable</a> interrupt is a hardware interrupt that cannot be ignored by standard masking techniques. In a general way, a non-maskable interrupt can be generated in either of two ways:</p>
+<ul>
+<li>External hardware asserts the non-maskable interrupt <a href="https://en.wikipedia.org/wiki/CPU_socket">pin</a> on the CPU.</li>
+<li>The processor receives a message on the system bus or the APIC serial bus with a delivery mode <code>NMI</code>.</li>
+</ul>
+<p>When the processor receives a <code>NMI</code> from one of these sources, the processor handles it immediately by calling the <code>NMI</code> handler pointed to by interrupt vector which has number <code>2</code> (see table in the first <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-1">part</a>). We already filled the <a href="https://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt Descriptor Table</a> with the <a href="https://en.wikipedia.org/wiki/Interrupt_vector_table">vector number</a>, address of the <code>nmi</code> interrupt handler and <code>NMI_STACK</code> <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/x86/kernel-stacks">Interrupt Stack Table entry</a>:</p>
+<pre><code class="language-C">set_intr_gate_ist(X86_TRAP_NMI, &amp;nmi, NMI_STACK);
+</code></pre>
+<p>in the <code>trap_init</code> function which defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a> source code file. In the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">parts</a> we saw that entry points of the all interrupt handlers are defined with the:</p>
+<pre><code class="language-assembly">.macro idtentry sym do_sym has_error_code:req paranoid=0 shift_ist=-1
+ENTRY(\sym)
+...
+...
+...
+END(\sym)
+.endm
+</code></pre>
+<p>macro from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> assembly source code file. But the handler of the <code>Non-Maskable</code> interrupts is not defined with this macro. It has own entry point:</p>
+<pre><code class="language-assembly">ENTRY(nmi)
+...
+...
+...
+END(nmi)
+</code></pre>
+<p>in the same <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> assembly file. Lets dive into it and will try to understand how <code>Non-Maskable</code> interrupt handler works. The <code>nmi</code> handlers starts from the call of the:</p>
+<pre><code class="language-assembly">PARAVIRT_ADJUST_EXCEPTION_FRAME
+</code></pre>
+<p>macro but we will not dive into details about it in this part, because this macro related to the <a href="https://en.wikipedia.org/wiki/Paravirtualization">Paravirtualization</a> stuff which we will see in another chapter. After this save the content of the <code>rdx</code> register on the stack:</p>
+<pre><code class="language-assembly">pushq	%rdx
+</code></pre>
+<p>And allocated check that <code>cs</code> was not the kernel segment when an non-maskable interrupt occurs:</p>
+<pre><code class="language-assembly">cmpl	$__KERNEL_CS, 16(%rsp)
+jne	first_nmi
+</code></pre>
+<p>The <code>__KERNEL_CS</code> macro defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/segment.h">arch/x86/include/asm/segment.h</a> and represented second descriptor in the <a href="https://en.wikipedia.org/wiki/Global_Descriptor_Table">Global Descriptor Table</a>:</p>
+<pre><code class="language-C">#define GDT_ENTRY_KERNEL_CS	2
+#define __KERNEL_CS	(GDT_ENTRY_KERNEL_CS*8)
+</code></pre>
+<p>more about <code>GDT</code> you can read in the second <a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-2">part</a> of the Linux kernel booting process chapter. If <code>cs</code> is not kernel segment, it means that it is not nested <code>NMI</code> and we jump on the <code>first_nmi</code> label. Let's consider this case. First of all we put address of the current stack pointer to the <code>rdx</code> and pushes <code>1</code> to the stack in the <code>first_nmi</code> label:</p>
+<pre><code class="language-assembly">first_nmi:
+	movq	(%rsp), %rdx
+	pushq	$1
+</code></pre>
+<p>Why do we push <code>1</code> on the stack? As the comment says: <code>We allow breakpoints in NMIs</code>. On the <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a>, like other architectures, the CPU will not execute another <code>NMI</code> until the first <code>NMI</code> is completed. A <code>NMI</code> interrupt finished with the <a href="http://faydoc.tripod.com/cpu/iret.htm">iret</a> instruction like other interrupts and exceptions do it. If the <code>NMI</code> handler triggers either a <a href="https://en.wikipedia.org/wiki/Page_fault">page fault</a> or <a href="https://en.wikipedia.org/wiki/Breakpoint">breakpoint</a> or another exception which are use <code>iret</code> instruction too. If this happens while in <code>NMI</code> context, the CPU will leave <code>NMI</code> context and a new <code>NMI</code> may come in. The <code>iret</code> used to return from those exceptions will re-enable <code>NMIs</code> and we will get nested non-maskable interrupts. The problem the <code>NMI</code> handler will not return to the state that it was, when the exception triggered, but instead it will return to a state that will allow new <code>NMIs</code> to preempt the running <code>NMI</code> handler. If another <code>NMI</code> comes in before the first NMI handler is complete, the new NMI will write all over the preempted <code>NMIs</code> stack. We can have nested <code>NMIs</code> where the next <code>NMI</code> is using the top of the stack of the previous <code>NMI</code>. It means that we cannot execute it because a nested non-maskable interrupt will corrupt stack of a previous non-maskable interrupt. That's why we have allocated space on the stack for temporary variable. We will check this variable that it was set when a previous <code>NMI</code> is executing and clear if it is not nested <code>NMI</code>. We push <code>1</code> here to the previously allocated space on the stack to denote that a <code>non-maskable</code> interrupt executed currently. Remember that when and <code>NMI</code> or another exception occurs we have the following <a href="https://en.wikipedia.org/wiki/Call_stack">stack frame</a>:</p>
+<pre><code>+------------------------+
+|         SS             |
+|         RSP            |
+|        RFLAGS          |
+|         CS             |
+|         RIP            |
++------------------------+
+</code></pre>
+<p>and also an error code if an exception has it. So, after all of these manipulations our stack frame will look like this:</p>
+<pre><code>+------------------------+
+|         SS             |
+|         RSP            |
+|        RFLAGS          |
+|         CS             |
+|         RIP            |
+|         RDX            |
+|          1             |
++------------------------+
+</code></pre>
+<p>In the next step we allocate yet another <code>40</code> bytes on the stack:</p>
+<pre><code class="language-assembly">subq	$(5*8), %rsp
+</code></pre>
+<p>and pushes the copy of the original stack frame after the allocated space:</p>
+<pre><code class="language-C">.rept 5
+pushq	11*8(%rsp)
+.endr
+</code></pre>
+<p>with the <a href="http://tigcc.ticalc.org/doc/gnuasm.html#SEC116">.rept</a> assembly directive. We need in the copy of the original stack frame. Generally we need in two copies of the interrupt stack. First is <code>copied</code> interrupts stack: <code>saved</code> stack frame and <code>copied</code> stack frame. Now we pushes original stack frame to the <code>saved</code> stack frame which locates after the just allocated <code>40</code> bytes (<code>copied</code> stack frame). This stack frame is used to fixup the <code>copied</code> stack frame that a nested NMI may change. The second - <code>copied</code> stack frame modified by any nested <code>NMIs</code> to let the first <code>NMI</code> know that we triggered a second <code>NMI</code> and we should repeat the first <code>NMI</code> handler. Ok, we have made first copy of the original stack frame, now time to make second copy:</p>
+<pre><code class="language-assembly">addq	$(10*8), %rsp
+
+.rept 5
+pushq	-6*8(%rsp)
+.endr
+subq	$(5*8), %rsp
+</code></pre>
+<p>After all of these manipulations our stack frame will be like this:</p>
+<pre><code>+-------------------------+
+| original SS             |
+| original Return RSP     |
+| original RFLAGS         |
+| original CS             |
+| original RIP            |
++-------------------------+
+| temp storage for rdx    |
++-------------------------+
+| NMI executing variable  |
++-------------------------+
+| copied SS               |
+| copied Return RSP       |
+| copied RFLAGS           |
+| copied CS               |
+| copied RIP              |
++-------------------------+
+| Saved SS                |
+| Saved Return RSP        |
+| Saved RFLAGS            |
+| Saved CS                |
+| Saved RIP               |
++-------------------------+
+</code></pre>
+<p>After this we push dummy error code on the stack as we did it already in the previous exception handlers and allocate space for the general purpose registers on the stack:</p>
+<pre><code class="language-assembly">pushq	$-1
+ALLOC_PT_GPREGS_ON_STACK
+</code></pre>
+<p>We already saw implementation of the <code>ALLOC_PT_GPREGS_ON_STACK</code> macro in the third part of the interrupts <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-3">chapter</a>. This macro defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/calling.h">arch/x86/entry/calling.h</a> and yet another allocates <code>120</code> bytes on stack for the general purpose registers, from the <code>rdi</code> to the <code>r15</code>:</p>
+<pre><code class="language-assembly">.macro ALLOC_PT_GPREGS_ON_STACK addskip=0
+addq	$-(15*8+\addskip), %rsp
+.endm
+</code></pre>
+<p>After space allocation for the general registers we can see call of the <code>paranoid_entry</code>:</p>
+<pre><code class="language-assembly">call	paranoid_entry
+</code></pre>
+<p>We can remember from the previous parts this label. It pushes general purpose registers on the stack, reads <code>MSR_GS_BASE</code> <a href="https://en.wikipedia.org/wiki/Model-specific_register">Model Specific register</a> and checks its value. If the value of the <code>MSR_GS_BASE</code> is negative, we came from the kernel mode and just return from the <code>paranoid_entry</code>, in other way it means that we came from the usermode and need to execute <code>swapgs</code> instruction which will change user <code>gs</code> with the kernel <code>gs</code>:</p>
+<pre><code class="language-assembly">ENTRY(paranoid_entry)
+	cld
+	SAVE_C_REGS 8
+	SAVE_EXTRA_REGS 8
+	movl	$1, %ebx
+	movl	$MSR_GS_BASE, %ecx
+	rdmsr
+	testl	%edx, %edx
+	js	1f
+	SWAPGS
+	xorl	%ebx, %ebx
+1:	ret
+END(paranoid_entry)
+</code></pre>
+<p>Note that after the <code>swapgs</code> instruction we zeroed the <code>ebx</code> register. Next time we will check content of this register and if we executed <code>swapgs</code> than <code>ebx</code> must contain <code>0</code> and <code>1</code> in other way. In the next step we store value of the <code>cr2</code> <a href="https://en.wikipedia.org/wiki/Control_register">control register</a> to the <code>r12</code> register, because the <code>NMI</code> handler can cause <code>page fault</code> and corrupt the value of this control register:</p>
+<pre><code class="language-C">movq	%cr2, %r12
+</code></pre>
+<p>Now time to call actual <code>NMI</code> handler. We push the address of the <code>pt_regs</code> to the <code>rdi</code>, error code to the <code>rsi</code> and call the <code>do_nmi</code> handler:</p>
+<pre><code class="language-assembly">movq	%rsp, %rdi
+movq	$-1, %rsi
+call	do_nmi
+</code></pre>
+<p>We will back to the <code>do_nmi</code> little later in this part, but now let's look what occurs after the <code>do_nmi</code> will finish its execution. After the <code>do_nmi</code> handler will be finished we check the <code>cr2</code> register, because we can got page fault during <code>do_nmi</code> performed and if we got it we restore original <code>cr2</code>, in other way we jump on the label <code>1</code>. After this we test content of the <code>ebx</code> register (remember it must contain <code>0</code> if we have used <code>swapgs</code> instruction and <code>1</code> if we didn't use it) and execute <code>SWAPGS_UNSAFE_STACK</code> if it contains <code>1</code> or jump to the <code>nmi_restore</code> label. The <code>SWAPGS_UNSAFE_STACK</code> macro just expands to the <code>swapgs</code> instruction. In the <code>nmi_restore</code> label we restore general purpose registers, clear allocated space on the stack for this registers, clear our temporary variable and exit from the interrupt handler with the <code>INTERRUPT_RETURN</code> macro:</p>
+<pre><code class="language-assembly">	movq	%cr2, %rcx
+	cmpq	%rcx, %r12
+	je	1f
+	movq	%r12, %cr2
+1:
+	testl	%ebx, %ebx
+	jnz	nmi_restore
+nmi_swapgs:
+	SWAPGS_UNSAFE_STACK
+nmi_restore:
+	RESTORE_EXTRA_REGS
+	RESTORE_C_REGS
+	/* Pop the extra iret frame at once */
+	REMOVE_PT_GPREGS_FROM_STACK 6*8
+	/* Clear the NMI executing stack variable */
+	movq	$0, 5*8(%rsp)
+	INTERRUPT_RETURN
+</code></pre>
+<p>where <code>INTERRUPT_RETURN</code> is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/include/asm/irqflags.h">arch/x86/include/asm/irqflags.h</a> and just expands to the <code>iret</code> instruction. That's all.</p>
+<p>Now let's consider case when another <code>NMI</code> interrupt occurred when previous <code>NMI</code> interrupt didn't finish its execution. You can remember from the beginning of this part that we've made a check that we came from userspace and jump on the <code>first_nmi</code> in this case:</p>
+<pre><code class="language-assembly">cmpl	$__KERNEL_CS, 16(%rsp)
+jne	first_nmi
+</code></pre>
+<p>Note that in this case it is first <code>NMI</code> every time, because if the first <code>NMI</code> caught page fault, breakpoint or another exception it will be executed in the kernel mode. If we didn't come from userspace, first of all we test our temporary variable:</p>
+<pre><code class="language-assembly">cmpl	$1, -8(%rsp)
+je	nested_nmi
+</code></pre>
+<p>and if it is set to <code>1</code> we jump to the <code>nested_nmi</code> label. If it is not <code>1</code>, we test the <code>IST</code> stack. In the case of nested <code>NMIs</code> we check that we are above the <code>repeat_nmi</code>. In this case we ignore it, in other way we check that we above than <code>end_repeat_nmi</code> and jump on the <code>nested_nmi_out</code> label.</p>
+<p>Now let's look on the <code>do_nmi</code> exception handler. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/nmi.c">arch/x86/kernel/nmi.c</a> source code file and takes two parameters:</p>
+<ul>
+<li>address of the <code>pt_regs</code>;</li>
+<li>error code.</li>
+</ul>
+<p>as all exception handlers. The <code>do_nmi</code> starts from the call of the <code>nmi_nesting_preprocess</code> function and ends with the call of the <code>nmi_nesting_postprocess</code>. The <code>nmi_nesting_preprocess</code> function checks that we likely do not work with the debug stack and if we on the debug stack set the <code>update_debug_stack</code> <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a> variable to <code>1</code> and call the <code>debug_stack_set_zero</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/cpu/common.c">arch/x86/kernel/cpu/common.c</a>. This function increases the <code>debug_stack_use_ctr</code> per-cpu variable and loads new <code>Interrupt Descriptor Table</code>:</p>
+<pre><code class="language-C">static inline void nmi_nesting_preprocess(struct pt_regs *regs)
+{
+        if (unlikely(is_debug_stack(regs-&gt;sp))) {
+                debug_stack_set_zero();
+                this_cpu_write(update_debug_stack, 1);
+        }
+}
+</code></pre>
+<p>The <code>nmi_nesting_postprocess</code> function checks the <code>update_debug_stack</code> per-cpu variable which we set in the <code>nmi_nesting_preprocess</code> and resets debug stack or in another words it loads origin <code>Interrupt Descriptor Table</code>. After the call of the <code>nmi_nesting_preprocess</code> function, we can see the call of the <code>nmi_enter</code> in the <code>do_nmi</code>. The <code>nmi_enter</code> increases <code>lockdep_recursion</code> field of the interrupted process, update preempt counter and informs the <a href="https://en.wikipedia.org/wiki/Read-copy-update">RCU</a> subsystem about <code>NMI</code>. There is also <code>nmi_exit</code> function that does the same stuff as <code>nmi_enter</code>, but vice-versa. After the <code>nmi_enter</code> we increase <code>__nmi_count</code> in the <code>irq_stat</code> structure and call the <code>default_do_nmi</code> function. First of all in the <code>default_do_nmi</code> we check the address of the previous nmi and update address of the last nmi to the actual:</p>
+<pre><code class="language-C">if (regs-&gt;ip == __this_cpu_read(last_nmi_rip))
+    b2b = true;
+else
+    __this_cpu_write(swallow_nmi, false);
+
+__this_cpu_write(last_nmi_rip, regs-&gt;ip);
+</code></pre>
+<p>After this first of all we need to handle CPU-specific <code>NMIs</code>:</p>
+<pre><code class="language-C">handled = nmi_handle(NMI_LOCAL, regs, b2b);
+__this_cpu_add(nmi_stats.normal, handled);
+</code></pre>
+<p>And then non-specific <code>NMIs</code> depends on its reason:</p>
+<pre><code class="language-C">reason = x86_platform.get_nmi_reason();
+if (reason &amp; NMI_REASON_MASK) {
+	if (reason &amp; NMI_REASON_SERR)
+		pci_serr_error(reason, regs);
+	else if (reason &amp; NMI_REASON_IOCHK)
+		io_check_error(reason, regs);
+
+	__this_cpu_add(nmi_stats.external, 1);
+	return;
+}
+</code></pre>
+<p>That's all.</p>
+<h2 id="range-exceeded-exception"><a class="header" href="#range-exceeded-exception">Range Exceeded Exception</a></h2>
+<p>The next exception is the <code>BOUND</code> range exceeded exception. The <code>BOUND</code> instruction determines if the first operand (array index) is within the bounds of an array specified the second operand (bounds operand). If the index is not within bounds, a <code>BOUND</code> range exceeded exception or <code>#BR</code> is occurred. The handler of the <code>#BR</code> exception is the <code>do_bounds</code> function that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a>. The <code>do_bounds</code> handler starts with the call of the <code>exception_enter</code> function and ends with the call of the <code>exception_exit</code>:</p>
+<pre><code class="language-C">prev_state = exception_enter();
+
+if (notify_die(DIE_TRAP, &quot;bounds&quot;, regs, error_code,
+	           X86_TRAP_BR, SIGSEGV) == NOTIFY_STOP)
+    goto exit;
+...
+...
+...
+exception_exit(prev_state);
+return;
+</code></pre>
+<p>After we have got the state of the previous context, we add the exception to the <code>notify_die</code> chain and if it will return <code>NOTIFY_STOP</code> we return from the exception. More about notify chains and the <code>context tracking</code> functions you can read in the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-5">previous part</a>. In the next step we enable interrupts if they were disabled with the <code>contidional_sti</code> function that checks <code>IF</code> flag and call the <code>local_irq_enable</code> depends on its value:</p>
+<pre><code class="language-C">conditional_sti(regs);
+
+if (!user_mode(regs))
+	die(&quot;bounds&quot;, regs, error_code);
+</code></pre>
+<p>and check that if we didn't came from user mode we send <code>SIGSEGV</code> signal with the <code>die</code> function. After this we check is <a href="https://en.wikipedia.org/wiki/Intel_MPX">MPX</a> enabled or not, and if this feature is disabled we jump on the <code>exit_trap</code> label:</p>
+<pre><code class="language-C">if (!cpu_feature_enabled(X86_FEATURE_MPX)) {
+	goto exit_trap;
+}
+
+where we execute `do_trap` function (more about it you can find in the previous part):
+
+```C
+exit_trap:
+	do_trap(X86_TRAP_BR, SIGSEGV, &quot;bounds&quot;, regs, error_code, NULL);
+	exception_exit(prev_state);
+</code></pre>
+<p>If <code>MPX</code> feature is enabled we check the <code>BNDSTATUS</code> with the <code>get_xsave_field_ptr</code> function and if it is zero, it means that the <code>MPX</code> was not responsible for this exception:</p>
+<pre><code class="language-C">bndcsr = get_xsave_field_ptr(XSTATE_BNDCSR);
+if (!bndcsr)
+		goto exit_trap;
+</code></pre>
+<p>After all of this, there is still only one way when <code>MPX</code> is responsible for this exception. We will not dive into the details about Intel Memory Protection Extensions in this part, but will see it in another chapter.</p>
+<h2 id="coprocessor-exception-and-simd-exception"><a class="header" href="#coprocessor-exception-and-simd-exception">Coprocessor exception and SIMD exception</a></h2>
+<p>The next two exceptions are <a href="https://en.wikipedia.org/wiki/X87">x87 FPU</a> Floating-Point Error exception or <code>#MF</code> and <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> Floating-Point Exception or <code>#XF</code>. The first exception occurs when the <code>x87 FPU</code> has detected floating point error. For example divide by zero, numeric overflow, etc. The second exception occurs when the processor has detected <a href="https://en.wikipedia.org/wiki/SSE3">SSE/SSE2/SSE3</a> <code>SIMD</code> floating-point exception. It can be the same as for the <code>x87 FPU</code>. The handlers for these exceptions are <code>do_coprocessor_error</code> and <code>do_simd_coprocessor_error</code> are defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a> and very similar on each other. They both make a call of the <code>math_error</code> function from the same source code file but pass different vector number. The <code>do_coprocessor_error</code> passes <code>X86_TRAP_MF</code> vector number to the <code>math_error</code>:</p>
+<pre><code class="language-C">dotraplinkage void do_coprocessor_error(struct pt_regs *regs, long error_code)
+{
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	math_error(regs, error_code, X86_TRAP_MF);
+	exception_exit(prev_state);
+}
+</code></pre>
+<p>and <code>do_simd_coprocessor_error</code> passes <code>X86_TRAP_XF</code> to the <code>math_error</code> function:</p>
+<pre><code class="language-C">dotraplinkage void
+do_simd_coprocessor_error(struct pt_regs *regs, long error_code)
+{
+	enum ctx_state prev_state;
+
+	prev_state = exception_enter();
+	math_error(regs, error_code, X86_TRAP_XF);
+	exception_exit(prev_state);
+}
+</code></pre>
+<p>First of all the <code>math_error</code> function defines current interrupted task, address of its FPU, string which describes an exception, add it to the <code>notify_die</code> chain and return from the exception handler if it will return <code>NOTIFY_STOP</code>:</p>
+<pre><code class="language-C">	struct task_struct *task = current;
+	struct fpu *fpu = &amp;task-&gt;thread.fpu;
+	siginfo_t info;
+	char *str = (trapnr == X86_TRAP_MF) ? &quot;fpu exception&quot; :
+						&quot;simd exception&quot;;
+
+	if (notify_die(DIE_TRAP, str, regs, error_code, trapnr, SIGFPE) == NOTIFY_STOP)
+		return;
+</code></pre>
+<p>After this we check that we are from the kernel mode and if yes we will try to fix an exception with the <code>fixup_exception</code> function. If we cannot we fill the task with the exception's error code and vector number and die:</p>
+<pre><code class="language-C">if (!user_mode(regs)) {
+	if (!fixup_exception(regs)) {
+		task-&gt;thread.error_code = error_code;
+		task-&gt;thread.trap_nr = trapnr;
+		die(str, regs, error_code);
+	}
+	return;
+}
+</code></pre>
+<p>If we came from the user mode, we save the <code>fpu</code> state, fill the task structure with the vector number of an exception and <code>siginfo_t</code> with the number of signal, <code>errno</code>, the address where exception occurred and signal code:</p>
+<pre><code class="language-C">fpu__save(fpu);
+
+task-&gt;thread.trap_nr	= trapnr;
+task-&gt;thread.error_code = error_code;
+info.si_signo		= SIGFPE;
+info.si_errno		= 0;
+info.si_addr		= (void __user *)uprobe_get_trap_addr(regs);
+info.si_code = fpu__exception_code(fpu, trapnr);
+</code></pre>
+<p>After this we check the signal code and if it is non-zero we return:</p>
+<pre><code class="language-C">if (!info.si_code)
+	return;
+</code></pre>
+<p>Or send the <code>SIGFPE</code> signal in the end:</p>
+<pre><code class="language-C">force_sig_info(SIGFPE, &amp;info, task);
+</code></pre>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the sixth part of the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">Interrupts and Interrupt Handling</a> chapter and we saw implementation of some exception handlers in this part, like <code>non-maskable</code> interrupt, <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> and <a href="https://en.wikipedia.org/wiki/X87">x87 FPU</a> floating point exception. Finally, we finished with the <code>trap_init</code> function in this part and will go ahead in the next part. The next our point is the external interrupts and the <code>early_irq_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/General_protection_fault">General Protection Fault</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Opcode">opcode</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Non-maskable_interrupt">Non-Maskable</a></li>
+<li><a href="http://pdos.csail.mit.edu/6.828/2005/readings/i386/BOUND.htm">BOUND instruction</a></li>
+<li><a href="https://en.wikipedia.org/wiki/CPU_socket">CPU socket</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt Descriptor Table</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/x86/kernel-stacks">Interrupt Stack Table</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Paravirtualization">Paravirtualization</a></li>
+<li><a href="http://tigcc.ticalc.org/doc/gnuasm.html#SEC116">.rept</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Coprocessor">Coprocessor</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a></li>
+<li><a href="http://faydoc.tripod.com/cpu/iret.htm">iret</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Page_fault">page fault</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Breakpoint">breakpoint</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Global_Descriptor_Table">Global Descriptor Table</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Call_stack">stack frame</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Model-specific_register">Model Specific register</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">percpu</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Read-copy-update">RCU</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Intel_MPX">MPX</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X87">x87 FPU</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-5">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Interrupts/linux-interrupts-5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Interrupts/linux-interrupts-7.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Interrupts/linux-interrupts-5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Interrupts/linux-interrupts-7.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

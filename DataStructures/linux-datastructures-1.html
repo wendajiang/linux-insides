@@ -1,0 +1,356 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Doubly linked list - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html" class="active">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="data-structures-in-the-linux-kernel"><a class="header" href="#data-structures-in-the-linux-kernel">Data Structures in the Linux Kernel</a></h1>
+<h2 id="doubly-linked-list"><a class="header" href="#doubly-linked-list">Doubly linked list</a></h2>
+<p>Linux kernel provides its own implementation of doubly linked list, which you can find in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/list.h">include/linux/list.h</a>. We will start <code>Data Structures in the Linux kernel</code> from the doubly linked list data structure. Why? Because it is very popular in the kernel, just try to <a href="http://lxr.free-electrons.com/ident?i=list_head">search</a></p>
+<p>First of all, let's look on the main structure in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/types.h">include/linux/types.h</a>:</p>
+<pre><code class="language-C">struct list_head {
+	struct list_head *next, *prev;
+};
+</code></pre>
+<p>You can note that it is different from many implementations of doubly linked list which you have seen. For example, this doubly linked list structure from the <a href="http://www.gnu.org/software/libc/">glib</a> library looks like :</p>
+<pre><code class="language-C">struct GList {
+  gpointer data;
+  GList *next;
+  GList *prev;
+};
+</code></pre>
+<p>Usually a linked list structure contains a pointer to the item. The implementation of linked list in Linux kernel does not. So the main question is - <code>where does the list store the data?</code>. The actual implementation of linked list in the kernel is - <code>Intrusive list</code>. An intrusive linked list does not contain data in its nodes - A node just contains pointers to the next and previous node and list nodes part of the data that are added to the list. This makes the data structure generic, so it does not care about entry data type anymore.</p>
+<p>For example:</p>
+<pre><code class="language-C">struct nmi_desc {
+    spinlock_t lock;
+    struct list_head head;
+};
+</code></pre>
+<p>Let's look at some examples to understand how <code>list_head</code> is used in the kernel. As I already wrote about, there are many, really many different places where lists are used in the kernel. Let's look for an example in miscellaneous character drivers. Misc character drivers API from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/drivers/char/misc.c">drivers/char/misc.c</a> is used for writing small drivers for handling simple hardware or virtual devices. Those drivers share same major number:</p>
+<pre><code class="language-C">#define MISC_MAJOR              10
+</code></pre>
+<p>but have their own minor number. For example you can see it with:</p>
+<pre><code>ls -l /dev |  grep 10
+crw-------   1 root root     10, 235 Mar 21 12:01 autofs
+drwxr-xr-x  10 root root         200 Mar 21 12:01 cpu
+crw-------   1 root root     10,  62 Mar 21 12:01 cpu_dma_latency
+crw-------   1 root root     10, 203 Mar 21 12:01 cuse
+drwxr-xr-x   2 root root         100 Mar 21 12:01 dri
+crw-rw-rw-   1 root root     10, 229 Mar 21 12:01 fuse
+crw-------   1 root root     10, 228 Mar 21 12:01 hpet
+crw-------   1 root root     10, 183 Mar 21 12:01 hwrng
+crw-rw----+  1 root kvm      10, 232 Mar 21 12:01 kvm
+crw-rw----   1 root disk     10, 237 Mar 21 12:01 loop-control
+crw-------   1 root root     10, 227 Mar 21 12:01 mcelog
+crw-------   1 root root     10,  59 Mar 21 12:01 memory_bandwidth
+crw-------   1 root root     10,  61 Mar 21 12:01 network_latency
+crw-------   1 root root     10,  60 Mar 21 12:01 network_throughput
+crw-r-----   1 root kmem     10, 144 Mar 21 12:01 nvram
+brw-rw----   1 root disk      1,  10 Mar 21 12:01 ram10
+crw--w----   1 root tty       4,  10 Mar 21 12:01 tty10
+crw-rw----   1 root dialout   4,  74 Mar 21 12:01 ttyS10
+crw-------   1 root root     10,  63 Mar 21 12:01 vga_arbiter
+crw-------   1 root root     10, 137 Mar 21 12:01 vhci
+</code></pre>
+<p>Now let's have a close look at how lists are used in the misc device drivers. First of all, let's look on <code>miscdevice</code> structure:</p>
+<pre><code class="language-C">struct miscdevice
+{
+      int minor;
+      const char *name;
+      const struct file_operations *fops;
+      struct list_head list;
+      struct device *parent;
+      struct device *this_device;
+      const char *nodename;
+      mode_t mode;
+};
+</code></pre>
+<p>We can see the fourth field in the <code>miscdevice</code> structure - <code>list</code> which is a list of registered devices. In the beginning of the source code file we can see the definition of misc_list:</p>
+<pre><code class="language-C">static LIST_HEAD(misc_list);
+</code></pre>
+<p>which expands to the definition of variables with <code>list_head</code> type:</p>
+<pre><code class="language-C">#define LIST_HEAD(name) \
+	struct list_head name = LIST_HEAD_INIT(name)
+</code></pre>
+<p>and initializes it with the <code>LIST_HEAD_INIT</code> macro, which sets previous and next entries with the address of variable - name:</p>
+<pre><code class="language-C">#define LIST_HEAD_INIT(name) { &amp;(name), &amp;(name) }
+</code></pre>
+<p>Now let's look on the <code>misc_register</code> function which registers a miscellaneous device. At the start it initializes <code>miscdevice-&gt;list</code> with the <code>INIT_LIST_HEAD</code> function:</p>
+<pre><code class="language-C">INIT_LIST_HEAD(&amp;misc-&gt;list);
+</code></pre>
+<p>which does the same as the <code>LIST_HEAD_INIT</code> macro:</p>
+<pre><code class="language-C">static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+	list-&gt;next = list;
+	list-&gt;prev = list;
+}
+</code></pre>
+<p>In the next step after a device is created by the <code>device_create</code> function, we add it to the miscellaneous devices list with:</p>
+<pre><code>list_add(&amp;misc-&gt;list, &amp;misc_list);
+</code></pre>
+<p>Kernel <code>list.h</code> provides this API for the addition of a new entry to the list. Let's look at its implementation:</p>
+<pre><code class="language-C">static inline void list_add(struct list_head *new, struct list_head *head)
+{
+	__list_add(new, head, head-&gt;next);
+}
+</code></pre>
+<p>It just calls internal function <code>__list_add</code> with the 3 given parameters:</p>
+<ul>
+<li>new  - new entry.</li>
+<li>head - list head after which the new item will be inserted.</li>
+<li>head-&gt;next - next item after list head.</li>
+</ul>
+<p>Implementation of the <code>__list_add</code> is pretty simple:</p>
+<pre><code class="language-C">static inline void __list_add(struct list_head *new,
+			      struct list_head *prev,
+			      struct list_head *next)
+{
+	next-&gt;prev = new;
+	new-&gt;next = next;
+	new-&gt;prev = prev;
+	prev-&gt;next = new;
+}
+</code></pre>
+<p>Here we add a new item between <code>prev</code> and <code>next</code>. So <code>misc</code> list which we defined at the start with the <code>LIST_HEAD_INIT</code> macro will contain previous and next pointers to the <code>miscdevice-&gt;list</code>.</p>
+<p>There is still one question: how to get list's entry. There is a special macro:</p>
+<pre><code class="language-C">#define list_entry(ptr, type, member) \
+	container_of(ptr, type, member)
+</code></pre>
+<p>which gets three parameters:</p>
+<ul>
+<li>ptr - the structure list_head pointer;</li>
+<li>type - structure type;</li>
+<li>member - the name of the list_head within the structure;</li>
+</ul>
+<p>For example:</p>
+<pre><code class="language-C">const struct miscdevice *p = list_entry(v, struct miscdevice, list)
+</code></pre>
+<p>After this we can access to any <code>miscdevice</code> field with <code>p-&gt;minor</code> or <code>p-&gt;name</code> and etc... Let's look on the <code>list_entry</code> implementation:</p>
+<pre><code class="language-C">#define list_entry(ptr, type, member) \
+	container_of(ptr, type, member)
+</code></pre>
+<p>As we can see it just calls <code>container_of</code> macro with the same arguments. At first sight, the <code>container_of</code> looks strange:</p>
+<pre><code class="language-C">#define container_of(ptr, type, member) ({                      \
+    const typeof( ((type *)0)-&gt;member ) *__mptr = (ptr);    \
+    (type *)( (char *)__mptr - offsetof(type,member) );})
+</code></pre>
+<p>First of all you can note that it consists of two expressions in curly brackets. The compiler will evaluate the whole block in the curly braces and use the value of the last expression.</p>
+<p>For example:</p>
+<pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+	int i = 0;
+	printf(&quot;i = %d\n&quot;, ({++i; ++i;}));
+	return 0;
+}
+</code></pre>
+<p>will print <code>2</code>.</p>
+<p>The next point is <code>typeof</code>, it's simple. As you can understand from its name, it just returns the type of the given variable. When I first saw the implementation of the <code>container_of</code> macro, the strangest thing I found was the zero in the <code>((type *)0)</code> expression. Actually this pointer magic calculates the offset of the given field from the address of the structure, but as we have <code>0</code> here, it will be just a zero offset along with the field width. Let's look at a simple example:</p>
+<pre><code class="language-C">#include &lt;stdio.h&gt;
+
+struct s {
+        int field1;
+        char field2;
+		char field3;
+};
+
+int main() {
+	printf(&quot;%p\n&quot;, &amp;((struct s*)0)-&gt;field3);
+	return 0;
+}
+</code></pre>
+<p>will print <code>0x5</code>.</p>
+<p>The next <code>offsetof</code> macro calculates offset from the beginning of the structure to the given structure's field. Its implementation is very similar to the previous code:</p>
+<pre><code class="language-C">#define offsetof(TYPE, MEMBER) ((size_t) &amp;((TYPE *)0)-&gt;MEMBER)
+</code></pre>
+<p>Let's summarize all about <code>container_of</code> macro. The <code>container_of</code> macro returns the address of the structure by the given address of the structure's field with <code>list_head</code> type, the name of the structure field with <code>list_head</code> type and type of the container structure. At the first line this macro declares the <code>__mptr</code> pointer which points to the field of the structure that <code>ptr</code> points to and assigns <code>ptr</code> to it. Now <code>ptr</code> and <code>__mptr</code> point to the same address. Technically we don't need this line but it's useful for type checking. The first line ensures that the given structure (<code>type</code> parameter) has a member called <code>member</code>. In the second line it calculates offset of the field from the structure with the <code>offsetof</code> macro and subtracts it from the structure address. That's all.</p>
+<p>Of course <code>list_add</code> and <code>list_entry</code> is not the only functions which <code>&lt;linux/list.h&gt;</code> provides. Implementation of the doubly linked list provides the following API:</p>
+<ul>
+<li>list_add</li>
+<li>list_add_tail</li>
+<li>list_del</li>
+<li>list_replace</li>
+<li>list_move</li>
+<li>list_is_last</li>
+<li>list_empty</li>
+<li>list_cut_position</li>
+<li>list_splice</li>
+<li>list_for_each</li>
+<li>list_for_each_entry</li>
+</ul>
+<p>and many more.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../DataStructures/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../DataStructures/linux-datastructures-2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../DataStructures/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../DataStructures/linux-datastructures-2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

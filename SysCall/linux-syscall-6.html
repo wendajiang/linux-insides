@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Limits on resources in Linux - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html" class="active">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="limits-on-resources-in-linux"><a class="header" href="#limits-on-resources-in-linux">Limits on resources in Linux</a></h1>
+<p>Each process in the system uses certain amount of different resources like files, CPU time, memory and so on.</p>
+<p>Such resources are not infinite and each process and we should have an instrument to manage it. Sometimes it is useful to know current limits for a certain resource or to change its value. In this post we will consider such instruments that allow us to get information about limits for a process and increase or decrease such limits.</p>
+<p>We will start from userspace view and then we will look how it is implemented in the Linux kernel.</p>
+<p>There are three main fundamental <a href="https://en.wikipedia.org/wiki/System_call">system calls</a> to manage resource limit for a process:</p>
+<ul>
+<li><code>getrlimit</code></li>
+<li><code>setrlimit</code></li>
+<li><code>prlimit</code></li>
+</ul>
+<p>The first two allows a process to read and set limits on a system resource. The last one is extension for previous functions. The <code>prlimit</code> allows to set and read the resource limits of a process specified by <a href="https://en.wikipedia.org/wiki/Process_identifier">PID</a>. Definitions of these functions looks:</p>
+<p>The <code>getrlimit</code> is:</p>
+<pre><code class="language-C">int getrlimit(int resource, struct rlimit *rlim);
+</code></pre>
+<p>The <code>setrlimit</code> is:</p>
+<pre><code class="language-C">int setrlimit(int resource, const struct rlimit *rlim);
+</code></pre>
+<p>And the definition of the <code>prlimit</code> is:</p>
+<pre><code class="language-C">int prlimit(pid_t pid, int resource, const struct rlimit *new_limit,
+            struct rlimit *old_limit);
+</code></pre>
+<p>In the first two cases, functions takes two parameters:</p>
+<ul>
+<li><code>resource</code> - represents resource type (we will see available types later);</li>
+<li><code>rlim</code> - combination of <code>soft</code> and <code>hard</code> limits.</li>
+</ul>
+<p>There are two types of limits:</p>
+<ul>
+<li><code>soft</code></li>
+<li><code>hard</code></li>
+</ul>
+<p>The first provides actual limit for a resource of a process. The second is a ceiling value of a <code>soft</code> limit and can be set only by superuser. So, <code>soft</code> limit can never exceed related <code>hard</code> limit.</p>
+<p>Both these values are combined in the <code>rlimit</code> structure:</p>
+<pre><code class="language-C">struct rlimit {
+    rlim_t rlim_cur;
+    rlim_t rlim_max;
+};
+</code></pre>
+<p>The last one function looks a little bit complex and takes <code>4</code> arguments. Besides <code>resource</code> argument, it takes:</p>
+<ul>
+<li><code>pid</code> - specifies an ID of a process on which the <code>prlimit</code> should be executed;</li>
+<li><code>new_limit</code> - provides new limits values if it is not <code>NULL</code>;</li>
+<li><code>old_limit</code> - current <code>soft</code> and <code>hard</code> limits will be placed here if it is not <code>NULL</code>.</li>
+</ul>
+<p>Exactly <code>prlimit</code> function is used by <a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html#index-ulimit">ulimit</a> util. We can verify this with the help of <a href="https://linux.die.net/man/1/strace">strace</a> util.</p>
+<p>For example:</p>
+<pre><code>~$ strace ulimit -s 2&gt;&amp;1 | grep rl
+
+prlimit64(0, RLIMIT_NPROC, NULL, {rlim_cur=63727, rlim_max=63727}) = 0
+prlimit64(0, RLIMIT_NOFILE, NULL, {rlim_cur=1024, rlim_max=4*1024}) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+</code></pre>
+<p>Here we can see <code>prlimit64</code>, but not the <code>prlimit</code>. The fact is that we see underlying system call here instead of library call.</p>
+<p>Now let's look at list of available resources:</p>
+<table><thead><tr><th>Resource</th><th>Description</th></tr></thead><tbody>
+<tr><td>RLIMIT_CPU</td><td>CPU time limit given in seconds</td></tr>
+<tr><td>RLIMIT_FSIZE</td><td>the maximum size of files that a process may create</td></tr>
+<tr><td>RLIMIT_DATA</td><td>the maximum  size  of  the process's data segment</td></tr>
+<tr><td>RLIMIT_STACK</td><td>the maximum size of the process stack in bytes</td></tr>
+<tr><td>RLIMIT_CORE</td><td>the maximum size of a <a href="http://man7.org/linux/man-pages/man5/core.5.html">core</a> file.</td></tr>
+<tr><td>RLIMIT_RSS</td><td>the number of bytes that can be allocated for a process in RAM</td></tr>
+<tr><td>RLIMIT_NPROC</td><td>the maximum number of processes that can be created by a user</td></tr>
+<tr><td>RLIMIT_NOFILE</td><td>the maximum number of a file descriptor that can be opened by a process</td></tr>
+<tr><td>RLIMIT_MEMLOCK</td><td>the maximum number of bytes of memory that may be locked into RAM by <a href="http://man7.org/linux/man-pages/man2/mlock.2.html">mlock</a>.</td></tr>
+<tr><td>RLIMIT_AS</td><td>the maximum size of virtual memory in bytes.</td></tr>
+<tr><td>RLIMIT_LOCKS</td><td>the maximum number <a href="https://linux.die.net/man/1/flock">flock</a> and locking related <a href="http://man7.org/linux/man-pages/man2/fcntl.2.html">fcntl</a> calls</td></tr>
+<tr><td>RLIMIT_SIGPENDING</td><td>maximum number of <a href="http://man7.org/linux/man-pages/man7/signal.7.html">signals</a> that may be queued for a user of the calling process</td></tr>
+<tr><td>RLIMIT_MSGQUEUE</td><td>the number of bytes that can be allocated for <a href="http://man7.org/linux/man-pages/man7/mq_overview.7.html">POSIX message queues</a></td></tr>
+<tr><td>RLIMIT_NICE</td><td>the maximum <a href="https://linux.die.net/man/1/nice">nice</a> value that can be set by a process</td></tr>
+<tr><td>RLIMIT_RTPRIO</td><td>maximum real-time priority value</td></tr>
+<tr><td>RLIMIT_RTTIME</td><td>maximum number of microseconds that a process may be scheduled under real-time scheduling policy without making blocking system call</td></tr>
+</tbody></table>
+<p>If you're looking into source code of open source projects, you will note that reading or updating of a resource limit is quite widely used operation.</p>
+<p>For example: <a href="https://github.com/systemd/systemd/blob/01a45898fce8def67d51332bccc410eb1e8710e7/src/core/main.c">systemd</a></p>
+<pre><code class="language-C">/* Don't limit the coredump size */
+(void) setrlimit(RLIMIT_CORE, &amp;RLIMIT_MAKE_CONST(RLIM_INFINITY));
+</code></pre>
+<p>Or <a href="https://github.com/haproxy/haproxy/blob/25f067ccec52f53b0248a05caceb7841a3cb99df/src/haproxy.c">haproxy</a>:</p>
+<pre><code class="language-C">getrlimit(RLIMIT_NOFILE, &amp;limit);
+if (limit.rlim_cur &lt; global.maxsock) {
+	Warning(&quot;[%s.main()] FD limit (%d) too low for maxconn=%d/maxsock=%d. Please raise 'ulimit-n' to %d or more to avoid any trouble.\n&quot;,
+		argv[0], (int)limit.rlim_cur, global.maxconn, global.maxsock, global.maxsock);
+}
+</code></pre>
+<p>We've just saw a little bit about resources limits related stuff in the userspace, now let's look at the same system calls in the Linux kernel.</p>
+<h2 id="limits-on-resource-in-the-linux-kernel"><a class="header" href="#limits-on-resource-in-the-linux-kernel">Limits on resource in the Linux kernel</a></h2>
+<p>Both implementation of <code>getrlimit</code> system call and <code>setrlimit</code> looks similar. Both they execute <code>do_prlimit</code> function that is core implementation of the <code>prlimit</code> system call and copy from/to given <code>rlimit</code> from/to userspace:</p>
+<p>The <code>getrlimit</code>:</p>
+<pre><code class="language-C">SYSCALL_DEFINE2(getrlimit, unsigned int, resource, struct rlimit __user *, rlim)
+{
+	struct rlimit value;
+	int ret;
+
+	ret = do_prlimit(current, resource, NULL, &amp;value);
+	if (!ret)
+		ret = copy_to_user(rlim, &amp;value, sizeof(*rlim)) ? -EFAULT : 0;
+
+	return ret;
+}
+</code></pre>
+<p>and <code>setrlimit</code>:</p>
+<pre><code class="language-C">SYSCALL_DEFINE2(setrlimit, unsigned int, resource, struct rlimit __user *, rlim)
+{
+	struct rlimit new_rlim;
+
+	if (copy_from_user(&amp;new_rlim, rlim, sizeof(*rlim)))
+		return -EFAULT;
+	return do_prlimit(current, resource, &amp;new_rlim, NULL);
+}
+</code></pre>
+<p>Implementations of these system calls are defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/sys.c">kernel/sys.c</a> kernel source code file.</p>
+<p>First of all the <code>do_prlimit</code> function executes a check that the given resource is valid:</p>
+<pre><code class="language-C">if (resource &gt;= RLIM_NLIMITS)
+	return -EINVAL;
+</code></pre>
+<p>and in a failure case returns <code>-EINVAL</code> error. After this check will pass successfully and new limits was passed as non <code>NULL</code> value, two following checks:</p>
+<pre><code class="language-C">if (new_rlim) {
+	if (new_rlim-&gt;rlim_cur &gt; new_rlim-&gt;rlim_max)
+		return -EINVAL;
+	if (resource == RLIMIT_NOFILE &amp;&amp;
+			new_rlim-&gt;rlim_max &gt; sysctl_nr_open)
+		return -EPERM;
+}
+</code></pre>
+<p>check that the given <code>soft</code> limit does not exceed <code>hard</code> limit and in a case when the given resource is the maximum number of a file descriptors that hard limit is not greater than <code>sysctl_nr_open</code> value. The value of the <code>sysctl_nr_open</code> can be found via <a href="https://en.wikipedia.org/wiki/Procfs">procfs</a>:</p>
+<pre><code>~$ cat /proc/sys/fs/nr_open
+1048576
+</code></pre>
+<p>After all of these checks we lock <code>tasklist</code> to be sure that <a href="">signal</a> handlers related things will not be destroyed while we updating limits for a given resource:</p>
+<pre><code class="language-C">read_lock(&amp;tasklist_lock);
+...
+...
+...
+read_unlock(&amp;tasklist_lock);
+</code></pre>
+<p>We need to do this because <code>prlimit</code> system call allows us to update limits of another task by the given pid. As task list is locked, we take the <code>rlimit</code> instance that is responsible for the given resource limit of the given process:</p>
+<pre><code class="language-C">rlim = tsk-&gt;signal-&gt;rlim + resource;
+</code></pre>
+<p>where the <code>tsk-&gt;signal-&gt;rlim</code> is just array of <code>struct rlimit</code> that represents certain resources. And if the <code>new_rlim</code> is not <code>NULL</code> we just update its value. If <code>old_rlim</code> is not <code>NULL</code> we fill it:</p>
+<pre><code class="language-C">if (old_rlim)
+    *old_rlim = *rlim;
+</code></pre>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the second part that describes implementation of the system calls in the Linux kernel. If you have questions or suggestions, ping me on Twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me an <a href="mailto:anotherworldofworld@gmail.com">email</a>, or just create an <a href="https://github.com/0xAX/linux-internals/issues/new">issue</a>.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-internals">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/System_call">system calls</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Process_identifier">PID</a></li>
+<li><a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Builtins.html#index-ulimit">ulimit</a></li>
+<li><a href="https://linux.die.net/man/1/strace">strace</a></li>
+<li><a href="http://man7.org/linux/man-pages/man7/mq_overview.7.html">POSIX message queues</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../SysCall/linux-syscall-5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Timers/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../SysCall/linux-syscall-5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Timers/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

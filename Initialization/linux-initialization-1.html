@@ -1,0 +1,637 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>First steps in the kernel - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html" class="active">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-initialization-part-1"><a class="header" href="#kernel-initialization-part-1">Kernel initialization. Part 1.</a></h1>
+<h2 id="first-steps-in-the-kernel-code"><a class="header" href="#first-steps-in-the-kernel-code">First steps in the kernel code</a></h2>
+<p>The previous <a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-6">post</a> was a last part of the Linux kernel <a href="https://0xax.gitbook.io/linux-insides/summary/booting">booting process</a> chapter and now we are starting to dive into initialization process of the Linux kernel. After the image of the Linux kernel is decompressed and placed in a correct place in memory, it starts to work. All previous parts describe the work of the Linux kernel setup code which does preparation before the first bytes of the Linux kernel code will be executed. From now we are in the kernel and all parts of this chapter will be devoted to the initialization process of the kernel before it will launch process with <a href="https://en.wikipedia.org/wiki/Process_identifier">pid</a> <code>1</code>. There are many things to do before the kernel will start first <code>init</code> process. Hope we will see all of the preparations before kernel will start in this big chapter. We will start from the kernel entry point, which is located in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a> and will move further and further. We will see first preparations like early page tables initialization, switch to a new descriptor in kernel space and many many more, before we will see the <code>start_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/master/init/main.c">init/main.c</a> will be called.</p>
+<p>In the last <a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-6">part</a> of the previous <a href="https://0xax.gitbook.io/linux-insides/summary/booting">chapter</a> we stopped at the jmp instruction from the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a> assembly source code file:</p>
+<pre><code class="language-assembly">jmp	*%rax
+</code></pre>
+<p>At this moment the <code>rax</code> register contains address of the Linux kernel entry point which was obtained as a result of the call of the <code>decompress_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/boot/compressed/misc.c">arch/x86/boot/compressed/misc.c</a> source code file. So, our last instruction in the kernel setup code is a jump on the kernel entry point. We already know where the entry point of the Linux kernel is defined, so we are able to start to learn what Linux kernel does after the start.</p>
+<h2 id="first-steps-in-the-kernel"><a class="header" href="#first-steps-in-the-kernel">First steps in the kernel</a></h2>
+<p>Okay, we got the address of the decompressed kernel image from the <code>decompress_kernel</code> function into <code>rax</code> register and just jumped there. As we already know the entry point of the decompressed kernel image starts in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a> assembly source code file and at the beginning of it, we can see following definitions:</p>
+<pre><code class="language-assembly">    .text
+	__HEAD
+	.code64
+	.globl startup_64
+startup_64:
+	...
+	...
+	...
+</code></pre>
+<p>We can see definition of the <code>startup_64</code> routine that is defined in the <code>__HEAD</code> section, which is just a macro which expands to the definition of executable <code>.head.text</code> section:</p>
+<pre><code class="language-C">#define __HEAD		.section	&quot;.head.text&quot;,&quot;ax&quot;
+</code></pre>
+<p>We can see definition of this section in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/vmlinux.lds.S">arch/x86/kernel/vmlinux.lds.S</a> linker script:</p>
+<pre><code>.text : AT(ADDR(.text) - LOAD_OFFSET) {
+	_text = .;
+	...
+	...
+	...
+} :text = 0x9090
+</code></pre>
+<p>The ADDR keyword above returns the absolute address (here means virtual address) of the named section. The AT keyword above specifies the load address (here means physical address) of the section. The full syntax of section definition is defined in the <a href="https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_node/ld_21.html">Using ld The GNU linker</a>. </p>
+<p>Besides the definition of the <code>.text</code> section, we can understand default virtual and physical addresses from the linker script. Note that address of the <code>_text</code> is location counter which is defined as:</p>
+<pre><code>. = __START_KERNEL;
+</code></pre>
+<p>for <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a>. The definition of the <code>__START_KERNEL</code> macro is located in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/include/asm/page_types.h">arch/x86/include/asm/page_types.h</a> header file and represented by the sum of the base virtual address of the kernel mapping and physical start:</p>
+<pre><code class="language-C">#define __START_KERNEL	(__START_KERNEL_map + __PHYSICAL_START)
+
+#define __PHYSICAL_START  ALIGN(CONFIG_PHYSICAL_START, CONFIG_PHYSICAL_ALIGN)
+</code></pre>
+<p>Or in other words:</p>
+<ul>
+<li>Base physical address of the Linux kernel - <code>0x1000000</code>;</li>
+<li>Base virtual address of the Linux kernel - <code>0xffffffff81000000</code>.</li>
+</ul>
+<p>After we sanitized CPU configuration, we call <code>__startup_64</code> function which is defined in <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/head64.c">arch/x86/kernel/head64.c</a>:</p>
+<pre><code class="language-assembly">	leaq	_text(%rip), %rdi
+	pushq	%rsi
+	call	__startup_64
+	popq	%rsi
+</code></pre>
+<pre><code class="language-C">unsigned long __head __startup_64(unsigned long physaddr,
+				 struct boot_params *bp)
+{
+	unsigned long load_delta, *p;
+	unsigned long pgtable_flags;
+	pgdval_t *pgd;
+	p4dval_t *p4d;
+	pudval_t *pud;
+	pmdval_t *pmd, pmd_entry;
+	pteval_t *mask_ptr;
+	bool la57;
+	int i;
+	unsigned int *next_pgt_ptr;
+	...
+	...
+	...
+}
+</code></pre>
+<p>Since <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization#Linux">kASLR</a> is enabled, the address <code>startup_64</code> routine was loaded may be different from the address compiled to run at, so we need to calculate the delta with the following code:</p>
+<pre><code class="language-C">	load_delta = physaddr - (unsigned long)(_text - __START_KERNEL_map);
+</code></pre>
+<p>As a result, <code>load_delta</code> contains the delta between the address compiled to run at and the address actually loaded.</p>
+<p>After we got the delta, we check if <code>_text</code> address is correctly aligned for <code>2</code> megabytes. We will do it with the following code:</p>
+<pre><code class="language-C">	if (load_delta &amp; ~PMD_PAGE_MASK)
+		for (;;);
+</code></pre>
+<p>If <code>_text</code> address is not aligned for <code>2</code> megabytes, we enter infinite loop. The <code>PMD_PAGE_MASK</code> indicates the mask for <code>Page middle directory</code> (read <a href="https://0xax.gitbook.io/linux-insides/summary/theory/linux-theory-1">Paging</a> about it) and is defined as:</p>
+<pre><code class="language-C">#define PMD_PAGE_MASK           (~(PMD_PAGE_SIZE-1))
+</code></pre>
+<p>where <code>PMD_PAGE_SIZE</code> macro is defined as:</p>
+<pre><code class="language-C">#define PMD_PAGE_SIZE           (_AC(1, UL) &lt;&lt; PMD_SHIFT)
+#define PMD_SHIFT		21
+</code></pre>
+<p>As we can easily calculate, <code>PMD_PAGE_SIZE</code> is <code>2</code> megabytes.</p>
+<p>If <a href="https://en.wikipedia.org/wiki/Zen_%28microarchitecture%29#Enhanced_security_and_virtualization_support">SME</a> is supported and enabled, we activate it and include the SME encryption mask in <code>load_delta</code>:</p>
+<pre><code class="language-C">	sme_enable(bp);
+	load_delta += sme_get_me_mask();
+</code></pre>
+<p>Okay, we did some early checks and now we can move on.</p>
+<h2 id="fix-base-addresses-of-page-tables"><a class="header" href="#fix-base-addresses-of-page-tables">Fix base addresses of page tables</a></h2>
+<p>In the next step we fixup the physical addresses in the page table:</p>
+<pre><code class="language-C">	pgd = fixup_pointer(&amp;early_top_pgt, physaddr);
+	pud = fixup_pointer(&amp;level3_kernel_pgt, physaddr);
+	pmd = fixup_pointer(level2_fixmap_pgt, physaddr);
+</code></pre>
+<p>So, let's look at the definition of <code>fixup_pointer</code> function which returns physical address of the passed argument:</p>
+<pre><code class="language-C">static void __head *fixup_pointer(void *ptr, unsigned long physaddr)
+{
+	return ptr - (void *)_text + (void *)physaddr;
+}
+</code></pre>
+<p>Next we'll focus on <code>early_top_pgt</code> and the other page table symbols which we saw above. Let's try to understand what these symbols mean. First of all let's look at their definition:</p>
+<pre><code class="language-assembly">NEXT_PAGE(early_top_pgt)
+	.fill	512,8,0
+	.fill	PTI_USER_PGD_FILL,8,0
+
+NEXT_PAGE(level3_kernel_pgt)
+	.fill	L3_START_KERNEL,8,0
+	.quad	level2_kernel_pgt - __START_KERNEL_map + _KERNPG_TABLE_NOENC
+	.quad	level2_fixmap_pgt - __START_KERNEL_map + _PAGE_TABLE_NOENC
+
+NEXT_PAGE(level2_kernel_pgt)
+	PMDS(0, __PAGE_KERNEL_LARGE_EXEC,
+		KERNEL_IMAGE_SIZE/PMD_SIZE)
+
+NEXT_PAGE(level2_fixmap_pgt)
+	.fill	506,8,0
+	.quad	level1_fixmap_pgt - __START_KERNEL_map + _PAGE_TABLE_NOENC
+	.fill	5,8,0
+
+NEXT_PAGE(level1_fixmap_pgt)
+	.fill	512,8,0
+</code></pre>
+<p>Looks hard, but it isn't. First of all let's look at the <code>early_top_pgt</code>. It starts with the <code>4096</code> bytes of zeros (or <code>8192</code> bytes if <code>CONFIG_PAGE_TABLE_ISOLATION</code> is enabled), it means that we don't use the first <code>512</code> entries. And after this we can see <code>level3_kernel_pgt</code> entry. At the start of its definition, we can see that it is filled with the <code>4080</code> bytes of zeros (<code>L3_START_KERNEL</code> equals <code>510</code>). Subsequently, it stores two entries which map kernel space. Note that we subtract <code>__START_KERNEL_map</code> from <code>level2_kernel_pgt</code> and <code>level2_fixmap_pgt</code>. As we know <code>__START_KERNEL_map</code> is a base virtual address of the kernel text, so if we subtract <code>__START_KERNEL_map</code>, we will get physical addresses of the <code>level2_kernel_pgt</code> and <code>level2_fixmap_pgt</code>.</p>
+<p>Next let's look at <code>_KERNPG_TABLE_NOENC</code> and <code>_PAGE_TABLE_NOENC</code>, these are just page entry access rights:</p>
+<pre><code class="language-C">#define _KERNPG_TABLE_NOENC   (_PAGE_PRESENT | _PAGE_RW | _PAGE_ACCESSED | \
+			       _PAGE_DIRTY)
+#define _PAGE_TABLE_NOENC     (_PAGE_PRESENT | _PAGE_RW | _PAGE_USER | \
+			       _PAGE_ACCESSED | _PAGE_DIRTY)
+</code></pre>
+<p>The <code>level2_kernel_pgt</code> is page table entry which contains pointer to the page middle directory which maps kernel space. It calls the <code>PDMS</code> macro which creates <code>512</code> megabytes from the <code>__START_KERNEL_map</code> for kernel <code>.text</code> (after these <code>512</code> megabytes will be module memory space).</p>
+<p>The <code>level2_fixmap_pgt</code> is a virtual addresses which can refer to any physical addresses even under kernel space. They are represented by the <code>4048</code> bytes of zeros, the <code>level1_fixmap_pgt</code> entry, <code>8</code> megabytes reserved for <a href="https://lwn.net/Articles/446528/">vsyscalls</a> mapping and <code>2</code> megabytes of hole.</p>
+<p>You can read more about it in the <a href="https://0xax.gitbook.io/linux-insides/summary/theory/linux-theory-1">Paging</a> part.</p>
+<p>Now, after we saw the definitions of these symbols, let's get back to the code. Next we initialize last entry of <code>pgd</code> with <code>level3_kernel_pgt</code>:</p>
+<pre><code class="language-C">	pgd[pgd_index(__START_KERNEL_map)] = level3_kernel_pgt - __START_KERNEL_map + _PAGE_TABLE_NOENC;
+</code></pre>
+<p>All of <code>p*d</code> addresses may be wrong if the <code>startup_64</code> is not equal to default <code>0x1000000</code> address. Remember that the <code>load_delta</code> contains delta between the address of the <code>startup_64</code> symbol which was got during kernel <a href="https://en.wikipedia.org/wiki/Linker_%28computing%29">linking</a> and the actual address. So we add the delta to the certain entries of the <code>p*d</code>.</p>
+<pre><code class="language-C">	pgd[pgd_index(__START_KERNEL_map)] += load_delta;
+	pud[510] += load_delta;
+	pud[511] += load_delta;
+	pmd[506] += load_delta;
+</code></pre>
+<p>After all of this we will have:</p>
+<pre><code>early_top_pgt[511] -&gt; level3_kernel_pgt[0]
+level3_kernel_pgt[510] -&gt; level2_kernel_pgt[0]
+level3_kernel_pgt[511] -&gt; level2_fixmap_pgt[0]
+level2_kernel_pgt[0]   -&gt; 512 MB kernel mapping
+level2_fixmap_pgt[506] -&gt; level1_fixmap_pgt
+</code></pre>
+<p>Note that we didn't fixup base address of the <code>early_top_pgt</code> and some of other page table directories, because we will see this when building/filling structures of these page tables. As we corrected base addresses of the page tables, we can start to build it.</p>
+<h2 id="identity-mapping-setup"><a class="header" href="#identity-mapping-setup">Identity mapping setup</a></h2>
+<p>Now we can see the set up of identity mapping of early page tables. In Identity Mapped Paging, virtual addresses are mapped to physical addresses identically. Let's look at it in detail. First of all we replace <code>pud</code> and <code>pmd</code> with the pointer to first and second entry of <code>early_dynamic_pgts</code>:</p>
+<pre><code class="language-C">	next_pgt_ptr = fixup_pointer(&amp;next_early_pgt, physaddr);
+	pud = fixup_pointer(early_dynamic_pgts[(*next_pgt_ptr)++], physaddr);
+	pmd = fixup_pointer(early_dynamic_pgts[(*next_pgt_ptr)++], physaddr);
+</code></pre>
+<p>Let's look at the <code>early_dynamic_pgts</code> definition:</p>
+<pre><code class="language-assembly">NEXT_PAGE(early_dynamic_pgts)
+	.fill	512*EARLY_DYNAMIC_PAGE_TABLES,8,0
+</code></pre>
+<p>which will store temporary page tables for early kernel.</p>
+<p>Next we initialize <code>pgtable_flags</code> which will be used when initializing <code>p*d</code> entries later:</p>
+<pre><code class="language-C">	pgtable_flags = _KERNPG_TABLE_NOENC + sme_get_me_mask();
+</code></pre>
+<p><code>sme_get_me_mask</code> function returns <code>sme_me_mask</code> which was initialized in <code>sme_enable</code> function.</p>
+<p>Next we fill two entries of <code>pgd</code> with <code>pud</code> plus <code>pgtable_flags</code> which we initialized above:</p>
+<pre><code class="language-C">	i = (physaddr &gt;&gt; PGDIR_SHIFT) % PTRS_PER_PGD;
+	pgd[i + 0] = (pgdval_t)pud + pgtable_flags;
+	pgd[i + 1] = (pgdval_t)pud + pgtable_flags;
+</code></pre>
+<p><code>PGDIR_SHFT</code> indicates the mask for page global directory bits in a virtual address. Here we calculate modulo with <code>PTRS_PER_PGD</code> (which expands to <code>512</code>) so as not to access the index greater than <code>512</code>. There are macro for all types of page directories:</p>
+<pre><code class="language-C">#define PGDIR_SHIFT     39
+#define PTRS_PER_PGD	512
+#define PUD_SHIFT       30
+#define PTRS_PER_PUD	512
+#define PMD_SHIFT       21
+#define PTRS_PER_PMD	512
+</code></pre>
+<p>We do the almost same thing above:</p>
+<pre><code class="language-C">	i = (physaddr &gt;&gt; PUD_SHIFT) % PTRS_PER_PUD;
+	pud[i + 0] = (pudval_t)pmd + pgtable_flags;
+	pud[i + 1] = (pudval_t)pmd + pgtable_flags;
+</code></pre>
+<p>Next we initialize <code>pmd_entry</code> and filter out unsupported <code>__PAGE_KERNEL_*</code> bits:</p>
+<pre><code class="language-C">	pmd_entry = __PAGE_KERNEL_LARGE_EXEC &amp; ~_PAGE_GLOBAL;
+	mask_ptr = fixup_pointer(&amp;__supported_pte_mask, physaddr);
+	pmd_entry &amp;= *mask_ptr;
+	pmd_entry += sme_get_me_mask();
+	pmd_entry += physaddr;
+</code></pre>
+<p>Next we fill all <code>pmd</code> entries to cover full size of the kernel:</p>
+<pre><code class="language-C">	for (i = 0; i &lt; DIV_ROUND_UP(_end - _text, PMD_SIZE); i++) {
+		int idx = i + (physaddr &gt;&gt; PMD_SHIFT) % PTRS_PER_PMD;
+		pmd[idx] = pmd_entry + i * PMD_SIZE;
+	}
+</code></pre>
+<p>Next we fixup the kernel text+data virtual addresses. Note that we might write invalid pmds, when the kernel is relocated (<code>cleanup_highmap</code> function fixes this up along with the mappings beyond <code>_end</code>).</p>
+<pre><code class="language-C">	pmd = fixup_pointer(level2_kernel_pgt, physaddr);
+	for (i = 0; i &lt; PTRS_PER_PMD; i++) {
+		if (pmd[i] &amp; _PAGE_PRESENT)
+			pmd[i] += load_delta;
+	}
+</code></pre>
+<p>Next we remove the memory encryption mask to obtain the true physical address (remember that <code>load_delta</code> includes the mask):</p>
+<pre><code class="language-C">	*fixup_long(&amp;phys_base, physaddr) += load_delta - sme_get_me_mask();
+</code></pre>
+<p><code>phys_base</code> must match the first entry in <code>level2_kernel_pgt</code>.</p>
+<p>As final step of <code>__startup_64</code> function, we encrypt the kernel (if SME is active) and return the SME encryption mask to be used as a modifier for the initial page directory entry programmed into <code>cr3</code> register:</p>
+<pre><code class="language-C">	sme_encrypt_kernel(bp);
+	return sme_get_me_mask();
+</code></pre>
+<p>Now let's get back to assembly code. We prepare for next paragraph with following code:</p>
+<pre><code class="language-assembly">	addq	$(early_top_pgt - __START_KERNEL_map), %rax
+	jmp 1f
+</code></pre>
+<p>which adds physical address of <code>early_top_pgt</code> to <code>rax</code> register so that <code>rax</code> register contains sum of the address and the SME encryption mask.</p>
+<p>That's all for now. Our early paging is prepared and we just need to finish last preparation before we will jump into kernel entry point.</p>
+<h2 id="last-preparation-before-jump-at-the-kernel-entry-point"><a class="header" href="#last-preparation-before-jump-at-the-kernel-entry-point">Last preparation before jump at the kernel entry point</a></h2>
+<p>After that we jump to the label <code>1</code> we enable <code>PAE</code>, <code>PGE</code> (Paging Global Extension) and put the content of the <code>phys_base</code> (see above) to the <code>rax</code> register and fill <code>cr3</code> register with it:</p>
+<pre><code class="language-assembly">1:
+	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
+	movq	%rcx, %cr4
+
+	addq	phys_base(%rip), %rax
+	movq	%rax, %cr3
+</code></pre>
+<p>In the next step we check that CPU supports <a href="http://en.wikipedia.org/wiki/NX_bit">NX</a> bit with:</p>
+<pre><code class="language-assembly">	movl	$0x80000001, %eax
+	cpuid
+	movl	%edx,%edi
+</code></pre>
+<p>We put <code>0x80000001</code> value to the <code>eax</code> and execute <code>cpuid</code> instruction for getting the extended processor info and feature bits. The result will be in the <code>edx</code> register which we put to the <code>edi</code>.</p>
+<p>Now we put <code>0xc0000080</code> or <code>MSR_EFER</code> to the <code>ecx</code> and execute <code>rdmsr</code> instruction for the reading model specific register.</p>
+<pre><code class="language-assembly">	movl	$MSR_EFER, %ecx
+	rdmsr
+</code></pre>
+<p>The result will be in the <code>edx:eax</code>. General view of the <code>EFER</code> is following:</p>
+<pre><code>63                                                                              32
+ --------------------------------------------------------------------------------
+|                                                                               |
+|                                Reserved MBZ                                   |
+|                                                                               |
+ --------------------------------------------------------------------------------
+31                            16  15      14      13   12  11   10  9  8 7  1   0
+ --------------------------------------------------------------------------------
+|                              | T |       |       |    |   |   |   |   |   |   |
+| Reserved MBZ                 | C | FFXSR | LMSLE |SVME|NXE|LMA|MBZ|LME|RAZ|SCE|
+|                              | E |       |       |    |   |   |   |   |   |   |
+ --------------------------------------------------------------------------------
+</code></pre>
+<p>We will not see all fields in details here, but we will learn about this and other <code>MSRs</code> in a special part about it. As we read <code>EFER</code> to the <code>edx:eax</code>, we check <code>_EFER_SCE</code> or zero bit which is <code>System Call Extensions</code> with <code>btsl</code> instruction and set it to one. By the setting <code>SCE</code> bit we enable <code>SYSCALL</code> and <code>SYSRET</code> instructions. In the next step we check 20th bit in the <code>edi</code>, remember that this register stores result of the <code>cpuid</code> (see above). If <code>20</code> bit is set (<code>NX</code> bit) we just write <code>EFER_SCE</code> to the model specific register.</p>
+<pre><code class="language-assembly">	btsl	$_EFER_SCE, %eax
+	btl	$20,%edi
+	jnc     1f
+	btsl	$_EFER_NX, %eax
+	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
+1:	wrmsr
+</code></pre>
+<p>If the <a href="https://en.wikipedia.org/wiki/NX_bit">NX</a> bit is supported we enable <code>_EFER_NX</code>  and write it too, with the <code>wrmsr</code> instruction. After the <a href="https://en.wikipedia.org/wiki/NX_bit">NX</a> bit is set, we set some bits in the <code>cr0</code> <a href="https://en.wikipedia.org/wiki/Control_register">control register</a> with following assembly code:</p>
+<pre><code class="language-assembly">	movl	$CR0_STATE, %eax
+	movq	%rax, %cr0
+</code></pre>
+<p>specifically the following bits:</p>
+<ul>
+<li><code>X86_CR0_PE</code> - system is in protected mode;</li>
+<li><code>X86_CR0_MP</code> - controls interaction of WAIT/FWAIT instructions with TS flag in CR0;</li>
+<li><code>X86_CR0_ET</code> - on the 386, it allowed to specify whether the external math coprocessor was an 80287 or 80387;</li>
+<li><code>X86_CR0_NE</code> - enable internal x87 floating point error reporting when set, else enables PC style x87 error detection;</li>
+<li><code>X86_CR0_WP</code> - when set, the CPU can't write to read-only pages when privilege level is 0;</li>
+<li><code>X86_CR0_AM</code> - alignment check enabled if AM set, AC flag (in EFLAGS register) set, and privilege level is 3;</li>
+<li><code>X86_CR0_PG</code> - enable paging.</li>
+</ul>
+<p>We already know that to run any code, and even more <a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> code from assembly, we need to setup a stack. As always, we are doing it by the setting of <a href="https://en.wikipedia.org/wiki/Stack_register">stack pointer</a> to a correct place in memory and resetting <a href="https://en.wikipedia.org/wiki/FLAGS_register">flags</a> register after this:</p>
+<pre><code class="language-assembly">	movq initial_stack(%rip), %rsp
+	pushq $0
+	popfq
+</code></pre>
+<p>The most interesting thing here is the <code>initial_stack</code>. This symbol is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/head_64.S">source</a> code file and looks like:</p>
+<pre><code class="language-assembly">GLOBAL(initial_stack)
+    .quad  init_thread_union + THREAD_SIZE - SIZEOF_PTREGS
+</code></pre>
+<p>The <code>THREAD_SIZE</code> macro is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/include/asm/page_64_types.h">arch/x86/include/asm/page_64_types.h</a> header file and depends on value of the <code>KASAN_STACK_ORDER</code> macro:</p>
+<pre><code class="language-C">#ifdef CONFIG_KASAN
+#define KASAN_STACK_ORDER 1
+#else
+#define KASAN_STACK_ORDER 0
+#endif
+
+#define THREAD_SIZE_ORDER       (2 + KASAN_STACK_ORDER)
+#define THREAD_SIZE  (PAGE_SIZE &lt;&lt; THREAD_SIZE_ORDER)
+</code></pre>
+<p>We consider when the <a href="https://github.com/torvalds/linux/blob/master/Documentation/dev-tools/kasan.rst">kasan</a> is disabled and the <code>PAGE_SIZE</code> is <code>4096</code> bytes. So the <code>THREAD_SIZE</code> will expands to <code>16</code> kilobytes and represents size of the stack of a thread. Why is <code>thread</code>? You may already know that each <a href="https://en.wikipedia.org/wiki/Process_%28computing%29">process</a> may have <a href="https://en.wikipedia.org/wiki/Parent_process">parent processes</a> and <a href="https://en.wikipedia.org/wiki/Child_process">child processes</a>. Actually, a parent process and child process differ in stack. A new kernel stack is allocated for a new process. In the Linux kernel this stack is represented by the <a href="https://en.wikipedia.org/wiki/Union_type#C.2FC.2B.2B">union</a> with the <code>thread_info</code> structure.</p>
+<p>The <code>init_thread_union</code> is represented by the <code>thread_union</code>. And the <code>thread_union</code> is defined in the <a href="https://github.com/torvalds/linux/blob/master/include/linux/sched.h">include/linux/sched.h</a> file like the following:</p>
+<pre><code class="language-C">union thread_union {
+#ifndef CONFIG_ARCH_TASK_STRUCT_ON_STACK
+	struct task_struct task;
+#endif
+#ifndef CONFIG_THREAD_INFO_IN_TASK
+	struct thread_info thread_info;
+#endif
+	unsigned long stack[THREAD_SIZE/sizeof(long)];
+};
+</code></pre>
+<p>The <code>CONFIG_ARCH_TASK_STRUCT_ON_STACK</code> kernel configuration option is only enabled for <code>ia64</code> architecture, and the <code>CONFIG_THREAD_INFO_IN_TASK</code> kernel configuration option is enabled for <code>x86_64</code> architecture. Thus the <code>thread_info</code> structure will be placed in <code>task_struct</code> structure instead of the <code>thread_union</code> union.</p>
+<p>The <code>init_thread_union</code> is placed in the <a href="https://github.com/torvalds/blob/master/include/asm-generic/vmlinux.lds.h">include/asm-generic/vmlinux.lds.h</a> file as part of the <code>INIT_TASK_DATA</code> macro like the following:</p>
+<pre><code class="language-C">#define INIT_TASK_DATA(align)  \
+	. = ALIGN(align);      \
+	...                    \
+	init_thread_union = .; \
+	...
+</code></pre>
+<p>This macro is used in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/vmlinux.lds.S">arch/x86/kernel/vmlinux.lds.S</a> file like the following:</p>
+<pre><code>.data : AT(ADDR(.data) - LOAD_OFFSET) {
+	...
+	INIT_TASK_DATA(THREAD_SIZE)
+	...
+} :data
+</code></pre>
+<p>That is, <code>init_thread_union</code> is initialized with the address which is aligned to <code>THREAD_SIZE</code> which is <code>16</code> kilobytes.</p>
+<p>Now we may understand this expression:</p>
+<pre><code class="language-assembly">GLOBAL(initial_stack)
+    .quad  init_thread_union + THREAD_SIZE - SIZEOF_PTREGS
+</code></pre>
+<p>that <code>initial_stack</code> symbol points to the start of the <code>thread_union.stack</code> array + <code>THREAD_SIZE</code> which is 16 killobytes and - <code>SIZEOF_PTREGS</code> which is convention which helps the in-kernel unwinder reliably detect the end of the stack.</p>
+<p>After the early boot stack is set, to update the <a href="https://en.wikipedia.org/wiki/Global_Descriptor_Table">Global Descriptor Table</a> with the <code>lgdt</code> instruction:</p>
+<pre><code class="language-assembly">lgdt	early_gdt_descr(%rip)
+</code></pre>
+<p>where the <code>early_gdt_descr</code> is defined as:</p>
+<pre><code class="language-assembly">early_gdt_descr:
+	.word	GDT_ENTRIES*8-1
+early_gdt_descr_base:
+	.quad	INIT_PER_CPU_VAR(gdt_page)
+</code></pre>
+<p>We need to reload <code>Global Descriptor Table</code> because now kernel works in the low userspace addresses, but soon kernel will work in its own space.</p>
+<p>Now let's look at the definition of <code>early_gdt_descr</code>. <code>GDT_ENTRIES</code> expands to <code>32</code> so that Global Descriptor Table contains <code>32</code> entries for kernel code, data, thread local storage segments and etc...</p>
+<p>Now let's look at the definition of <code>early_gdt_descr_base</code>. The <code>gdt_page</code> structure is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/include/asm/desc.h">arch/x86/include/asm/desc.h</a> as:</p>
+<pre><code class="language-C">struct gdt_page {
+	struct desc_struct gdt[GDT_ENTRIES];
+} __attribute__((aligned(PAGE_SIZE)));
+</code></pre>
+<p>It contains one field <code>gdt</code> which is array of the <code>desc_struct</code> structure which is defined as:</p>
+<pre><code class="language-C">struct desc_struct {
+         union {
+                 struct {
+                         unsigned int a;
+                         unsigned int b;
+                 };
+                 struct {
+                         u16 limit0;
+                         u16 base0;
+                         unsigned base1: 8, type: 4, s: 1, dpl: 2, p: 1;
+                         unsigned limit: 4, avl: 1, l: 1, d: 1, g: 1, base2: 8;
+                 };
+         };
+ } __attribute__((packed));
+</code></pre>
+<p>which looks familiar <code>GDT</code> descriptor. Note that <code>gdt_page</code> structure is aligned to <code>PAGE_SIZE</code> which is <code>4096</code> bytes. Which means that <code>gdt</code> will occupy one page.</p>
+<p>Now let's try to understand what <code>INIT_PER_CPU_VAR</code> is. <code>INIT_PER_CPU_VAR</code> is a macro which is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/include/asm/percpu.h">arch/x86/include/asm/percpu.h</a> and just concatenates <code>init_per_cpu__</code> with the given parameter:</p>
+<pre><code class="language-C">#define INIT_PER_CPU_VAR(var) init_per_cpu__##var
+</code></pre>
+<p>After the <code>INIT_PER_CPU_VAR</code> macro will be expanded, we will have <code>init_per_cpu__gdt_page</code>. We can see the initialization of <code>init_per_cpu__gdt_page</code> in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/vmlinux.lds.S">linker script</a>:</p>
+<pre><code>#define INIT_PER_CPU(x) init_per_cpu__##x = x + __per_cpu_load
+INIT_PER_CPU(gdt_page);
+</code></pre>
+<p>As we got <code>init_per_cpu__gdt_page</code> in <code>INIT_PER_CPU_VAR</code> and <code>INIT_PER_CPU</code> macro from linker script will be expanded we will get offset from the <code>__per_cpu_load</code>. After this calculations, we will have correct base address of the new GDT.</p>
+<p>Generally per-CPU variables is a 2.6 kernel feature. You can understand what it is from its name. When we create <code>per-CPU</code> variable, each CPU will have its own copy of this variable. Here we are creating <code>gdt_page</code> per-CPU variable. There are many advantages for variables of this type, like there are no locks, because each CPU works with its own copy of variable and etc... So every core on multiprocessor will have its own <code>GDT</code> table and every entry in the table will represent a memory segment which can be accessed from the thread which ran on the core. You can read in details about <code>per-CPU</code> variables in the <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">Concepts/per-cpu</a> post.</p>
+<p>As we loaded new Global Descriptor Table, we reload segments as we did it every time:</p>
+<pre><code class="language-assembly">	xorl %eax,%eax
+	movl %eax,%ds
+	movl %eax,%ss
+	movl %eax,%es
+	movl %eax,%fs
+	movl %eax,%gs
+</code></pre>
+<p>After all of these steps we set up <code>gs</code> register that it post to the <code>irqstack</code> which represents special stack where <a href="https://en.wikipedia.org/wiki/Interrupt">interrupts</a> will be handled on:</p>
+<pre><code class="language-assembly">	movl	$MSR_GS_BASE,%ecx
+	movl	initial_gs(%rip),%eax
+	movl	initial_gs+4(%rip),%edx
+	wrmsr
+</code></pre>
+<p>where <code>MSR_GS_BASE</code> is:</p>
+<pre><code class="language-C">#define MSR_GS_BASE             0xc0000101
+</code></pre>
+<p>We need to put <code>MSR_GS_BASE</code> to the <code>ecx</code> register and load data from the <code>eax</code> and <code>edx</code> (which point to the <code>initial_gs</code>) with <code>wrmsr</code> instruction. We don't use <code>cs</code>, <code>fs</code>, <code>ds</code> and <code>ss</code> segment registers for addressing in the 64-bit mode, but <code>fs</code> and <code>gs</code> registers can be used. <code>fs</code> and <code>gs</code> have a hidden part (as we saw it in the real mode for <code>cs</code>) and this part contains a descriptor which is mapped to <a href="https://en.wikipedia.org/wiki/Model-specific_register">Model Specific Registers</a>. So we can see above <code>0xc0000101</code> is a <code>gs.base</code> MSR address. When a <a href="https://en.wikipedia.org/wiki/System_call">system call</a> or <a href="https://en.wikipedia.org/wiki/Interrupt">interrupt</a> occurs, there is no kernel stack at the entry point, so the value of the <code>MSR_GS_BASE</code> will store address of the interrupt stack.</p>
+<p>In the next step we put the address of the real mode bootparam structure to the <code>rdi</code> (remember <code>rsi</code> holds pointer to this structure from the start) and jump to the C code with:</p>
+<pre><code class="language-assembly">	pushq	$.Lafter_lret	# put return address on stack for unwinder
+	xorq	%rbp, %rbp	# clear frame pointer
+	movq	initial_code(%rip), %rax
+	pushq	$__KERNEL_CS	# set correct cs
+	pushq	%rax		# target address in negative space
+	lretq
+.Lafter_lret:
+</code></pre>
+<p>Here we put the address of the <code>initial_code</code> to the <code>rax</code> and push the return address, <code>__KERNEL_CS</code> and the address of the <code>initial_code</code> to the stack. After this we can see <code>lretq</code> instruction which means that after it return address will be extracted from stack (now there is address of the <code>initial_code</code>) and jump there. <code>initial_code</code> is defined in the same source code file and looks:</p>
+<pre><code class="language-assembly">	.balign	8
+	GLOBAL(initial_code)
+	.quad	x86_64_start_kernel
+	...
+	...
+	...
+</code></pre>
+<p>As we can see <code>initial_code</code> contains address of the <code>x86_64_start_kernel</code>, which is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/head64.c">arch/x86/kerne/head64.c</a> and looks like this:</p>
+<pre><code class="language-C">asmlinkage __visible void __init x86_64_start_kernel(char * real_mode_data)
+{
+	...
+	...
+	...
+}
+</code></pre>
+<p>It has one argument is a <code>real_mode_data</code> (remember that we passed address of the real mode data to the <code>rdi</code> register previously).</p>
+<h2 id="next-to-start_kernel"><a class="header" href="#next-to-start_kernel">Next to start_kernel</a></h2>
+<p>We need to see last preparations before we can see &quot;kernel entry point&quot; - start_kernel function from the <a href="https://github.com/torvalds/linux/blob/master/init/main.c">init/main.c</a>.</p>
+<p>First of all we can see some checks in the <code>x86_64_start_kernel</code> function:</p>
+<pre><code class="language-C">BUILD_BUG_ON(MODULES_VADDR &lt; __START_KERNEL_map);
+BUILD_BUG_ON(MODULES_VADDR - __START_KERNEL_map &lt; KERNEL_IMAGE_SIZE);
+BUILD_BUG_ON(MODULES_LEN + KERNEL_IMAGE_SIZE &gt; 2*PUD_SIZE);
+BUILD_BUG_ON((__START_KERNEL_map &amp; ~PMD_MASK) != 0);
+BUILD_BUG_ON((MODULES_VADDR &amp; ~PMD_MASK) != 0);
+BUILD_BUG_ON(!(MODULES_VADDR &gt; __START_KERNEL));
+MAYBE_BUILD_BUG_ON(!(((MODULES_END - 1) &amp; PGDIR_MASK) == (__START_KERNEL &amp; PGDIR_MASK)));
+BUILD_BUG_ON(__fix_to_virt(__end_of_fixed_addresses) &lt;= MODULES_END);
+</code></pre>
+<p>There are checks for different things like virtual address of module space is not fewer than base address of the kernel text - <code>__STAT_KERNEL_map</code>, that kernel text with modules is not less than image of the kernel and etc... <code>BUILD_BUG_ON</code> is a macro which looks as:</p>
+<pre><code class="language-C">#define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
+</code></pre>
+<p>Let's try to understand how this trick works. Let's take for example first condition: <code>MODULES_VADDR &lt; __START_KERNEL_map</code>. <code>!!conditions</code> is the same that <code>condition != 0</code>. So it means if <code>MODULES_VADDR &lt; __START_KERNEL_map</code> is true, we will get <code>1</code> in the <code>!!(condition)</code> or zero if not. After <code>2*!!(condition)</code> we will get or <code>2</code> or <code>0</code>. In the end of calculations we can get two different behaviors:</p>
+<ul>
+<li>We will have compilation error, because try to get size of the char array with negative index (as can be in our case, because <code>MODULES_VADDR</code> can't be less than <code>__START_KERNEL_map</code> will be in our case);</li>
+<li>No compilation errors.</li>
+</ul>
+<p>That's all. So interesting C trick for getting compile error which depends on some constants.</p>
+<p>In the next step we can see call of the <code>cr4_init_shadow</code> function which stores shadow copy of the <code>cr4</code> per cpu. Context switches can change bits in the <code>cr4</code> so we need to store <code>cr4</code> for each CPU. And after this we can see call of the <code>reset_early_page_tables</code> function where we resets all page global directory entries and write new pointer to the PGT in <code>cr3</code>:</p>
+<pre><code class="language-C">	memset(early_top_pgt, 0, sizeof(pgd_t)*(PTRS_PER_PGD-1));
+	next_early_pgt = 0;
+	write_cr3(__sme_pa_nodebug(early_top_pgt));
+</code></pre>
+<p>Soon we will build new page tables. Here we can see that we zero all Page Global Directory entries. After this we set <code>next_early_pgt</code> to zero (we will see details about it in the next post) and write physical address of the <code>early_top_pgt</code> to the <code>cr3</code>.</p>
+<p>After this we clear <code>_bss</code> from the <code>__bss_stop</code> to <code>__bss_start</code> and also clear <code>init_top_pgt</code>. <code>init_top_pgt</code> is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/head_64.S">arch/x86/kerne/head_64.S</a> like the following:</p>
+<pre><code class="language-assembly">NEXT_PGD_PAGE(init_top_pgt)
+	.fill	512,8,0
+	.fill	PTI_USER_PGD_FILL,8,0
+</code></pre>
+<p>This is exactly the same definition as <code>early_top_pgt</code>.</p>
+<p>The next step will be setup of the early <code>IDT</code> handlers, but it's big concept so we will see it in the next post.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the first part about Linux kernel initialization.</p>
+<p>If you have questions or suggestions, feel free to ping me in twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me <a href="mailto:anotherworldofworld@gmail.com">email</a> or just create <a href="https://github.com/0xAX/linux-insides/issues/new">issue</a>.</p>
+<p>In the next part we will see initialization of the early interruption handlers, kernel space memory mapping and a lot more.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Model-specific_register">Model Specific Register</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/theory/linux-theory-1">Paging</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-6">Previous part - kernel load address randomization</a></li>
+<li><a href="http://en.wikipedia.org/wiki/NX_bit">NX</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Address_space_layout_randomization">ASLR</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Initialization/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Initialization/linux-initialization-2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Initialization/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Initialization/linux-initialization-2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Time related system calls - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html" class="active">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="timers-and-time-management-in-the-linux-kernel-part-7"><a class="header" href="#timers-and-time-management-in-the-linux-kernel-part-7">Timers and time management in the Linux kernel. Part 7.</a></h1>
+<h2 id="time-related-system-calls-in-the-linux-kernel"><a class="header" href="#time-related-system-calls-in-the-linux-kernel">Time related system calls in the Linux kernel</a></h2>
+<p>This is the seventh and last part <a href="https://0xax.gitbook.io/linux-insides/summary/timers/">chapter</a>, which describes timers and time management related stuff in the Linux kernel. In the previous <a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-6">part</a>, we discussed timers in the context of <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a>: <a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">High Precision Event Timer</a> and <a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">Time Stamp Counter</a>. Internal time management is an interesting part of the Linux kernel, but of course not only the kernel needs the <code>time</code> concept. Our programs also need to know time. In this part, we will consider implementation of some time management related <a href="https://en.wikipedia.org/wiki/System_call">system calls</a>. These system calls are:</p>
+<ul>
+<li><code>clock_gettime</code>;</li>
+<li><code>gettimeofday</code>;</li>
+<li><code>nanosleep</code>.</li>
+</ul>
+<p>We will start from a simple userspace <a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> program and see all way from the call of the <a href="https://en.wikipedia.org/wiki/Standard_library">standard library</a> function to the implementation of certain system calls. As each <a href="https://github.com/torvalds/linux/tree/master/arch">architecture</a> provides its own implementation of certain system calls, we will consider only <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> specific implementations of system calls, as this book is related to this architecture.</p>
+<p>Additionally, we will not consider the concept of system calls in this part, but only implementations of these three system calls in the Linux kernel. If you are interested in what is a <code>system call</code>, there is a special <a href="https://0xax.gitbook.io/linux-insides/summary/syscall">chapter</a> about this.</p>
+<p>So, let's start from the <code>gettimeofday</code> system call.</p>
+<h2 id="implementation-of-the-gettimeofday-system-call"><a class="header" href="#implementation-of-the-gettimeofday-system-call">Implementation of the <code>gettimeofday</code> system call</a></h2>
+<p>As we can understand from the name <code>gettimeofday</code>, this function returns the current time. First of all, let's look at the following simple example:</p>
+<pre><code class="language-C">#include &lt;time.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv)
+{
+    char buffer[40];
+    struct timeval time;
+        
+    gettimeofday(&amp;time, NULL);
+
+    strftime(buffer, 40, &quot;Current date/time: %m-%d-%Y/%T&quot;, localtime(&amp;time.tv_sec));
+    printf(&quot;%s\n&quot;,buffer);
+
+    return 0;
+}
+</code></pre>
+<p>As you can see, here we call the <code>gettimeofday</code> function, which takes two parameters. The first parameter is a pointer to the <code>timeval</code> structure, which represents an elapsed time:</p>
+<pre><code class="language-C">struct timeval {
+    time_t      tv_sec;     /* seconds */
+    suseconds_t tv_usec;    /* microseconds */
+};
+</code></pre>
+<p>The second parameter of the <code>gettimeofday</code> function is a pointer to the <code>timezone</code> structure which represents a timezone. In our example, we pass address of the <code>timeval time</code> to the <code>gettimeofday</code> function, the Linux kernel fills the given <code>timeval</code> structure and returns it back to us. Additionally, we format the time with the <code>strftime</code> function to get something more human readable than elapsed microseconds. Let's see the result:</p>
+<pre><code class="language-C">~$ gcc date.c -o date
+~$ ./date
+Current date/time: 03-26-2016/16:42:02
+</code></pre>
+<p>As you may already know, a userspace application does not call a system call directly from the kernel space. Before the actual system call entry will be called, we call a function from the standard library. In my case it is <a href="https://en.wikipedia.org/wiki/GNU_C_Library">glibc</a>, so I will consider this case. The implementation of the <code>gettimeofday</code> function is located in the <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/x86/gettimeofday.c;h=36f7c26ffb0e818709d032c605fec8c4bd22a14e;hb=HEAD">sysdeps/unix/sysv/linux/x86/gettimeofday.c</a> source code file. As you already may know, the <code>gettimeofday</code> is not a usual system call. It is located in the special area which is called <code>vDSO</code> (you can read more about it in the <a href="https://0xax.gitbook.io/linux-insides/summary/syscall/linux-syscall-3">part</a>, which describes this concept).</p>
+<p>The <code>glibc</code> implementation of <code>gettimeofday</code> tries to resolve the given symbol; in our case this symbol is <code>__vdso_gettimeofday</code> by the call of the <code>_dl_vdso_vsym</code> internal function. If the symbol cannot be resolved, it returns <code>NULL</code> and we fallback to the call of the usual system call:</p>
+<pre><code class="language-C">return (_dl_vdso_vsym (&quot;__vdso_gettimeofday&quot;, &amp;linux26)
+  ?: (void*) (&amp;__gettimeofday_syscall));
+</code></pre>
+<p>The <code>gettimeofday</code> entry is located in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/vdso/vclock_gettime.c">arch/x86/entry/vdso/vclock_gettime.c</a> source code file. As we can see the <code>gettimeofday</code> is a weak alias of the <code>__vdso_gettimeofday</code>:</p>
+<pre><code class="language-C">int gettimeofday(struct timeval *, struct timezone *)
+	__attribute__((weak, alias(&quot;__vdso_gettimeofday&quot;)));
+</code></pre>
+<p>The <code>__vdso_gettimeofday</code> is defined in the same source code file and calls the <code>do_realtime</code> function if the given <code>timeval</code> is not null:</p>
+<pre><code class="language-C">notrace int __vdso_gettimeofday(struct timeval *tv, struct timezone *tz)
+{
+	if (likely(tv != NULL)) {
+		if (unlikely(do_realtime((struct timespec *)tv) == VCLOCK_NONE))
+			return vdso_fallback_gtod(tv, tz);
+		tv-&gt;tv_usec /= 1000;
+	}
+	if (unlikely(tz != NULL)) {
+		tz-&gt;tz_minuteswest = gtod-&gt;tz_minuteswest;
+		tz-&gt;tz_dsttime = gtod-&gt;tz_dsttime;
+	}
+
+	return 0;
+}
+</code></pre>
+<p>If the <code>do_realtime</code> will fail, we fallback to the real system call via call the <code>syscall</code> instruction and passing the <code>__NR_gettimeofday</code> system call number and the given <code>timeval</code> and <code>timezone</code>:</p>
+<pre><code class="language-C">notrace static long vdso_fallback_gtod(struct timeval *tv, struct timezone *tz)
+{
+	long ret;
+
+	asm(&quot;syscall&quot; : &quot;=a&quot; (ret) :
+	    &quot;0&quot; (__NR_gettimeofday), &quot;D&quot; (tv), &quot;S&quot; (tz) : &quot;memory&quot;);
+	return ret;
+}
+</code></pre>
+<p>The <code>do_realtime</code> function gets the time data from the <code>vsyscall_gtod_data</code> structure which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/vgtod.h#L16">arch/x86/include/asm/vgtod.h</a> header file and contains mapping of the <code>timespec</code> structure and a couple of fields which are related to the current clock source in the system. This function fills the given <code>timeval</code> structure with values from the <code>vsyscall_gtod_data</code> which contains a time related data which is updated via timer interrupt.</p>
+<p>First of all we try to access the <code>gtod</code> or <code>global time of day</code> the <code>vsyscall_gtod_data</code> structure via the call of the <code>gtod_read_begin</code> and will continue to do it until it will be successful:</p>
+<pre><code class="language-C">do {
+	seq = gtod_read_begin(gtod);
+	mode = gtod-&gt;vclock_mode;
+	ts-&gt;tv_sec = gtod-&gt;wall_time_sec;
+	ns = gtod-&gt;wall_time_snsec;
+	ns += vgetsns(&amp;mode);
+	ns &gt;&gt;= gtod-&gt;shift;
+} while (unlikely(gtod_read_retry(gtod, seq)));
+
+ts-&gt;tv_sec += __iter_div_u64_rem(ns, NSEC_PER_SEC, &amp;ns);
+ts-&gt;tv_nsec = ns;
+</code></pre>
+<p>As we got access to the <code>gtod</code>, we fill the <code>ts-&gt;tv_sec</code> with the <code>gtod-&gt;wall_time_sec</code> which stores current time in seconds gotten from the <a href="https://en.wikipedia.org/wiki/Real-time_clock">real time clock</a> during initialization of the timekeeping subsystem in the Linux kernel and the same value but in nanoseconds. In the end of this code we just fill the given <code>timespec</code> structure with the resulted values.</p>
+<p>That's all about the <code>gettimeofday</code> system call. The next system call in our list is the <code>clock_gettime</code>.</p>
+<h2 id="implementation-of-the-clock_gettime-system-call"><a class="header" href="#implementation-of-the-clock_gettime-system-call">Implementation of the clock_gettime system call</a></h2>
+<p>The <code>clock_gettime</code> function gets the time which is specified by the second parameter. Generally the <code>clock_gettime</code> function takes two parameters:</p>
+<ul>
+<li><code>clk_id</code> - clock identifier;</li>
+<li><code>timespec</code> - address of the <code>timespec</code> structure which represent elapsed time.</li>
+</ul>
+<p>Let's look on the following simple example:</p>
+<pre><code class="language-C">#include &lt;time.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;stdio.h&gt;
+
+int main(int argc, char **argv)
+{
+    struct timespec elapsed_from_boot;
+
+    clock_gettime(CLOCK_BOOTTIME, &amp;elapsed_from_boot);
+
+    printf(&quot;%d - seconds elapsed from boot\n&quot;, elapsed_from_boot.tv_sec);
+    
+    return 0;
+}
+</code></pre>
+<p>which prints <code>uptime</code> information:</p>
+<pre><code class="language-C">~$ gcc uptime.c -o uptime
+~$ ./uptime
+14180 - seconds elapsed from boot
+</code></pre>
+<p>We can easily check the result with the help of the <a href="https://en.wikipedia.org/wiki/Uptime#Using_uptime">uptime</a> util:</p>
+<pre><code>~$ uptime
+up  3:56
+</code></pre>
+<p>The <code>elapsed_from_boot.tv_sec</code> represents elapsed time in seconds, so:</p>
+<pre><code class="language-python">&gt;&gt;&gt; 14180 / 60
+236
+&gt;&gt;&gt; 14180 / 60 / 60
+3
+&gt;&gt;&gt; 14180 / 60 % 60
+56
+</code></pre>
+<p>The <code>clock_id</code> maybe one of the following:</p>
+<ul>
+<li><code>CLOCK_REALTIME</code> - system wide clock which measures real or wall-clock time;</li>
+<li><code>CLOCK_REALTIME_COARSE</code> - faster version of the <code>CLOCK_REALTIME</code>;</li>
+<li><code>CLOCK_MONOTONIC</code> - represents monotonic time since some unspecified starting point; </li>
+<li><code>CLOCK_MONOTONIC_COARSE</code> - faster version of the <code>CLOCK_MONOTONIC</code>;</li>
+<li><code>CLOCK_MONOTONIC_RAW</code> - the same as the <code>CLOCK_MONOTONIC</code> but provides non <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol">NTP</a> adjusted time. </li>
+<li><code>CLOCK_BOOTTIME</code> - the same as the <code>CLOCK_MONOTONIC</code> but plus time that the system was suspended;</li>
+<li><code>CLOCK_PROCESS_CPUTIME_ID</code> - per-process time consumed by all threads in the process;</li>
+<li><code>CLOCK_THREAD_CPUTIME_ID</code> - thread-specific clock.</li>
+</ul>
+<p>The <code>clock_gettime</code> is not usual syscall too, but as the <code>gettimeofday</code>, this system call is placed in the <code>vDSO</code> area. Entry of this system call is located in the same source code file - <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/vdso/vclock_gettime.c">arch/x86/entry/vdso/vclock_gettime.c</a>) as for <code>gettimeofday</code>.</p>
+<p>The Implementation of the <code>clock_gettime</code> depends on the clock id. If we have passed the <code>CLOCK_REALTIME</code> clock id, the <code>do_realtime</code> function will be called:</p>
+<pre><code class="language-C">notrace int __vdso_clock_gettime(clockid_t clock, struct timespec *ts)
+{
+	switch (clock) {
+	case CLOCK_REALTIME:
+		if (do_realtime(ts) == VCLOCK_NONE)
+			goto fallback;
+		break;
+    ...
+    ...
+    ...
+fallback:
+	return vdso_fallback_gettime(clock, ts);
+}
+</code></pre>
+<p>In other cases, the <code>do_{name_of_clock_id}</code> function is called. Implementations of some of them is similar. For example if we will pass the <code>CLOCK_MONOTONIC</code> clock id:</p>
+<pre><code class="language-C">...
+...
+...
+case CLOCK_MONOTONIC:
+	if (do_monotonic(ts) == VCLOCK_NONE)
+		goto fallback;
+	break;
+...
+...
+...
+</code></pre>
+<p>the <code>do_monotonic</code> function will be called which is very similar on the implementation of the <code>do_realtime</code>:</p>
+<pre><code class="language-C">notrace static int __always_inline do_monotonic(struct timespec *ts)
+{
+	do {
+		seq = gtod_read_begin(gtod);
+		mode = gtod-&gt;vclock_mode;
+		ts-&gt;tv_sec = gtod-&gt;monotonic_time_sec;
+		ns = gtod-&gt;monotonic_time_snsec;
+		ns += vgetsns(&amp;mode);
+		ns &gt;&gt;= gtod-&gt;shift;
+	} while (unlikely(gtod_read_retry(gtod, seq)));
+
+	ts-&gt;tv_sec += __iter_div_u64_rem(ns, NSEC_PER_SEC, &amp;ns);
+	ts-&gt;tv_nsec = ns;
+
+	return mode;
+}
+</code></pre>
+<p>We already saw a little about the implementation of this function in the previous paragraph about the <code>gettimeofday</code>. There is only one difference here, that the <code>sec</code> and <code>nsec</code> of our <code>timespec</code> value will be based on the <code>gtod-&gt;monotonic_time_sec</code> instead of <code>gtod-&gt;wall_time_sec</code> which maps the value of the <code>tk-&gt;tkr_mono.xtime_nsec</code> or number of <a href="https://en.wikipedia.org/wiki/Nanosecond">nanoseconds</a> elapsed.</p>
+<p>That's all.</p>
+<h2 id="implementation-of-the-nanosleep-system-call"><a class="header" href="#implementation-of-the-nanosleep-system-call">Implementation of the <code>nanosleep</code> system call</a></h2>
+<p>The last system call in our list is the <code>nanosleep</code>. As you can understand from its name, this function provides <code>sleeping</code> ability. Let's look on the following simple example:</p>
+<pre><code class="language-C">#include &lt;time.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main (void)
+{    
+   struct timespec ts = {5,0};
+
+   printf(&quot;sleep five seconds\n&quot;);
+   nanosleep(&amp;ts, NULL);
+   printf(&quot;end of sleep\n&quot;);
+
+   return 0;
+}
+</code></pre>
+<p>If we will compile and run it, we will see the first line</p>
+<pre><code>~$ gcc sleep_test.c -o sleep
+~$ ./sleep
+sleep five seconds
+end of sleep
+</code></pre>
+<p>and the second line after five seconds.</p>
+<p>The <code>nanosleep</code> is not located in the <code>vDSO</code> area like the <code>gettimeofday</code> and the <code>clock_gettime</code> functions. So, let's look how the <code>real</code> system call which is located in the kernel space will be called by the standard library. The implementation of the <code>nanosleep</code> system call will be called with the help of the <a href="http://www.felixcloutier.com/x86/SYSCALL.html">syscall</a> instruction. Before the execution of the <code>syscall</code> instruction, parameters of the system call must be put in processor <a href="https://en.wikipedia.org/wiki/Processor_register">registers</a> according to order which is described in the <a href="http://www.x86-64.org/documentation/abi.pdf">System V Application Binary Interface</a> or in other words:</p>
+<ul>
+<li><code>rdi</code> - first parameter;</li>
+<li><code>rsi</code> - second parameter;</li>
+<li><code>rdx</code> - third parameter;</li>
+<li><code>r10</code> - fourth parameter;</li>
+<li><code>r8</code> - fifth parameter;</li>
+<li><code>r9</code> - sixth parameter.</li>
+</ul>
+<p>The <code>nanosleep</code> system call has two parameters - two pointers to the <code>timespec</code> structures. The system call suspends the calling thread until the given timeout has elapsed. Additionally it will finish if a signal interrupts its execution. It takes two parameters, the first is <code>timespec</code> which represents timeout for the sleep. The second parameter is the pointer to the <code>timespec</code> structure too and it contains remainder of time if the call of the <code>nanosleep</code> was interrupted.</p>
+<p>As <code>nanosleep</code> has two parameters:</p>
+<pre><code class="language-C">int nanosleep(const struct timespec *req, struct timespec *rem);
+</code></pre>
+<p>To call system call, we need put the <code>req</code> to the <code>rdi</code> register, and the <code>rem</code> parameter to the <code>rsi</code> register. The <a href="https://en.wikipedia.org/wiki/GNU_C_Library">glibc</a> does these job in the <code>INTERNAL_SYSCALL</code> macro which is located in the <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/x86_64/sysdep.h;h=d023d68174d3dfb4e698160b31ae31ad291802e1;hb=HEAD">sysdeps/unix/sysv/linux/x86_64/sysdep.h</a> header file.</p>
+<pre><code class="language-C"># define INTERNAL_SYSCALL(name, err, nr, args...) \
+  INTERNAL_SYSCALL_NCS (__NR_##name, err, nr, ##args)
+</code></pre>
+<p>which takes the name of the system call, storage for possible error during execution of system call, number of the system call (all <code>x86_64</code> system calls you can find in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl">system calls table</a>) and arguments of certain system call. The <code>INTERNAL_SYSCALL</code> macro just expands to the call of the <code>INTERNAL_SYSCALL_NCS</code> macro, which prepares arguments of system call (puts them into the processor registers in correct order), executes <code>syscall</code> instruction and returns the result:</p>
+<pre><code class="language-C"># define INTERNAL_SYSCALL_NCS(name, err, nr, args...)      \
+  ({									                                      \
+    unsigned long int resultvar;					                          \
+    LOAD_ARGS_##nr (args)						                              \
+    LOAD_REGS_##nr							                                  \
+    asm volatile (							                                  \
+    &quot;syscall\n\t&quot;							                                  \
+    : &quot;=a&quot; (resultvar)							                              \
+    : &quot;0&quot; (name) ASM_ARGS_##nr : &quot;memory&quot;, REGISTERS_CLOBBERED_BY_SYSCALL);   \
+    (long int) resultvar; })
+</code></pre>
+<p>The <code>LOAD_ARGS_##nr</code> macro calls the <code>LOAD_ARGS_N</code> macro where the <code>N</code> is number of arguments of the system call. In our case, it will be the <code>LOAD_ARGS_2</code> macro. Ultimately all of these macros will be expanded to the following:</p>
+<pre><code class="language-C"># define LOAD_REGS_TYPES_1(t1, a1)					   \
+  register t1 _a1 asm (&quot;rdi&quot;) = __arg1;					   \
+  LOAD_REGS_0
+
+# define LOAD_REGS_TYPES_2(t1, a1, t2, a2)				   \
+  register t2 _a2 asm (&quot;rsi&quot;) = __arg2;					   \
+  LOAD_REGS_TYPES_1(t1, a1)
+...
+...
+...
+</code></pre>
+<p>After the <code>syscall</code> instruction will be executed, the <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a> will occur and the kernel will transfer execution to the system call handler. The system call handler for the <code>nanosleep</code> system call is located in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/hrtimer.c">kernel/time/hrtimer.c</a> source code file and defined with the <code>SYSCALL_DEFINE2</code> macro helper:</p>
+<pre><code class="language-C">SYSCALL_DEFINE2(nanosleep, struct timespec __user *, rqtp,
+		struct timespec __user *, rmtp)
+{
+	struct timespec tu;
+
+	if (copy_from_user(&amp;tu, rqtp, sizeof(tu)))
+		return -EFAULT;
+
+	if (!timespec_valid(&amp;tu))
+		return -EINVAL;
+
+	return hrtimer_nanosleep(&amp;tu, rmtp, HRTIMER_MODE_REL, CLOCK_MONOTONIC);
+}
+</code></pre>
+<p>More about the <code>SYSCALL_DEFINE2</code> macro you may read in the <a href="https://0xax.gitbook.io/linux-insides/summary/syscall">chapter</a> about system calls. If we look at the implementation of the <code>nanosleep</code> system call, first of all we will see that it starts from the call of the <code>copy_from_user</code> function. This function copies the given data from the userspace to kernelspace. In our case we copy timeout value to sleep to the kernelspace <code>timespec</code> structure and check that the given <code>timespec</code> is valid by the call of the <code>timesc_valid</code> function:</p>
+<pre><code class="language-C">static inline bool timespec_valid(const struct timespec *ts)
+{
+	if (ts-&gt;tv_sec &lt; 0)
+		return false;
+	if ((unsigned long)ts-&gt;tv_nsec &gt;= NSEC_PER_SEC)
+		return false;
+	return true;
+}
+</code></pre>
+<p>which just checks that the given <code>timespec</code> does not represent date before <code>1970</code> and nanoseconds does not overflow <code>1</code> second. The <code>nanosleep</code> function ends with the call of the <code>hrtimer_nanosleep</code> function from the same source code file. The <code>hrtimer_nanosleep</code> function creates a <a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-4">timer</a> and calls the <code>do_nanosleep</code> function. The <code>do_nanosleep</code> does main job for us. This function provides loop:</p>
+<pre><code class="language-C">do {
+	set_current_state(TASK_INTERRUPTIBLE);
+	hrtimer_start_expires(&amp;t-&gt;timer, mode);
+
+	if (likely(t-&gt;task))
+		freezable_schedule();
+    
+} while (t-&gt;task &amp;&amp; !signal_pending(current));
+
+__set_current_state(TASK_RUNNING);
+return t-&gt;task == NULL;
+</code></pre>
+<p>Which freezes current task during sleep. After we set <code>TASK_INTERRUPTIBLE</code> flag for the current task, the <code>hrtimer_start_expires</code> function starts the give high-resolution timer on the current processor. As the given high resolution timer will expire, the task will be again running.</p>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the seventh part of the <a href="https://0xax.gitbook.io/linux-insides/summary/timers/">chapter</a> that describes timers and timer management related stuff in the Linux kernel. In the previous part we saw <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> specific clock sources. As I wrote in the beginning, this part is the last part of this chapter. We saw important time management related concepts like <code>clocksource</code> and <code>clockevents</code> frameworks, <code>jiffies</code> counter and etc., in this chpater. Of course this does not cover all of the time management in the Linux kernel. Many parts of this mostly related to the scheduling which we will see in other chapter. </p>
+<p>If you have questions or suggestions, feel free to ping me in twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me <a href="mailto:anotherworldofworld@gmail.com">email</a> or just create <a href="https://github.com/0xAX/linux-insides/issues/new">issue</a>.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/System_call">system call</a></li>
+<li><a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C programming language</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Standard_library">standard library</a></li>
+<li><a href="https://en.wikipedia.org/wiki/GNU_C_Library">glibc</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Real-time_clock">real time clock</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Network_Time_Protocol">NTP</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Nanosecond">nanoseconds</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Processor_register">register</a></li>
+<li><a href="http://www.x86-64.org/documentation/abi.pdf">System V Application Binary Interface</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-4">Introduction to timers in the Linux kernel</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Uptime#Using_uptime">uptime</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl">system calls table for x86_64</a></li>
+<li><a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">High Precision Event Timer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">Time Stamp Counter</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-6">previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Timers/linux-timers-6.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../SyncPrim/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Timers/linux-timers-6.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../SyncPrim/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

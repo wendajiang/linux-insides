@@ -1,0 +1,580 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Softirq, Tasklets and Workqueues - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html" class="active">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="interrupts-and-interrupt-handling-part-9"><a class="header" href="#interrupts-and-interrupt-handling-part-9">Interrupts and Interrupt Handling. Part 9.</a></h1>
+<h2 id="introduction-to-deferred-interrupts-softirq-tasklets-and-workqueues"><a class="header" href="#introduction-to-deferred-interrupts-softirq-tasklets-and-workqueues">Introduction to deferred interrupts (Softirq, Tasklets and Workqueues)</a></h2>
+<p>It is the nine part of the Interrupts and Interrupt Handling in the Linux kernel <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">chapter</a> and in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-8">Previous part</a> we saw implementation of the <code>init_IRQ</code> from that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/irqinit.c">arch/x86/kernel/irqinit.c</a> source code file. So, we will continue to dive into the initialization stuff which is related to the external hardware interrupts in this part.</p>
+<p>Interrupts may have different important characteristics and there are two among them:</p>
+<ul>
+<li>Handler of an interrupt must execute quickly;</li>
+<li>Sometime an interrupt handler must do a large amount of work.</li>
+</ul>
+<p>As you can understand, it is almost impossible to make so that both characteristics were valid. Because of these, previously the handling of interrupts was split into two parts:</p>
+<ul>
+<li>Top half;</li>
+<li>Bottom half;</li>
+</ul>
+<p>In the past there was one way to defer interrupt handling in Linux kernel. And it was called: <code>the bottom half</code> of the processor, but now it is already not actual. Now this term has remained as a common noun referring to all the different ways of organizing deferred processing of an interrupt.The deferred processing of an interrupt suggests that some of the actions for an interrupt may be postponed to a later execution when the system will be less loaded. As you can suggest, an interrupt handler can do large amount of work that is impermissible as it executes in the context where interrupts are disabled. That's why processing of an interrupt can be split in two different parts. In the first part, the main handler of an interrupt does only minimal and the most important job. After this it schedules the second part and finishes its work. When the system is less busy and context of the processor allows to handle interrupts, the second part starts its work and finishes to process remaining part of a deferred interrupt.</p>
+<p>There are three types of <code>deferred interrupts</code> in the Linux kernel:</p>
+<ul>
+<li><code>softirqs</code>;</li>
+<li><code>tasklets</code>;</li>
+<li><code>workqueues</code>;</li>
+</ul>
+<p>And we will see description of all of these types in this part. As I said, we saw only a little bit about this theme, so, now is time to dive deep into details about this theme.</p>
+<h2 id="softirqs"><a class="header" href="#softirqs">Softirqs</a></h2>
+<p>With the advent of parallelisms in the Linux kernel, all new schemes of implementation of the bottom half handlers are built on the performance of the processor specific kernel thread that called <code>ksoftirqd</code> (will be discussed below). Each processor has its own thread that is called <code>ksoftirqd/n</code> where the <code>n</code> is the number of the processor. We can see it in the output of the <code>systemd-cgls</code> util:</p>
+<pre><code>$ systemd-cgls -k | grep ksoft
+├─   3 [ksoftirqd/0]
+├─  13 [ksoftirqd/1]
+├─  18 [ksoftirqd/2]
+├─  23 [ksoftirqd/3]
+├─  28 [ksoftirqd/4]
+├─  33 [ksoftirqd/5]
+├─  38 [ksoftirqd/6]
+├─  43 [ksoftirqd/7]
+</code></pre>
+<p>The <code>spawn_ksoftirqd</code> function starts this these threads. As we can see this function called as early <a href="https://kernelnewbies.org/Documents/InitcallMechanism">initcall</a>:</p>
+<pre><code class="language-C">early_initcall(spawn_ksoftirqd);
+</code></pre>
+<p>Softirqs are determined statically at compile-time of the Linux kernel and the <code>open_softirq</code> function takes care of <code>softirq</code> initialization. The <code>open_softirq</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/softirq.c">kernel/softirq.c</a>:</p>
+<pre><code class="language-C">void open_softirq(int nr, void (*action)(struct softirq_action *))
+{
+	softirq_vec[nr].action = action;
+}
+</code></pre>
+<p>and as we can see this function uses two parameters:</p>
+<ul>
+<li>the index of the <code>softirq_vec</code> array;</li>
+<li>a pointer to the softirq function to be executed;</li>
+</ul>
+<p>First of all let's look on the <code>softirq_vec</code> array:</p>
+<pre><code class="language-C">static struct softirq_action softirq_vec[NR_SOFTIRQS] __cacheline_aligned_in_smp;
+</code></pre>
+<p>it defined in the same source code file. As we can see, the <code>softirq_vec</code> array may contain <code>NR_SOFTIRQS</code> or <code>10</code> types of <code>softirqs</code> that has type <code>softirq_action</code>. First of all about its elements. In the current version of the Linux kernel there are ten softirq vectors defined; two for tasklet processing, two for networking, two for the block layer, two for timers, and one each for the scheduler and read-copy-update processing. All of these kinds are represented by the following enum:</p>
+<pre><code class="language-C">enum
+{
+        HI_SOFTIRQ=0,
+        TIMER_SOFTIRQ,
+        NET_TX_SOFTIRQ,
+        NET_RX_SOFTIRQ,
+        BLOCK_SOFTIRQ,
+        BLOCK_IOPOLL_SOFTIRQ,
+        TASKLET_SOFTIRQ,
+        SCHED_SOFTIRQ,
+        HRTIMER_SOFTIRQ,
+        RCU_SOFTIRQ,
+        NR_SOFTIRQS
+};
+</code></pre>
+<p>All names of these kinds of softirqs are represented by the following array:</p>
+<pre><code class="language-C">const char * const softirq_to_name[NR_SOFTIRQS] = {
+        &quot;HI&quot;, &quot;TIMER&quot;, &quot;NET_TX&quot;, &quot;NET_RX&quot;, &quot;BLOCK&quot;, &quot;BLOCK_IOPOLL&quot;,
+        &quot;TASKLET&quot;, &quot;SCHED&quot;, &quot;HRTIMER&quot;, &quot;RCU&quot;
+};
+</code></pre>
+<p>Or we can see it in the output of the <code>/proc/softirqs</code>:</p>
+<pre><code>~$ cat /proc/softirqs
+                    CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7
+          HI:          5          0          0          0          0          0          0          0
+       TIMER:     332519     310498     289555     272913     282535     279467     282895     270979
+      NET_TX:       2320          0          0          2          1          1          0          0
+      NET_RX:     270221        225        338        281        311        262        430        265
+       BLOCK:     134282         32         40         10         12          7          8          8
+BLOCK_IOPOLL:          0          0          0          0          0          0          0          0
+     TASKLET:     196835          2          3          0          0          0          0          0
+       SCHED:     161852     146745     129539     126064     127998     128014     120243     117391
+     HRTIMER:          0          0          0          0          0          0          0          0
+         RCU:     337707     289397     251874     239796     254377     254898     267497     256624
+</code></pre>
+<p>As we can see the <code>softirq_vec</code> array has <code>softirq_action</code> types. This is the main data structure related to the <code>softirq</code> mechanism, so all <code>softirqs</code> represented by the <code>softirq_action</code> structure. The <code>softirq_action</code> structure consists a single field only: an action pointer to the softirq function:</p>
+<pre><code class="language-C">struct softirq_action
+{
+         void    (*action)(struct softirq_action *);
+};
+</code></pre>
+<p>So, after this we can understand that the <code>open_softirq</code> function fills the <code>softirq_vec</code> array with the given <code>softirq_action</code>. The registered deferred interrupt (with the call of the <code>open_softirq</code> function) for it to be queued for execution, it should be activated by the call of the <code>raise_softirq</code> function. This function takes only one parameter -- a softirq index <code>nr</code>. Let's look on its implementation:</p>
+<pre><code class="language-C">void raise_softirq(unsigned int nr)
+{
+        unsigned long flags;
+
+        local_irq_save(flags);
+        raise_softirq_irqoff(nr);
+        local_irq_restore(flags);
+}
+</code></pre>
+<p>Here we can see the call of the <code>raise_softirq_irqoff</code> function between the <code>local_irq_save</code> and the <code>local_irq_restore</code> macros. The <code>local_irq_save</code> defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/irqflags.h">include/linux/irqflags.h</a> header file and saves the state of the <a href="https://en.wikipedia.org/wiki/Interrupt_flag">IF</a> flag of the <a href="https://en.wikipedia.org/wiki/FLAGS_register">eflags</a> register and disables interrupts on the local processor. The <code>local_irq_restore</code> macro defined in the same header file and does the opposite thing: restores the <code>interrupt flag</code> and enables interrupts. We disable interrupts here because a <code>softirq</code> interrupt runs in the interrupt context and that one softirq (and no others) will be run.</p>
+<p>The <code>raise_softirq_irqoff</code> function marks the softirq as deferred by setting the bit corresponding to the given index <code>nr</code> in the <code>softirq</code> bit mask (<code>__softirq_pending</code>) of the local processor. It does it with the help of the:</p>
+<pre><code class="language-C">__raise_softirq_irqoff(nr);
+</code></pre>
+<p>macro. After this, it checks the result of the <code>in_interrupt</code> that returns <code>irq_count</code> value. We already saw the <code>irq_count</code> in the first <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-1">part</a> of this chapter and it is used to check if a CPU is already on an interrupt stack or not. We just exit from the <code>raise_softirq_irqoff</code>, restore <code>IF</code> flag and enable interrupts on the local processor, if we are in the interrupt context, otherwise  we call the <code>wakeup_softirqd</code>:</p>
+<pre><code class="language-C">if (!in_interrupt())
+	wakeup_softirqd();
+</code></pre>
+<p>Where the <code>wakeup_softirqd</code> function activates the <code>ksoftirqd</code> kernel thread of the local processor:</p>
+<pre><code class="language-C">static void wakeup_softirqd(void)
+{
+	struct task_struct *tsk = __this_cpu_read(ksoftirqd);
+
+    if (tsk &amp;&amp; tsk-&gt;state != TASK_RUNNING)
+        wake_up_process(tsk);
+}
+</code></pre>
+<p>Each <code>ksoftirqd</code> kernel thread runs the <code>run_ksoftirqd</code> function that checks existence of deferred interrupts and calls the <code>__do_softirq</code> function depending on the result of the check. This function reads the <code>__softirq_pending</code> softirq bit mask of the local processor and executes the deferrable functions corresponding to every bit set. During execution of a deferred function, new pending <code>softirqs</code> might occur. The main problem here that execution of the userspace code can be delayed for a long time while the <code>__do_softirq</code> function will handle deferred interrupts. For this purpose, it has the limit of the time when it must be finished:</p>
+<pre><code class="language-C">unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+...
+...
+...
+restart:
+while ((softirq_bit = ffs(pending))) {
+	...
+	h-&gt;action(h);
+	...
+}
+...
+...
+...
+pending = local_softirq_pending();
+if (pending) {
+	if (time_before(jiffies, end) &amp;&amp; !need_resched() &amp;&amp;
+		--max_restart)
+            goto restart;
+}
+...
+</code></pre>
+<p>Checks of the existence of the deferred interrupts are performed periodically. There are several points where these checks occur. The main point is the call of the <code>do_IRQ</code> function defined in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/irq.c">arch/x86/kernel/irq.c</a>, which provides the main means for actual interrupt processing in the Linux kernel. When <code>do_IRQ</code> finishes handling an interrupt, it calls the <code>exiting_irq</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/apic.h">arch/x86/include/asm/apic.h</a> that expands to the call of the <code>irq_exit</code> function. <code>irq_exit</code> checks for deferred interrupts and the current context and calls the <code>invoke_softirq</code> function:</p>
+<pre><code class="language-C">if (!in_interrupt() &amp;&amp; local_softirq_pending())
+    invoke_softirq();
+</code></pre>
+<p>that also executes <code>__do_softirq</code>. To summarize, each <code>softirq</code> goes through the following stages:</p>
+<ul>
+<li>Registration of a <code>softirq</code> with the <code>open_softirq</code> function.</li>
+<li>Activation of a <code>softirq</code> by marking it as deferred with the <code>raise_softirq</code> function.</li>
+<li>After this, all marked <code>softirqs</code> will be triggered in the next time the Linux kernel schedules a round of executions of deferrable functions.</li>
+<li>And execution of the deferred functions that have the same type.</li>
+</ul>
+<p>As I already wrote, the <code>softirqs</code> are statically allocated and it is a problem for a kernel module that can be loaded. The second concept that built on top of <code>softirq</code> -- the <code>tasklets</code> solves this problem.</p>
+<h2 id="tasklets"><a class="header" href="#tasklets">Tasklets</a></h2>
+<p>If you read the source code of the Linux kernel that is related to the <code>softirq</code>, you notice that it is used very rarely. The preferable way to implement deferrable functions are <code>tasklets</code>. As I already wrote above the <code>tasklets</code> are built on top of the <code>softirq</code> concept and generally on top of two <code>softirqs</code>:</p>
+<ul>
+<li><code>TASKLET_SOFTIRQ</code>;</li>
+<li><code>HI_SOFTIRQ</code>.</li>
+</ul>
+<p>In short words, <code>tasklets</code> are <code>softirqs</code> that can be allocated and initialized at runtime and unlike <code>softirqs</code>, tasklets that have the same type cannot be run on multiple processors at a time. Ok, now we know a little bit about the <code>softirqs</code>, of course previous text does not cover all aspects about this, but now we can directly look on the code and to know more about the <code>softirqs</code> step by step on practice and to know about <code>tasklets</code>. Let's return back to the implementation of the <code>softirq_init</code> function that we talked about in the beginning of this part. This function is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/softirq.c">kernel/softirq.c</a> source code file, let's look on its implementation:</p>
+<pre><code class="language-C">void __init softirq_init(void)
+{
+        int cpu;
+
+        for_each_possible_cpu(cpu) {
+                per_cpu(tasklet_vec, cpu).tail =
+                        &amp;per_cpu(tasklet_vec, cpu).head;
+                per_cpu(tasklet_hi_vec, cpu).tail =
+                        &amp;per_cpu(tasklet_hi_vec, cpu).head;
+        }
+
+        open_softirq(TASKLET_SOFTIRQ, tasklet_action);
+        open_softirq(HI_SOFTIRQ, tasklet_hi_action);
+}
+</code></pre>
+<p>We can see definition of the integer <code>cpu</code> variable at the beginning of the <code>softirq_init</code> function. Next we will use it as parameter for the <code>for_each_possible_cpu</code> macro that goes through the all possible processors in the system. If the <code>possible processor</code> is the new terminology for you, you can read more about it the <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">CPU masks</a> chapter. In short words, <code>possible cpus</code> is the set of processors that can be plugged in anytime during the life of that system boot. All <code>possible processors</code> stored in the <code>cpu_possible_bits</code> bitmap, you can find its definition in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/cpu.c">kernel/cpu.c</a>:</p>
+<pre><code class="language-C">static DECLARE_BITMAP(cpu_possible_bits, CONFIG_NR_CPUS) __read_mostly;
+...
+...
+...
+const struct cpumask *const cpu_possible_mask = to_cpumask(cpu_possible_bits);
+</code></pre>
+<p>Ok, we defined the integer <code>cpu</code> variable and go through the all possible processors with the <code>for_each_possible_cpu</code> macro and makes initialization of the two following <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a> variables:</p>
+<ul>
+<li><code>tasklet_vec</code>;</li>
+<li><code>tasklet_hi_vec</code>;</li>
+</ul>
+<p>These two <code>per-cpu</code> variables defined in the same source <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/softirq.c">code</a> file as the <code>softirq_init</code> function and represent two <code>tasklet_head</code> structures:</p>
+<pre><code class="language-C">static DEFINE_PER_CPU(struct tasklet_head, tasklet_vec);
+static DEFINE_PER_CPU(struct tasklet_head, tasklet_hi_vec);
+</code></pre>
+<p>Where <code>tasklet_head</code> structure represents a list of <code>Tasklets</code> and contains two fields, head and tail:</p>
+<pre><code class="language-C">struct tasklet_head {
+        struct tasklet_struct *head;
+        struct tasklet_struct **tail;
+};
+</code></pre>
+<p>The <code>tasklet_struct</code> structure is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/interrupt.h">include/linux/interrupt.h</a> and represents the <code>Tasklet</code>. Previously we did not see this word in this book. Let's try to understand what the <code>tasklet</code> is. Actually, the tasklet is one of mechanisms to handle deferred interrupt. Let's look on the implementation of the <code>tasklet_struct</code> structure:</p>
+<pre><code class="language-C">struct tasklet_struct
+{
+        struct tasklet_struct *next;
+        unsigned long state;
+        atomic_t count;
+        void (*func)(unsigned long);
+        unsigned long data;
+};
+</code></pre>
+<p>As we can see this structure contains five fields, they are:</p>
+<ul>
+<li>Next tasklet in the scheduling queue;</li>
+<li>State of the tasklet;</li>
+<li>Represent current state of the tasklet, active or not;</li>
+<li>Main callback of the tasklet;</li>
+<li>Parameter of the callback.</li>
+</ul>
+<p>In our case, we set only for initialize only two arrays of tasklets in the <code>softirq_init</code> function: the <code>tasklet_vec</code> and the <code>tasklet_hi_vec</code>. Tasklets and high-priority tasklets are stored in the <code>tasklet_vec</code> and <code>tasklet_hi_vec</code> arrays, respectively. So, we have initialized these arrays and now we can see two calls of the <code>open_softirq</code> function that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/softirq.c">kernel/softirq.c</a> source code file:</p>
+<pre><code class="language-C">open_softirq(TASKLET_SOFTIRQ, tasklet_action);
+open_softirq(HI_SOFTIRQ, tasklet_hi_action);
+</code></pre>
+<p>at the end of the <code>softirq_init</code> function. The main purpose of the <code>open_softirq</code> function is the initialization of <code>softirq</code>. Let's look on the implementation of the <code>open_softirq</code> function.</p>
+<p>In our case they are: <code>tasklet_action</code> and the <code>tasklet_hi_action</code> or the <code>softirq</code> function associated with the <code>HI_SOFTIRQ</code> softirq is named <code>tasklet_hi_action</code> and <code>softirq</code> function associated with the <code>TASKLET_SOFTIRQ</code> is named <code>tasklet_action</code>. The Linux kernel provides API for the manipulating of <code>tasklets</code>. First of all it is the <code>tasklet_init</code> function that takes <code>tasklet_struct</code>, function and parameter for it and initializes the given <code>tasklet_struct</code> with the given data:</p>
+<pre><code class="language-C">void tasklet_init(struct tasklet_struct *t,
+                  void (*func)(unsigned long), unsigned long data)
+{
+    t-&gt;next = NULL;
+    t-&gt;state = 0;
+    atomic_set(&amp;t-&gt;count, 0);
+    t-&gt;func = func;
+    t-&gt;data = data;
+}
+</code></pre>
+<p>There are additional methods to initialize a tasklet statically with the two following macros:</p>
+<pre><code class="language-C">DECLARE_TASKLET(name, func, data);
+DECLARE_TASKLET_DISABLED(name, func, data);
+</code></pre>
+<p>The Linux kernel provides three following functions to mark a tasklet as ready to run:</p>
+<pre><code class="language-C">void tasklet_schedule(struct tasklet_struct *t);
+void tasklet_hi_schedule(struct tasklet_struct *t);
+void tasklet_hi_schedule_first(struct tasklet_struct *t);
+</code></pre>
+<p>The first function schedules a tasklet with the normal priority, the second with the high priority and the third out of turn. Implementation of the all of these three functions is similar, so we will consider only the first -- <code>tasklet_schedule</code>. Let's look on its implementation:</p>
+<pre><code class="language-C">static inline void tasklet_schedule(struct tasklet_struct *t)
+{
+    if (!test_and_set_bit(TASKLET_STATE_SCHED, &amp;t-&gt;state))
+        __tasklet_schedule(t);
+}
+
+void __tasklet_schedule(struct tasklet_struct *t)
+{
+        unsigned long flags;
+
+        local_irq_save(flags);
+        t-&gt;next = NULL;
+        *__this_cpu_read(tasklet_vec.tail) = t;
+        __this_cpu_write(tasklet_vec.tail, &amp;(t-&gt;next));
+        raise_softirq_irqoff(TASKLET_SOFTIRQ);
+        local_irq_restore(flags);
+}
+</code></pre>
+<p>As we can see it checks and sets the state of the given tasklet to the <code>TASKLET_STATE_SCHED</code> and executes the <code>__tasklet_schedule</code> with the given tasklet. The <code>__tasklet_schedule</code> looks very similar to the <code>raise_softirq</code> function that we saw above. It saves the <code>interrupt flag</code> and disables interrupts at the beginning. After this, it updates <code>tasklet_vec</code> with the new tasklet and calls the <code>raise_softirq_irqoff</code> function that we saw above. When the Linux kernel scheduler will decide to run deferred functions, the <code>tasklet_action</code> function will be called for deferred functions which are associated with the <code>TASKLET_SOFTIRQ</code> and <code>tasklet_hi_action</code> for deferred functions which are associated with the <code>HI_SOFTIRQ</code>. These functions are very similar and there is only one difference between them -- <code>tasklet_action</code> uses <code>tasklet_vec</code> and <code>tasklet_hi_action</code> uses <code>tasklet_hi_vec</code>.</p>
+<p>Let's look on the implementation of the <code>tasklet_action</code> function:</p>
+<pre><code class="language-C">static void tasklet_action(struct softirq_action *a)
+{
+    local_irq_disable();
+    list = __this_cpu_read(tasklet_vec.head);
+    __this_cpu_write(tasklet_vec.head, NULL);
+    __this_cpu_write(tasklet_vec.tail, this_cpu_ptr(&amp;tasklet_vec.head));
+    local_irq_enable();
+
+    while (list) {
+		if (tasklet_trylock(t)) {
+	        t-&gt;func(t-&gt;data);
+            tasklet_unlock(t);
+	    }
+		...
+		...
+		...
+    }
+}
+</code></pre>
+<p>In the beginning of the <code>tasklet_action</code> function, we disable interrupts for the local processor with the help of the <code>local_irq_disable</code> macro (you can read about this macro in the second <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-2">part</a> of this chapter). In the next step, we take a head of the list that contains tasklets with normal priority and set this per-cpu list to <code>NULL</code> because all tasklets must be executed in a general way. After this we enable interrupts for the local processor and go through the list of tasklets in the loop. In every iteration of the loop we call the <code>tasklet_trylock</code> function for the given tasklet that updates state of the given tasklet on <code>TASKLET_STATE_RUN</code>:</p>
+<pre><code class="language-C">static inline int tasklet_trylock(struct tasklet_struct *t)
+{
+    return !test_and_set_bit(TASKLET_STATE_RUN, &amp;(t)-&gt;state);
+}
+</code></pre>
+<p>If this operation was successful we execute tasklet's action (it was set in the <code>tasklet_init</code>) and call the <code>tasklet_unlock</code> function that clears tasklet's <code>TASKLET_STATE_RUN</code> state.</p>
+<p>In general, that's all about <code>tasklets</code> concept. Of course this does not cover full <code>tasklets</code>, but I think that it is a good point from where you can continue to learn this concept.</p>
+<p>The <code>tasklets</code> are <a href="http://lxr.free-electrons.com/ident?i=tasklet_init">widely</a> used concept in the Linux kernel, but as I wrote in the beginning of this part there is third mechanism for deferred functions -- <code>workqueue</code>. In the next paragraph we will see what it is.</p>
+<h2 id="workqueues"><a class="header" href="#workqueues">Workqueues</a></h2>
+<p>The <code>workqueue</code> is another concept for handling deferred functions. It is similar to <code>tasklets</code> with some differences. Workqueue functions run in the context of a kernel process, but <code>tasklet</code> functions run in the software interrupt context. This means that <code>workqueue</code> functions must not be atomic as <code>tasklet</code> functions. Tasklets always run on the processor from which they were originally submitted. Workqueues work in the same way, but only by default. The <code>workqueue</code> concept represented by the:</p>
+<pre><code class="language-C">struct worker_pool {
+    spinlock_t              lock;
+    int                     cpu;
+    int                     node;
+    int                     id;
+    unsigned int            flags;
+
+    struct list_head        worklist;
+    int                     nr_workers;
+...
+...
+...
+</code></pre>
+<p>structure that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/workqueue.c">kernel/workqueue.c</a> source code file in the Linux kernel. I will not write the source code of this structure here, because it has quite a lot of fields, but we will consider some of those fields.</p>
+<p>In its most basic form, the work queue subsystem is an interface for creating kernel threads to handle work that is queued from elsewhere. All of these kernel threads are called -- <code>worker threads</code>. The work queue are maintained by the <code>work_struct</code> that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/workqueue.h">include/linux/workqueue.h</a>. Let's look on this structure:</p>
+<pre><code class="language-C">struct work_struct {
+    atomic_long_t data;
+    struct list_head entry;
+    work_func_t func;
+#ifdef CONFIG_LOCKDEP
+    struct lockdep_map lockdep_map;
+#endif
+};
+</code></pre>
+<p>Here are two things that we are interested: <code>func</code> -- the function that will be scheduled by the <code>workqueue</code> and the <code>data</code> - parameter of this function. The Linux kernel provides special per-cpu threads that are called <code>kworker</code>:</p>
+<pre><code>systemd-cgls -k | grep kworker
+├─    5 [kworker/0:0H]
+├─   15 [kworker/1:0H]
+├─   20 [kworker/2:0H]
+├─   25 [kworker/3:0H]
+├─   30 [kworker/4:0H]
+...
+...
+...
+</code></pre>
+<p>This process can be used to schedule the deferred functions of the workqueues (as <code>ksoftirqd</code> for <code>softirqs</code>). Besides this we can create new separate worker thread for a <code>workqueue</code>. The Linux kernel provides following macros for the creation of workqueue:</p>
+<pre><code class="language-C">#define DECLARE_WORK(n, f) \
+    struct work_struct n = __WORK_INITIALIZER(n, f)
+</code></pre>
+<p>for static creation. It takes two parameters: name of the workqueue and the workqueue function. For creation of workqueue in runtime, we can use the:</p>
+<pre><code class="language-C">#define INIT_WORK(_work, _func)       \
+    __INIT_WORK((_work), (_func), 0)
+
+#define __INIT_WORK(_work, _func, _onstack)                     \
+    do {                                                        \
+            __init_work((_work), _onstack);                     \
+            (_work)-&gt;data = (atomic_long_t) WORK_DATA_INIT();   \
+            INIT_LIST_HEAD(&amp;(_work)-&gt;entry);                    \
+             (_work)-&gt;func = (_func);                           \
+    } while (0)
+</code></pre>
+<p>macro that takes <code>work_struct</code> structure that has to be created and the function to be scheduled in this workqueue. After a <code>work</code> was created with the one of these macros, we need to put it to the <code>workqueue</code>. We can do it with the help of the <code>queue_work</code> or the <code>queue_delayed_work</code> functions:</p>
+<pre><code class="language-C">static inline bool queue_work(struct workqueue_struct *wq,
+                              struct work_struct *work)
+{
+    return queue_work_on(WORK_CPU_UNBOUND, wq, work);
+}
+</code></pre>
+<p>The <code>queue_work</code> function just calls the <code>queue_work_on</code> function that queues work on specific processor. Note that in our case we pass the <code>WORK_CPU_UNBOUND</code> to the <code>queue_work_on</code> function. It is a part of the <code>enum</code> that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/workqueue.h">include/linux/workqueue.h</a> and represents workqueue which are not bound to any specific processor. The <code>queue_work_on</code> function tests and set the <code>WORK_STRUCT_PENDING_BIT</code> bit of the given <code>work</code> and executes the <code>__queue_work</code> function with the <code>workqueue</code> for the given processor and given <code>work</code>:</p>
+<pre><code class="language-C">bool queue_work_on(int cpu, struct workqueue_struct *wq,
+           struct work_struct *work)
+{
+    bool ret = false;
+    ...
+    if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
+        __queue_work(cpu, wq, work);
+        ret = true;
+    }
+    ...
+    return ret;
+}
+</code></pre>
+<p>The <code>__queue_work</code> function gets the <code>work pool</code>. Yes, the <code>work pool</code> not <code>workqueue</code>. Actually, all <code>works</code> are not placed in the <code>workqueue</code>, but to the <code>work pool</code> that is represented by the <code>worker_pool</code> structure in the Linux kernel. As you can see above, the <code>workqueue_struct</code> structure has the <code>pwqs</code> field which is list of <code>worker_pools</code>. When we create a <code>workqueue</code>, it stands out for each processor the <code>pool_workqueue</code>. Each <code>pool_workqueue</code> associated with <code>worker_pool</code>, which is allocated on the same processor and corresponds to the type of priority queue. Through them <code>workqueue</code> interacts with <code>worker_pool</code>. So in the <code>__queue_work</code> function we set the cpu to the current processor with the <code>raw_smp_processor_id</code> (you can find information about this macro in the fourth <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-4">part</a> of the Linux kernel initialization process chapter), getting the <code>pool_workqueue</code> for the given <code>workqueue_struct</code> and insert the given <code>work</code> to the given <code>workqueue</code>:</p>
+<pre><code class="language-C">static void __queue_work(int cpu, struct workqueue_struct *wq,
+                         struct work_struct *work)
+{
+...
+...
+...
+if (req_cpu == WORK_CPU_UNBOUND)
+    cpu = raw_smp_processor_id();
+
+if (!(wq-&gt;flags &amp; WQ_UNBOUND))
+    pwq = per_cpu_ptr(wq-&gt;cpu_pwqs, cpu);
+else
+    pwq = unbound_pwq_by_node(wq, cpu_to_node(cpu));
+...
+...
+...
+insert_work(pwq, work, worklist, work_flags);
+</code></pre>
+<p>As we can create <code>works</code> and <code>workqueue</code>, we need to know when they are executed. As I already wrote, all <code>works</code> are executed by the kernel thread. When this kernel thread is scheduled, it starts to execute <code>works</code> from the given <code>workqueue</code>. Each worker thread executes a loop inside the <code>worker_thread</code> function. This thread makes many different things and part of these things are similar to what we saw before in this part. As it starts executing, it removes all <code>work_struct</code> or <code>works</code> from its <code>workqueue</code>.</p>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the ninth part of the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">Interrupts and Interrupt Handling</a> chapter and we continued to dive into external hardware interrupts in this part. In the previous part we saw initialization of the <code>IRQs</code> and main <code>irq_desc</code> structure. In this part we saw three concepts: the <code>softirq</code>, <code>tasklet</code> and <code>workqueue</code> that are used for the deferred functions.</p>
+<p>The next part will be last part of the <code>Interrupts and Interrupt Handling</code> chapter and we will look on the real hardware driver and will try to learn how it works with the interrupts subsystem.</p>
+<p>If you have any questions or suggestions, write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://kernelnewbies.org/Documents/InitcallMechanism">initcall</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_flag">IF</a></li>
+<li><a href="https://en.wikipedia.org/wiki/FLAGS_register">eflags</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">CPU masks</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/6f0d349d922ba44e4348a17a78ea51b7135965b1/Documentation/core-api/workqueue.rst">Workqueue</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-8">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Interrupts/linux-interrupts-8.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Interrupts/linux-interrupts-10.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Interrupts/linux-interrupts-8.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Interrupts/linux-interrupts-10.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

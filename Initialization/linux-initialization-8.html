@@ -1,0 +1,586 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Scheduler initialization - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html" class="active">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-initialization-part-8"><a class="header" href="#kernel-initialization-part-8">Kernel initialization. Part 8.</a></h1>
+<h1 id="scheduler-initialization"><a class="header" href="#scheduler-initialization">Scheduler initialization</a></h1>
+<p>This is the eighth <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">part</a> of the Linux kernel initialization process chapter and we stopped on the <code>setup_nr_cpu_ids</code> function in the <a href="https://github.com/0xAX/linux-insides/blob/master/Initialization/linux-initialization-7.md">previous part</a>.</p>
+<p>The main point of this part is <a href="http://en.wikipedia.org/wiki/Scheduling_%28computing%29">scheduler</a> initialization. But before we will start to learn initialization process of the scheduler, we need to do some stuff. The next step in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> is the <code>setup_per_cpu_areas</code> function. This function setups memory areas for the <code>percpu</code> variables, more about it you can read in the special part about the <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">Per-CPU variables</a>. After <code>percpu</code> areas is up and running, the next step is the <code>smp_prepare_boot_cpu</code> function.</p>
+<p>This function does some preparations for <a href="http://en.wikipedia.org/wiki/Symmetric_multiprocessing">symmetric multiprocessing</a>. Since this function is architecture specific, it is located in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/smp.h#L78">arch/x86/include/asm/smp.h</a> Linux kernel header file. Let's look at the definition of this function:</p>
+<pre><code class="language-C">static inline void smp_prepare_boot_cpu(void)
+{
+         smp_ops.smp_prepare_boot_cpu();
+}
+</code></pre>
+<p>We may see here that it just calls the <code>smp_prepare_boot_cpu</code> callback of the <code>smp_ops</code> structure. If we look at the definition of instance of this structure from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/smp.c">arch/x86/kernel/smp.c</a> source code file, we will see that the <code>smp_prepare_boot_cpu</code> expands to the call of the <code>native_smp_prepare_boot_cpu</code> function:</p>
+<pre><code class="language-C">struct smp_ops smp_ops = {
+    ...
+    ...
+    ...
+    smp_prepare_boot_cpu = native_smp_prepare_boot_cpu,
+    ...
+    ...
+    ...
+}
+EXPORT_SYMBOL_GPL(smp_ops);
+</code></pre>
+<p>The <code>native_smp_prepare_boot_cpu</code> function looks:</p>
+<pre><code class="language-C">void __init native_smp_prepare_boot_cpu(void)
+{
+        int me = smp_processor_id();
+        switch_to_new_gdt(me);
+        cpumask_set_cpu(me, cpu_callout_mask);
+        per_cpu(cpu_state, me) = CPU_ONLINE;
+}
+</code></pre>
+<p>and executes following things: first of all it gets the <code>id</code> of the current CPU (which is Bootstrap processor and its <code>id</code> is zero for this moment) with the <code>smp_processor_id</code> function. I will not explain how the <code>smp_processor_id</code> works, because we already saw it in the <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-4">Kernel entry point</a> part. After we've got processor <code>id</code> number we reload <a href="http://en.wikipedia.org/wiki/Global_Descriptor_Table">Global Descriptor Table</a> for the given CPU with the <code>switch_to_new_gdt</code> function:</p>
+<pre><code class="language-C">void switch_to_new_gdt(int cpu)
+{
+        struct desc_ptr gdt_descr;
+
+        gdt_descr.address = (long)get_cpu_gdt_table(cpu);
+        gdt_descr.size = GDT_SIZE - 1;
+        load_gdt(&amp;gdt_descr);
+        load_percpu_segment(cpu);
+}
+</code></pre>
+<p>The <code>gdt_descr</code> variable represents pointer to the <code>GDT</code> descriptor here (we already saw definition of a <code>desc_ptr</code> structure in the <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-2">Early interrupt and exception handling</a> part). We get the address and the size of the <code>GDT</code> descriptor for the <code>CPU</code> with the given <code>id</code>. The <code>GDT_SIZE</code> is <code>256</code> or:</p>
+<pre><code class="language-C">#define GDT_SIZE (GDT_ENTRIES * 8)
+</code></pre>
+<p>and the address of the descriptor we will get with the <code>get_cpu_gdt_table</code>:</p>
+<pre><code class="language-C">static inline struct desc_struct *get_cpu_gdt_table(unsigned int cpu)
+{
+        return per_cpu(gdt_page, cpu).gdt;
+}
+</code></pre>
+<p>The <code>get_cpu_gdt_table</code> uses <code>per_cpu</code> macro for getting value of a <code>gdt_page</code> percpu variable for the given CPU number (bootstrap processor with <code>id</code> - 0 in our case).</p>
+<p>You may ask the following question: so, if we can access <code>gdt_page</code> percpu variable, where was it defined? Actually we already saw it in this book. If you have read the first <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-1">part</a> of this chapter, you can remember that we saw definition of the <code>gdt_page</code> in the <a href="https://github.com/0xAX/linux/blob/0a07b238e5f488b459b6113a62e06b6aab017f71/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a>:</p>
+<pre><code class="language-assembly">early_gdt_descr:
+	.word	GDT_ENTRIES*8-1
+early_gdt_descr_base:
+	.quad	INIT_PER_CPU_VAR(gdt_page)
+</code></pre>
+<p>and if we will look on the <a href="https://github.com/0xAX/linux/blob/0a07b238e5f488b459b6113a62e06b6aab017f71/arch/x86/kernel/vmlinux.lds.S">linker</a> file we can see that it locates after the <code>__per_cpu_load</code> symbol:</p>
+<pre><code class="language-C">#define INIT_PER_CPU(x) init_per_cpu__##x = x + __per_cpu_load
+INIT_PER_CPU(gdt_page);
+</code></pre>
+<p>and filled <code>gdt_page</code> in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/cpu/common.c#L94">arch/x86/kernel/cpu/common.c</a>:</p>
+<pre><code class="language-C">DEFINE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page) = { .gdt = {
+#ifdef CONFIG_X86_64
+	[GDT_ENTRY_KERNEL32_CS]		= GDT_ENTRY_INIT(0xc09b, 0, 0xfffff),
+	[GDT_ENTRY_KERNEL_CS]		= GDT_ENTRY_INIT(0xa09b, 0, 0xfffff),
+	[GDT_ENTRY_KERNEL_DS]		= GDT_ENTRY_INIT(0xc093, 0, 0xfffff),
+	[GDT_ENTRY_DEFAULT_USER32_CS]	= GDT_ENTRY_INIT(0xc0fb, 0, 0xfffff),
+	[GDT_ENTRY_DEFAULT_USER_DS]	= GDT_ENTRY_INIT(0xc0f3, 0, 0xfffff),
+	[GDT_ENTRY_DEFAULT_USER_CS]	= GDT_ENTRY_INIT(0xa0fb, 0, 0xfffff),
+    ...
+    ...
+    ...
+</code></pre>
+<p>more about <code>percpu</code> variables you can read in the <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">Per-CPU variables</a> part. As we got address and size of the <code>GDT</code> descriptor we reload <code>GDT</code> with the <code>load_gdt</code> which just execute <code>lgdt</code> instruct and load <code>percpu_segment</code> with the following function:</p>
+<pre><code class="language-C">void load_percpu_segment(int cpu) {
+    loadsegment(gs, 0);
+    wrmsrl(MSR_GS_BASE, (unsigned long)per_cpu(irq_stack_union.gs_base, cpu));
+    load_stack_canary_segment();
+}
+</code></pre>
+<p>The base address of the <code>percpu</code> area must contain <code>gs</code> register (or <code>fs</code> register for <code>x86</code>), so we are using <code>loadsegment</code> macro and pass <code>gs</code>. In the next step we write the base address if the <a href="http://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQ</a> stack and setup stack <a href="http://en.wikipedia.org/wiki/Buffer_overflow_protection">canary</a> (this is only for <code>x86_32</code>). After we load new <code>GDT</code>, we fill <code>cpu_callout_mask</code> bitmap with the current cpu and set cpu state as online with the setting <code>cpu_state</code> percpu variable for the current processor - <code>CPU_ONLINE</code>:</p>
+<pre><code class="language-C">cpumask_set_cpu(me, cpu_callout_mask);
+per_cpu(cpu_state, me) = CPU_ONLINE;
+</code></pre>
+<p>So, what is <code>cpu_callout_mask</code> bitmap? As we initialized bootstrap processor (processor which is booted the first on <code>x86</code>) the other processors in a multiprocessor system are known as <code>secondary processors</code>. Linux kernel uses following two bitmasks:</p>
+<ul>
+<li><code>cpu_callout_mask</code></li>
+<li><code>cpu_callin_mask</code></li>
+</ul>
+<p>After bootstrap processor initialized, it updates the <code>cpu_callout_mask</code> to indicate which secondary processor can be initialized next. All other or secondary processors can do some initialization stuff before and check the <code>cpu_callout_mask</code> on the bootstrap processor bit. Only after the bootstrap processor filled the <code>cpu_callout_mask</code> with this secondary processor, it will continue the rest of its initialization. After that the certain processor finish its initialization process, the processor sets bit in the <code>cpu_callin_mask</code>. Once the bootstrap processor finds the bit in the <code>cpu_callin_mask</code> for the current secondary processor, this processor repeats the same procedure for initialization of one of the remaining secondary processors. In a short words it works as I described, but we will see more details in the chapter about <code>SMP</code>.</p>
+<p>That's all. We did all <code>SMP</code> boot preparation.</p>
+<h2 id="build-zonelists"><a class="header" href="#build-zonelists">Build zonelists</a></h2>
+<p>In the next step we can see the call of the <code>build_all_zonelists</code> function. This function sets up the order of zones that allocations are preferred from. What are zones and what's order we will understand soon. For the start let's see how Linux kernel considers physical memory. Physical memory is split into banks which are called - <code>nodes</code>. If you have no hardware support for <code>NUMA</code>, you will see only one node:</p>
+<pre><code>$ cat /sys/devices/system/node/node0/numastat
+numa_hit 72452442
+numa_miss 0
+numa_foreign 0
+interleave_hit 12925
+local_node 72452442
+other_node 0
+</code></pre>
+<p>Every <code>node</code> is presented by the <code>struct pglist_data</code> in the Linux kernel. Each node is divided into a number of special blocks which are called - <code>zones</code>. Every zone is presented by the <code>zone struct</code> in the linux kernel and has one of the type:</p>
+<ul>
+<li><code>ZONE_DMA</code> - 0-16M;</li>
+<li><code>ZONE_DMA32</code> - used for 32 bit devices that can only do DMA areas below 4G;</li>
+<li><code>ZONE_NORMAL</code> - all RAM from the 4GB on the <code>x86_64</code>;</li>
+<li><code>ZONE_HIGHMEM</code> - absent on the <code>x86_64</code>;</li>
+<li><code>ZONE_MOVABLE</code> - zone which contains movable pages.</li>
+</ul>
+<p>which are presented by the <code>zone_type</code> enum. We can get information about zones with the:</p>
+<pre><code>$ cat /proc/zoneinfo
+Node 0, zone      DMA
+  pages free     3975
+        min      3
+        low      3
+        ...
+        ...
+Node 0, zone    DMA32
+  pages free     694163
+        min      875
+        low      1093
+        ...
+        ...
+Node 0, zone   Normal
+  pages free     2529995
+        min      3146
+        low      3932
+        ...
+        ...
+</code></pre>
+<p>As I wrote above all nodes are described with the <code>pglist_data</code> or <code>pg_data_t</code> structure in memory. This structure is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/mmzone.h">include/linux/mmzone.h</a>. The <code>build_all_zonelists</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/mm/page_alloc.c">mm/page_alloc.c</a> constructs an ordered <code>zonelist</code> (of different zones <code>DMA</code>, <code>DMA32</code>, <code>NORMAL</code>, <code>HIGH_MEMORY</code>, <code>MOVABLE</code>) which specifies the zones/nodes to visit when a selected <code>zone</code> or <code>node</code> cannot satisfy the allocation request. That's all. More about <code>NUMA</code> and multiprocessor systems will be in the special part.</p>
+<h2 id="the-rest-of-the-stuff-before-scheduler-initialization"><a class="header" href="#the-rest-of-the-stuff-before-scheduler-initialization">The rest of the stuff before scheduler initialization</a></h2>
+<p>Before we start to dive into Linux kernel scheduler initialization process we must do a couple of things. The first thing is the <code>page_alloc_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/mm/page_alloc.c">mm/page_alloc.c</a>. This function looks pretty easy:</p>
+<pre><code class="language-C">void __init page_alloc_init(void)
+{
+    int ret;
+
+    ret = cpuhp_setup_state_nocalls(CPUHP_PAGE_ALLOC_DEAD,
+                                    &quot;mm/page_alloc:dead&quot;, NULL,
+                                    page_alloc_cpu_dead);
+    WARN_ON(ret &lt; 0);
+}
+</code></pre>
+<p>It setups setup the <code>startup</code> and <code>teardown</code> callbacks (second and third parameters) for the <code>CPUHP_PAGE_ALLOC_DEAD</code> cpu <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">hotplug</a> state. Of course the implementation of this function depends on the <code>CONFIG_HOTPLUG_CPU</code> kernel configuration option and if this option is set, such callbacks will be set for all cpu(s) in the system depends on their <code>hotplug</code> states. <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">hotplug</a> mechanism is a big theme and it will not be described in this book.</p>
+<p>After this function we can see the kernel command line in the initialization output:</p>
+<p><img src="images/kernel_command_line.png" alt="kernel command line" /></p>
+<p>And a couple of functions such as <code>parse_early_param</code> and <code>parse_args</code> which handles Linux kernel command line. You may remember that we already saw the call of the <code>parse_early_param</code> function in the sixth <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-6">part</a> of the kernel initialization chapter, so why we call it again? Answer is simple: we call this function in the architecture-specific code (<code>x86_64</code> in our case), but not all architecture calls this function. And we need to call the second function <code>parse_args</code> to parse and handle non-early command line arguments.</p>
+<p>In the next step we can see the call of the <code>jump_label_init</code> from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/jump_label.c">kernel/jump_label.c</a>. and initializes <a href="https://lwn.net/Articles/412072/">jump label</a>.</p>
+<p>After this we can see the call of the <code>setup_log_buf</code> function which setups the <a href="http://www.makelinux.net/books/lkd2/ch18lev1sec3">printk</a> log buffer. We already saw this function in the seventh <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-7">part</a> of the Linux kernel initialization process chapter.</p>
+<h2 id="pid-hash-initialization"><a class="header" href="#pid-hash-initialization">PID hash initialization</a></h2>
+<p>The next is <code>pidhash_init</code> function. As you know each process has assigned a unique number which called - <code>process identification number</code> or <code>PID</code>. Each process generated with fork or clone is automatically assigned a new unique <code>PID</code> value by the kernel. The management of <code>PIDs</code> centered around the two special data structures: <code>struct pid</code> and <code>struct upid</code>. First structure represents information about a <code>PID</code> in the kernel. The second structure represents the information that is visible in a specific namespace. All <code>PID</code> instances stored in the special hash table:</p>
+<pre><code class="language-C">static struct hlist_head *pid_hash;
+</code></pre>
+<p>This hash table is used to find the pid instance that belongs to a numeric <code>PID</code> value. So, <code>pidhash_init</code> initializes this hash table. In the start of the <code>pidhash_init</code> function we can see the call of the <code>alloc_large_system_hash</code>:</p>
+<pre><code class="language-C">pid_hash = alloc_large_system_hash(&quot;PID&quot;, sizeof(*pid_hash), 0, 18,
+                                   HASH_EARLY | HASH_SMALL,
+                                   &amp;pidhash_shift, NULL,
+                                   0, 4096);
+</code></pre>
+<p>The number of elements of the <code>pid_hash</code> depends on the <code>RAM</code> configuration, but it can be between <code>2^4</code> and <code>2^12</code>. The <code>pidhash_init</code> computes the size
+and allocates the required storage (which is <code>hlist</code> in our case - the same as <a href="https://0xax.gitbook.io/linux-insides/summary/datastructures/linux-datastructures-1">doubly linked list</a>, but contains one pointer instead on the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/types.h">struct hlist_head</a>. The <code>alloc_large_system_hash</code> function allocates a large system hash table with <code>memblock_virt_alloc_nopanic</code> if we pass <code>HASH_EARLY</code> flag (as it in our case) or with <code>__vmalloc</code> if we did no pass this flag.</p>
+<p>The result we can see in the <code>dmesg</code> output:</p>
+<pre><code>$ dmesg | grep hash
+[    0.000000] PID hash table entries: 4096 (order: 3, 32768 bytes)
+...
+...
+...
+</code></pre>
+<p>That's all. The rest of the stuff before scheduler initialization is the following functions: <code>vfs_caches_init_early</code> does early initialization of the <a href="http://en.wikipedia.org/wiki/Virtual_file_system">virtual file system</a> (more about it will be in the chapter which will describe virtual file system), <code>sort_main_extable</code> sorts the kernel's built-in exception table entries which are between <code>__start___ex_table</code> and <code>__stop___ex_table</code>, and <code>trap_init</code> initializes trap handlers (more about last two function we will know in the separate chapter about interrupts).</p>
+<p>The last step before the scheduler initialization is initialization of the memory manager with the <code>mm_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>. As we can see, the <code>mm_init</code> function initializes different parts of the Linux kernel memory manager:</p>
+<pre><code class="language-C">page_ext_init_flatmem();
+mem_init();
+kmem_cache_init();
+percpu_init_late();
+pgtable_init();
+vmalloc_init();
+</code></pre>
+<p>The first is <code>page_ext_init_flatmem</code> which depends on the <code>CONFIG_SPARSEMEM</code> kernel configuration option and initializes extended data per page handling. The <code>mem_init</code> releases all <code>bootmem</code>, the <code>kmem_cache_init</code> initializes kernel cache, the <code>percpu_init_late</code> - replaces <code>percpu</code> chunks with those allocated by <a href="http://en.wikipedia.org/wiki/SLUB_%28software%29">slub</a>, the <code>pgtable_init</code> - initializes the <code>page-&gt;ptl</code> kernel cache, the <code>vmalloc_init</code> - initializes <code>vmalloc</code>. Please, <strong>NOTE</strong> that we will not dive into details about all of these functions and concepts, but we will see all of them it in the <a href="https://0xax.gitbook.io/linux-insides/summary/mm">Linux kernel memory manager</a> chapter.</p>
+<p>That's all. Now we can look on the <code>scheduler</code>.</p>
+<h2 id="scheduler-initialization-1"><a class="header" href="#scheduler-initialization-1">Scheduler initialization</a></h2>
+<p>And now we come to the main purpose of this part - initialization of the task scheduler. I want to say again as I already did it many times, you will not see the full explanation of the scheduler here, there will be special separate chapter about this. Here will be described first initial scheduler mechanisms which are initialized first of all. So let's start.</p>
+<p>Our current point is the <code>sched_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/sched/core.c">kernel/sched/core.c</a> kernel source code file and as we can understand from the function's name, it initializes scheduler. Let's start to dive into this function and try to understand how the scheduler is initialized. At the start of the <code>sched_init</code> function we can see the following call:</p>
+<pre><code class="language-C">sched_clock_init();
+</code></pre>
+<p>The <code>sched_clock_init</code> is pretty easy function and as we may see it just sets <code>sched_clock_init</code> variable:</p>
+<pre><code class="language-C">void sched_clock_init(void)
+{
+	sched_clock_running = 1;
+}
+</code></pre>
+<p>that will be used later. At the next step is initialization of the array of <code>waitqueues</code>:</p>
+<pre><code class="language-C">for (i = 0; i &lt; WAIT_TABLE_SIZE; i++)
+	init_waitqueue_head(bit_wait_table + i);
+</code></pre>
+<p>where <code>bit_wait_table</code> is defined as:</p>
+<pre><code class="language-C">#define WAIT_TABLE_BITS 8
+#define WAIT_TABLE_SIZE (1 &lt;&lt; WAIT_TABLE_BITS)
+static wait_queue_head_t bit_wait_table[WAIT_TABLE_SIZE] __cacheline_aligned;
+</code></pre>
+<p>The <code>bit_wait_table</code> is array of wait queues that will be used for wait/wake up of processes depends on the value of a designated bit. The next step after initialization of <code>waitqueues</code> array is calculating size of memory to allocate for the <code>root_task_group</code>. As we may see this size depends on two following kernel configuration options:</p>
+<pre><code class="language-C">#ifdef CONFIG_FAIR_GROUP_SCHED
+         alloc_size += 2 * nr_cpu_ids * sizeof(void **);
+#endif
+#ifdef CONFIG_RT_GROUP_SCHED
+         alloc_size += 2 * nr_cpu_ids * sizeof(void **);
+#endif
+</code></pre>
+<ul>
+<li><code>CONFIG_FAIR_GROUP_SCHED</code>;</li>
+<li><code>CONFIG_RT_GROUP_SCHED</code>.</li>
+</ul>
+<p>Both of these options provide two different planning models. As we can read from the <a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">documentation</a>, the current scheduler - <code>CFS</code> or <code>Completely Fair Scheduler</code> use a simple concept. It models process scheduling as if the system has an ideal multitasking processor where each process would receive <code>1/n</code> processor time, where <code>n</code> is the number of the runnable processes. The scheduler uses the special set of rules. These rules determine when and how to select a new process to run and they are called <code>scheduling policy</code>.</p>
+<p>The <code>Completely Fair Scheduler</code> supports following <code>normal</code> or in other words <code>non-real-time</code> scheduling policies:</p>
+<ul>
+<li><code>SCHED_NORMAL</code>;</li>
+<li><code>SCHED_BATCH</code>;</li>
+<li><code>SCHED_IDLE</code>.</li>
+</ul>
+<p>The <code>SCHED_NORMAL</code> is used for the most normal applications, the amount of cpu each process consumes is mostly determined by the <a href="http://en.wikipedia.org/wiki/Nice_%28Unix%29">nice</a> value, the <code>SCHED_BATCH</code> used for the 100% non-interactive tasks and the <code>SCHED_IDLE</code> runs tasks only when the processor has no task to run besides this task.</p>
+<p>The <code>real-time</code> policies are also supported for the time-critical applications: <code>SCHED_FIFO</code> and <code>SCHED_RR</code>. If you've read something about the Linux kernel scheduler, you can know that it is modular. That means it supports different algorithms to schedule different types of processes. Usually this modularity is called <code>scheduler classes</code>. These modules encapsulate scheduling policy details and are handled by the scheduler core without knowing too much about them.</p>
+<p>Now let's get back to the our code and look on the two configuration options: <code>CONFIG_FAIR_GROUP_SCHED</code> and <code>CONFIG_RT_GROUP_SCHED</code>. The smallest unit that the scheduler works with is an individual task or thread. However, a process is not the only type of entity that the scheduler can operate with. Both of these options provide support for group scheduling. The first option provides support for group scheduling with the <code>completely fair scheduler</code> policies and the second with the <code>real-time</code> policies respectively.</p>
+<p>In simple words, group scheduling is a feature that allows us to schedule a set of tasks as if they were a single task. For example, if you create a group with two tasks on the group, then this group is just like one normal task, from the kernel perspective. After a group is scheduled, the scheduler will pick a task from this group and it will be scheduled inside the group. So, such mechanism allows us to build hierarchies and manage their resources. Although a minimal unit of scheduling is a process, the Linux kernel scheduler does not use <code>task_struct</code> structure under the hood. There is special <code>sched_entity</code> structure that is used by the Linux kernel scheduler as scheduling unit.</p>
+<p>So, the current goal is to calculate a space to allocate for a <code>sched_entity(ies)</code> of the root task group and we do it two times with:</p>
+<pre><code class="language-C">#ifdef CONFIG_FAIR_GROUP_SCHED
+         alloc_size += 2 * nr_cpu_ids * sizeof(void **);
+#endif
+#ifdef CONFIG_RT_GROUP_SCHED
+         alloc_size += 2 * nr_cpu_ids * sizeof(void **);
+#endif
+</code></pre>
+<p>The first is for case when scheduling of task groups is enabled with <code>completely fair</code> scheduler and the second is for the same purpose by in a case of <code>real-time</code> scheduler. So here we calculate size which is equal to size of a pointer multiplied on amount of CPUs in the system and multiplied to <code>2</code>. We need to multiply this on <code>2</code> as we will need to allocate a space for two things:</p>
+<ul>
+<li>scheduler entity structure;</li>
+<li><code>runqueue</code>.</li>
+</ul>
+<p>After we have calculated size, we allocate a space with the <code>kzalloc</code> function and set pointers of <code>sched_entity</code> and <code>runqueues</code> there:</p>
+<pre><code class="language-C">ptr = (unsigned long)kzalloc(alloc_size, GFP_NOWAIT);
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+        root_task_group.se = (struct sched_entity **)ptr;
+        ptr += nr_cpu_ids * sizeof(void **);
+
+        root_task_group.cfs_rq = (struct cfs_rq **)ptr;
+        ptr += nr_cpu_ids * sizeof(void **);
+#endif
+#ifdef CONFIG_RT_GROUP_SCHED
+		root_task_group.rt_se = (struct sched_rt_entity **)ptr;
+		ptr += nr_cpu_ids * sizeof(void **);
+
+		root_task_group.rt_rq = (struct rt_rq **)ptr;
+		ptr += nr_cpu_ids * sizeof(void **);
+
+#endif
+</code></pre>
+<p>As I already mentioned, the Linux group scheduling mechanism allows to specify a hierarchy. The root of such hierarchies is the <code>root_runqueuetask_group</code> task group structure. This structure contains many fields, but we are interested in <code>se</code>, <code>rt_se</code>, <code>cfs_rq</code> and <code>rt_rq</code> for this moment:</p>
+<p>The first two are instances of <code>sched_entity</code> structure. It is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/sched.h">include/linux/sched.h</a> kernel header filed and used by the scheduler as a unit of scheduling.</p>
+<pre><code class="language-C">struct task_group {
+    ...
+    ...
+    struct sched_entity **se;
+    struct cfs_rq **cfs_rq;
+    ...
+    ...
+}
+</code></pre>
+<p>The <code>cfs_rq</code> and <code>rt_rq</code> present <code>run queues</code>. A <code>run queue</code> is a special <code>per-cpu</code> structure that is used by the Linux kernel scheduler to store <code>active</code> threads or in other words set of threads which potentially will be picked up by the scheduler to run.</p>
+<p>The space is allocated and the next step is to initialize a <code>bandwidth</code> of CPU for <code>real-time</code> and <code>deadline</code> tasks:</p>
+<pre><code class="language-C">init_rt_bandwidth(&amp;def_rt_bandwidth,
+                  global_rt_period(), global_rt_runtime());
+init_dl_bandwidth(&amp;def_dl_bandwidth,
+                  global_rt_period(), global_rt_runtime());
+</code></pre>
+<p>All groups have to be able to rely on the amount of CPU time. The two following structures: <code>def_rt_bandwidth</code> and <code>def_dl_bandwidth</code> represent default values of bandwidths for <code>real-time</code> and <code>deadline</code> tasks. We will not look at definition of these structures as it is not so important for now, but we are interested in two following values:</p>
+<ul>
+<li><code>sched_rt_period_us</code>;</li>
+<li><code>sched_rt_runtime_us</code>.</li>
+</ul>
+<p>The first represents a period and the second represents quantum that is allocated for <code>real-time</code> tasks during <code>sched_rt_period_us</code>. You may see global values of these parameters in the:</p>
+<pre><code>$ cat /proc/sys/kernel/sched_rt_period_us
+1000000
+
+$ cat /proc/sys/kernel/sched_rt_runtime_us
+950000
+</code></pre>
+<p>The values related to a group can be configured in <code>&lt;cgroup&gt;/cpu.rt_period_us</code> and <code>&lt;cgroup&gt;/cpu.rt_runtime_us</code>. Due no one filesystem is not mounted yet, the <code>def_rt_bandwidth</code> and the <code>def_dl_bandwidth</code> will be initialized with default values which will be returned by the <code>global_rt_period</code> and <code>global_rt_runtime</code> functions.</p>
+<p>That's all with the bandwiths of <code>real-time</code> and <code>deadline</code> tasks and in the next step, depends on enable of <a href="http://en.wikipedia.org/wiki/Symmetric_multiprocessing">SMP</a>, we make initialization of the <code>root domain</code>:</p>
+<pre><code class="language-C">#ifdef CONFIG_SMP
+	init_defrootdomain();
+#endif
+</code></pre>
+<p>The real-time scheduler requires global resources to make scheduling decision. But unfortunately scalability bottlenecks appear as the number of CPUs increase. The concept of <code>root domains</code> was introduced for improving scalability and avoid such bottlenecks. Instead of bypassing over all <code>run queues</code>, the scheduler gets information about a CPU where/from to push/pull a <code>real-time</code> task from the <code>root_domain</code> structure. This structure is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/sched/sched.h">kernel/sched/sched.h</a> kernel header file and just keeps track of CPUs that can be used to push or pull a process.</p>
+<p>After <code>root domain</code> initialization, we make initialization of the <code>bandwidth</code> for the <code>real-time</code> tasks of the <code>root task group</code> as we did the same above:</p>
+<pre><code class="language-C">#ifdef CONFIG_RT_GROUP_SCHED
+	init_rt_bandwidth(&amp;root_task_group.rt_bandwidth,
+			global_rt_period(), global_rt_runtime());
+#endif
+</code></pre>
+<p>with the same default values.</p>
+<p>In the next step, depends on the <code>CONFIG_CGROUP_SCHED</code> kernel configuration option we allocate <code>slab</code> cache for <code>task_group(s)</code> and initialize the <code>siblings</code> and <code>children</code> lists of the root task group. As we can read from the documentation, the <code>CONFIG_CGROUP_SCHED</code> is:</p>
+<pre><code>This option allows you to create arbitrary task groups using the &quot;cgroup&quot; pseudo
+filesystem and control the cpu bandwidth allocated to each such task group.
+</code></pre>
+<p>As we finished with the lists initialization, we can see the call of the <code>autogroup_init</code> function:</p>
+<pre><code class="language-C">#ifdef CONFIG_CGROUP_SCHED
+         list_add(&amp;root_task_group.list, &amp;task_groups);
+         INIT_LIST_HEAD(&amp;root_task_group.children);
+         INIT_LIST_HEAD(&amp;root_task_group.siblings);
+         autogroup_init(&amp;init_task);
+#endif
+</code></pre>
+<p>which initializes automatic process group scheduling. The <code>autogroup</code> feature is about automatic creation and population of a new task group during creation of a new session via <a href="https://linux.die.net/man/2/setsid">setsid</a> call.</p>
+<p>After this we are going through the all <code>possible</code> CPUs (you can remember that <code>possible</code> CPUs are stored in the <code>cpu_possible_mask</code> bitmap that can ever be available in the system) and initialize a <code>runqueue</code> for each <code>possible</code> cpu:</p>
+<pre><code class="language-C">for_each_possible_cpu(i) {
+    struct rq *rq;
+    ...
+    ...
+    ...
+</code></pre>
+<p>The <code>rq</code> structure in the Linux kernel is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/sched/sched.h#L625">kernel/sched/sched.h</a>. As I already mentioned this above, a <code>run queue</code> is a fundamental data structure in a scheduling process. The scheduler uses it to determine who will be ran next. As you may see, this structure has many different fields and we will not cover all of them here, but we will look on them when they will be directly used.</p>
+<p>After initialization of <code>per-cpu</code> run queues with default values, we need to setup <code>load weight</code> of the first task in the system:</p>
+<pre><code class="language-C">set_load_weight(&amp;init_task);
+</code></pre>
+<p>First of all let's try to understand what is it <code>load weight</code> of a process. If you will look at the definition of the <code>sched_entity</code> structure, you will see that it starts from the <code>load</code> field:</p>
+<pre><code class="language-C">struct sched_entity {
+	struct load_weight		load;
+    ...
+    ...
+    ...
+}
+</code></pre>
+<p>represented by the <code>load_weight</code> structure which just contains two fields that represent actual load weight of a scheduler entity and its invariant value:</p>
+<pre><code class="language-C">struct load_weight {
+	unsigned long	weight;
+	u32				inv_weight;
+};
+</code></pre>
+<p>You already may know that each process in the system has <code>priority</code>. The higher priority allows to get more time to run. A <code>load weight</code> of a process is a relation between priority of this process and timeslices of this process. Each process has three following fields related to priority:</p>
+<pre><code class="language-C">struct task_struct {
+...
+...
+...
+	int				prio;
+	int				static_prio;
+	int				normal_prio;
+...
+...
+...
+}
+</code></pre>
+<p>The first one is <code>dynamic priority</code> which can't be changed during lifetime of a process based on its static priority and interactivity of the process. The <code>static_prio</code> contains initial priority most likely well-known to you <code>nice value</code>. This value is not changed by the kernel if a user does not change it. The last one is <code>normal_priority</code> based on the value of the <code>static_prio</code> too, but also it depends on the scheduling policy of a process.</p>
+<p>So the main goal of the <code>set_load_weight</code> function is to initialize <code>load_weight</code> fields for the <code>init</code> task:</p>
+<pre><code class="language-C">static void set_load_weight(struct task_struct *p)
+{
+	int prio = p-&gt;static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &amp;p-&gt;se.load;
+
+	if (idle_policy(p-&gt;policy)) {
+		load-&gt;weight = scale_load(WEIGHT_IDLEPRIO);
+		load-&gt;inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	load-&gt;weight = scale_load(sched_prio_to_weight[prio]);
+	load-&gt;inv_weight = sched_prio_to_wmult[prio];
+}
+</code></pre>
+<p>As you may see we calculate initial <code>prio</code> from the initial value of the <code>static_prio</code> of the <code>init</code> task and use it as index of <code>sched_prio_to_weight</code> and <code>sched_prio_to_wmult</code> arrays to set <code>weight</code> and <code>inv_weight</code> values. These two arrays contain a <code>load weight</code> depends on priority value. In a case of when a process is <code>idle</code> process, we set minimal load weight.</p>
+<p>For this moment we came to the end of initialization process of the Linux kernel scheduler. The last steps are: to make current process (it will be the first <code>init</code> process) <code>idle</code> that will be ran when a cpu has no other process to run. Calculating next time period of the next calculation of CPU load and initialization of the <code>fair</code> class:</p>
+<pre><code class="language-C">__init void init_sched_fair_class(void)
+{
+#ifdef CONFIG_SMP
+	open_softirq(SCHED_SOFTIRQ, run_rebalance_domains);
+#endif
+}
+</code></pre>
+<p>Here we register a <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-9">soft irq</a> that will call the <code>run_rebalance_domains</code> handler. After the <code>SCHED_SOFTIRQ</code> will be triggered, the <code>run_rebalance</code> will be called to rebalance a run queue on the current CPU.</p>
+<p>The last two steps of the <code>sched_init</code> function is to initialization of scheduler statistics and setting <code>scheeduler_running</code> variable:</p>
+<pre><code class="language-C">scheduler_running = 1;
+</code></pre>
+<p>That's all. Linux kernel scheduler is initialized. Of course, we have skipped many different details and explanations here, because we need to know and understand how different concepts (like process and process groups, runqueue, rcu, etc.) works in the Linux kernel , but we took a short look on the scheduler initialization process. We will look all other details in the separate part which will be fully dedicated to the scheduler.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the eighth part about the Linux kernel initialization process. In this part, we looked on the initialization process of the scheduler and we will continue in the next part to dive in the linux kernel initialization process and will see initialization of the <a href="http://en.wikipedia.org/wiki/Read-copy-update">RCU</a> and many other initialization stuff in the next part.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">CPU masks</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/timers/hrtimers.txt">high-resolution kernel timer</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Spinlock">spinlock</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Run_queue">Run queue</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/mm">Linux kernel memory manager</a></li>
+<li><a href="http://en.wikipedia.org/wiki/SLUB_%28software%29">slub</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Virtual_file_system">virtual file system</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Linux kernel hotplug documentation</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQ</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Global_Descriptor_Table">Global Descriptor Table</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">Per-CPU variables</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Symmetric_multiprocessing">SMP</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Read-copy-update">RCU</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">CFS Scheduler documentation</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/scheduler/sched-rt-group.txt">Real-Time group scheduling</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-7">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Initialization/linux-initialization-7.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Initialization/linux-initialization-9.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Initialization/linux-initialization-7.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Initialization/linux-initialization-9.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

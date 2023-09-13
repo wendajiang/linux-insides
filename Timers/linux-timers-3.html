@@ -1,0 +1,495 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The tick broadcast framework and dyntick - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html" class="active">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="timers-and-time-management-in-the-linux-kernel-part-3"><a class="header" href="#timers-and-time-management-in-the-linux-kernel-part-3">Timers and time management in the Linux kernel. Part 3.</a></h1>
+<h2 id="the-tick-broadcast-framework-and-dyntick"><a class="header" href="#the-tick-broadcast-framework-and-dyntick">The tick broadcast framework and dyntick</a></h2>
+<p>This is third part of the <a href="https://0xax.gitbook.io/linux-insides/summary/timers/">chapter</a> which describes timers and time management related stuff in the Linux kernel and we stopped on the <code>clocksource</code> framework in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-2">part</a>. We have started to consider this framework because it is closely related to the special counters which are provided by the Linux kernel. One of these counters which we already saw in the first <a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-1.md">part</a> of this chapter is - <code>jiffies</code>. As I already wrote in the first part of this chapter, we will consider time management related stuff step by step during the Linux kernel initialization. Previous step was call of the:</p>
+<pre><code class="language-C">register_refined_jiffies(CLOCK_TICK_RATE);
+</code></pre>
+<p>function which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/jiffies.c">kernel/time/jiffies.c</a> source code file and executes initialization of the <code>refined_jiffies</code> clock source for us. Recall that this function is called from the <code>setup_arch</code> function that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/setup.c">arch/x86/kernel/setup.c</a> source code and executes architecture-specific (<a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> in our case) initialization. Look on the implementation of the <code>setup_arch</code> and you will note that the call of the <code>register_refined_jiffies</code> is the last step before the <code>setup_arch</code> function finishes its work.</p>
+<p>There are many different <code>x86_64</code> specific things already configured after the end of the <code>setup_arch</code> execution. For example some early <a href="https://en.wikipedia.org/wiki/Interrupt">interrupt</a> handlers already able to handle interrupts, memory space reserved for the <a href="https://en.wikipedia.org/wiki/Initrd">initrd</a>, <a href="https://en.wikipedia.org/wiki/Desktop_Management_Interface">DMI</a> scanned, the Linux kernel log buffer is already set and this means that the <a href="https://en.wikipedia.org/wiki/Printk">printk</a> function is able to work, <a href="https://en.wikipedia.org/wiki/E820">e820</a> parsed and the Linux kernel already knows about available memory and and many many other architecture specific things (if you are interested, you can read more about the <code>setup_arch</code> function and Linux kernel initialization process in the second <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">chapter</a> of this book).</p>
+<p>Now, the <code>setup_arch</code> finished its work and we can go back to the generic Linux kernel code. Recall that the <code>setup_arch</code> function was called from the <code>start_kernel</code> function which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> source code file. So, we shall return to this function. You can see that there are many different functions that are called right after <code>setup_arch</code> function inside of the <code>start_kernel</code> function, but since our chapter is devoted to timers and time management related stuff, we will skip all code which is not related to this topic. The first function which is related to the time management in the Linux kernel is:</p>
+<pre><code class="language-C">tick_init();
+</code></pre>
+<p>in the <code>start_kernel</code>. The <code>tick_init</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/tick-common.c">kernel/time/tick-common.c</a> source code file and does two things:</p>
+<ul>
+<li>Initialization of <code>tick broadcast</code> framework related data structures;</li>
+<li>Initialization of <code>full</code> tickless mode related data structures.</li>
+</ul>
+<p>We didn't see anything related to the <code>tick broadcast</code> framework in this book and didn't know anything about tickless mode in the Linux kernel. So, the main point of this part is to look on these concepts and to know what they are.</p>
+<h2 id="the-idle-process"><a class="header" href="#the-idle-process">The idle process</a></h2>
+<p>First of all, let's look on the implementation of the <code>tick_init</code> function. As I already wrote, this function is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/tick-common.c">kernel/time/tick-common.c</a> source code file and consists from the two calls of following functions:</p>
+<pre><code class="language-C">void __init tick_init(void)
+{
+	tick_broadcast_init();
+	tick_nohz_init();
+}
+</code></pre>
+<p>As you can understand from the paragraph's title, we are interesting only in the <code>tick_broadcast_init</code> function for now. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/tick-broadcast.c">kernel/time/tick-broadcast.c</a> source code file and executes initialization of the <code>tick broadcast</code> framework related data structures. Before we will look on the implementation of the <code>tick_broadcast_init</code> function and will try to understand what does this function do, we need to know about <code>tick broadcast</code> framework.</p>
+<p>Main point of a central processor is to execute programs. But sometimes a processor may be in a special state when it is not being used by any program. This special state is called - <a href="https://en.wikipedia.org/wiki/Idle_%28CPU%29">idle</a>. When the processor has no anything to execute, the Linux kernel launches <code>idle</code> task. We already saw a little about this in the last part of the <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-10">Linux kernel initialization process</a>. When the Linux kernel will finish all initialization processes in the <code>start_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> source code file, it will call the <code>rest_init</code> function from the same source code file. Main point of this function is to launch kernel <code>init</code> thread and the <code>kthreadd</code> thread, to call the <code>schedule</code> function to start task scheduling and to go to sleep by calling the <code>cpu_idle_loop</code> function that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/sched/idle.c">kernel/sched/idle.c</a> source code file.</p>
+<p>The <code>cpu_idle_loop</code> function represents infinite loop which checks the need for rescheduling on each iteration. After the scheduler finds something to execute, the <code>idle</code> process will finish its work and the control will be moved to a new runnable task with the call of the <code>schedule_preempt_disabled</code> function:</p>
+<pre><code class="language-C">static void cpu_idle_loop(void)
+{
+	while (1) {
+		while (!need_resched()) {
+			...
+			...
+			...
+		    /* the main idle function */
+			cpuidle_idle_call();
+		}
+		...
+		...
+		...
+		schedule_preempt_disabled();
+	}
+}
+</code></pre>
+<p>Of course, we will not consider full implementation of the <code>cpu_idle_loop</code> function and details of the <code>idle</code> state in this part, because it is not related to our topic. But there is one interesting moment for us. We know that the processor can execute only one task in one time. How does the Linux kernel decide to reschedule and stop <code>idle</code> process if the processor executes infinite loop in the <code>cpu_idle_loop</code>? The answer is system timer interrupts. When an interrupt occurs, the processor stops the <code>idle</code> thread and transfers control to an interrupt handler. After the system timer interrupt handler will be handled, the <code>need_resched</code> will return true and the Linux kernel will stop <code>idle</code> process and will transfer control to the current runnable task. But handling of the system timer interrupts is not effective for <a href="https://en.wikipedia.org/wiki/Power_management">power management</a>, because if a processor is in <code>idle</code> state,  there is little point in sending it a system timer interrupt.</p>
+<p>By default, there is the <code>CONFIG_HZ_PERIODIC</code> kernel configuration option which is enabled in the Linux kernel and tells to handle each interrupt of the system timer. To solve this problem, the Linux kernel provides two additional ways of managing scheduling-clock interrupts:</p>
+<p>The first is to omit scheduling-clock ticks on idle processors. To enable this behaviour in the Linux kernel, we need to enable the <code>CONFIG_NO_HZ_IDLE</code> kernel configuration option. This option allows Linux kernel to avoid sending timer interrupts to idle processors. In this case periodic timer interrupts will be replaced with on-demand interrupts. This mode is called - <code>dyntick-idle</code> mode. But if the kernel does not handle interrupts of a system timer, how can the kernel decide if the system has nothing to do?</p>
+<p>Whenever the idle task is selected to run, the periodic tick is disabled with the call of the <code>tick_nohz_idle_enter</code> function that defined in the <a href="https://github.com/torvalds/linux/blob/master/kernel/time/tick-sched.c">kernel/time/tick-sched.c</a> source code file and enabled with the call of the <code>tick_nohz_idle_exit</code> function. There is special concept in the Linux kernel which is called - <code>clock event devices</code> that are used to schedule the next interrupt. This concept provides API for devices which can deliver interrupts at a specific time in the future and represented by the <code>clock_event_device</code> structure in the Linux kernel. We will not dive into implementation of the <code>clock_event_device</code> structure now. We will see it in the next part of this chapter. But there is one interesting moment for us right now.</p>
+<p>The second way is to omit scheduling-clock ticks on processors that are either in <code>idle</code> state or that have only one runnable task or in other words busy processor. We can enable this feature with the <code>CONFIG_NO_HZ_FULL</code> kernel configuration option and it allows to reduce the number of timer interrupts significantly.</p>
+<p>Besides the <code>cpu_idle_loop</code>, idle processor can be in a sleeping state. The Linux kernel provides special <code>cpuidle</code> framework. Main point of this framework is to put an idle processor to sleeping states. The name of the set of these states is - <code>C-states</code>. But how will a processor will be woken if local timer is disabled? The Linux kernel provides <code>tick broadcast</code> framework for this. The main point of this framework is assign a timer which is not affected by the <code>C-states</code>. This timer will wake a sleeping processor.</p>
+<p>Now, after some theory we can return to the implementation of our function. Let's recall that the <code>tick_init</code> function just calls two following functions:</p>
+<pre><code class="language-C">void __init tick_init(void)
+{
+	tick_broadcast_init();
+	tick_nohz_init();
+}
+</code></pre>
+<p>Let's consider the first function. The first <code>tick_broadcast_init</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/tick-broadcast.c">kernel/time/tick-broadcast.c</a> source code file and executes initialization of the <code>tick broadcast</code> framework related data structures. Let's look on the implementation of the <code>tick_broadcast_init</code> function:</p>
+<pre><code class="language-C">void __init tick_broadcast_init(void)
+{
+        zalloc_cpumask_var(&amp;tick_broadcast_mask, GFP_NOWAIT);
+        zalloc_cpumask_var(&amp;tick_broadcast_on, GFP_NOWAIT);
+        zalloc_cpumask_var(&amp;tmpmask, GFP_NOWAIT);
+#ifdef CONFIG_TICK_ONESHOT
+         zalloc_cpumask_var(&amp;tick_broadcast_oneshot_mask, GFP_NOWAIT);
+         zalloc_cpumask_var(&amp;tick_broadcast_pending_mask, GFP_NOWAIT);
+         zalloc_cpumask_var(&amp;tick_broadcast_force_mask, GFP_NOWAIT);
+#endif
+}
+</code></pre>
+<p>As we can see, the <code>tick_broadcast_init</code> function allocates different <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">cpumasks</a> with the help of the <code>zalloc_cpumask_var</code> function. The <code>zalloc_cpumask_var</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/lib/cpumask.c">lib/cpumask.c</a> source code file and expands to the call of the following function:</p>
+<pre><code class="language-C">bool zalloc_cpumask_var(cpumask_var_t *mask, gfp_t flags)
+{
+        return alloc_cpumask_var(mask, flags | __GFP_ZERO);
+}
+</code></pre>
+<p>Ultimately, the memory space will be allocated for the given <code>cpumask</code> with the certain flags with the help of the <code>kmalloc_node</code> function:</p>
+<pre><code class="language-C">*mask = kmalloc_node(cpumask_size(), flags, node);
+</code></pre>
+<p>Now let's look on the <code>cpumasks</code> that will be initialized in the <code>tick_broadcast_init</code> function. As we can see, the <code>tick_broadcast_init</code> function will initialize six <code>cpumasks</code>, and moreover, initialization of the last three <code>cpumasks</code> will depend on the <code>CONFIG_TICK_ONESHOT</code> kernel configuration option.</p>
+<p>The first three <code>cpumasks</code> are:</p>
+<ul>
+<li><code>tick_broadcast_mask</code> - the bitmap which represents list of processors that are in a sleeping mode;</li>
+<li><code>tick_broadcast_on</code> - the bitmap that stores numbers of processors which are in a periodic broadcast state;</li>
+<li><code>tmpmask</code> - this bitmap for temporary usage.</li>
+</ul>
+<p>As we already know, the next three <code>cpumasks</code> depends on the <code>CONFIG_TICK_ONESHOT</code> kernel configuration option. Actually each clock event devices can be in one of two modes:</p>
+<ul>
+<li><code>periodic</code> - clock events devices that support periodic events;</li>
+<li><code>oneshot</code>  - clock events devices that capable of issuing events that happen only once.</li>
+</ul>
+<p>The Linux kernel defines two mask for such clock events devices in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/clockchips.h">include/linux/clockchips.h</a> header file:</p>
+<pre><code class="language-C">#define CLOCK_EVT_FEAT_PERIODIC        0x000001
+#define CLOCK_EVT_FEAT_ONESHOT         0x000002
+</code></pre>
+<p>So, the last three <code>cpumasks</code> are:</p>
+<ul>
+<li><code>tick_broadcast_oneshot_mask</code> - stores numbers of processors that must be notified;</li>
+<li><code>tick_broadcast_pending_mask</code> - stores numbers of processors that pending broadcast;</li>
+<li><code>tick_broadcast_force_mask</code>   - stores numbers of processors with enforced broadcast.</li>
+</ul>
+<p>We have initialized six <code>cpumasks</code> in the <code>tick broadcast</code> framework, and now we can proceed to implementation of this framework.</p>
+<h2 id="the-tick-broadcast-framework"><a class="header" href="#the-tick-broadcast-framework">The <code>tick broadcast</code> framework</a></h2>
+<p>Hardware may provide some clock source devices. When a processor sleeps and its local timer stopped, there must be additional clock source device that will handle awakening of a processor. The Linux kernel uses these <code>special</code> clock source devices which can raise an interrupt at a specified time. We already know that such timers called <code>clock events</code> devices in the Linux kernel. Besides <code>clock events</code> devices, each processor in the system has its own local timer which is programmed to issue interrupt at the time of the next deferred task. Also these timers can be programmed to do a periodical job, like updating <code>jiffies</code> and etc. These timers represented by the <code>tick_device</code> structure in the Linux kernel. This structure defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/tick-sched.h">kernel/time/tick-sched.h</a> header file and looks:</p>
+<pre><code class="language-C">struct tick_device {
+        struct clock_event_device *evtdev;
+        enum tick_device_mode mode;
+};
+</code></pre>
+<p>Note, that the <code>tick_device</code> structure contains two fields. The first field - <code>evtdev</code> represents pointer to the <code>clock_event_device</code> structure that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/clockchips.h">include/linux/clockchips.h</a> header file and represents descriptor of a clock event device. A <code>clock event</code> device allows to register an event that will happen in the future. As I already wrote, we will not consider <code>clock_event_device</code> structure and related API in this part, but will see it in the next part.</p>
+<p>The second field of the <code>tick_device</code> structure represents mode of the <code>tick_device</code>. As we already know, the mode can be one of the:</p>
+<pre><code class="language-C">enum tick_device_mode {
+        TICKDEV_MODE_PERIODIC,
+        TICKDEV_MODE_ONESHOT,
+};
+</code></pre>
+<p>Each <code>clock events</code> device in the system registers itself by the call of the <code>clockevents_register_device</code> function or <code>clockevents_config_and_register</code> function during initialization process of the Linux kernel. During the registration of a new <code>clock events</code> device, the Linux kernel calls the <code>tick_check_new_device</code> function that defined in the <a href="https://github.com/torvalds/linux/blob/master/kernel/time/tick-common.c">kernel/time/tick-common.c</a> source code file and checks the given <code>clock events</code> device should be used by the Linux kernel. After all checks, the <code>tick_check_new_device</code> function executes a call of the:</p>
+<pre><code class="language-C">tick_install_broadcast_device(newdev);
+</code></pre>
+<p>function that checks that the given <code>clock event</code> device can be broadcast device and install it, if the given device can be broadcast device. Let's look on the implementation of the <code>tick_install_broadcast_device</code> function:</p>
+<pre><code class="language-C">void tick_install_broadcast_device(struct clock_event_device *dev)
+{
+	struct clock_event_device *cur = tick_broadcast_device.evtdev;
+
+	if (!tick_check_broadcast_device(cur, dev))
+		return;
+
+	if (!try_module_get(dev-&gt;owner))
+		return;
+
+	clockevents_exchange_device(cur, dev);
+
+	if (cur)
+		cur-&gt;event_handler = clockevents_handle_noop;
+
+	tick_broadcast_device.evtdev = dev;
+
+	if (!cpumask_empty(tick_broadcast_mask))
+		tick_broadcast_start_periodic(dev);
+
+	if (dev-&gt;features &amp; CLOCK_EVT_FEAT_ONESHOT)
+		tick_clock_notify();
+}
+</code></pre>
+<p>First of all we get the current <code>clock event</code> device from the <code>tick_broadcast_device</code>. The <code>tick_broadcast_device</code> defined in the <a href="https://github.com/torvalds/linux/blob/master/kernel/time/tick-common.c">kernel/time/tick-common.c</a> source code file:</p>
+<pre><code class="language-C">static struct tick_device tick_broadcast_device;
+</code></pre>
+<p>and represents external clock device that keeps track of events for a processor. The first step after we get the current clock device is the call of the <code>tick_check_broadcast_device</code> function which checks that a given clock events device can be utilized as broadcast device. The main point of the <code>tick_check_broadcast_device</code> function is to check value of the <code>features</code> field of the given <code>clock events</code> device. As we can understand from the name of this field, the <code>features</code> field contains a clock event device features. Available values defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/clockchips.h">include/linux/clockchips.h</a> header file and can be one of the <code>CLOCK_EVT_FEAT_PERIODIC</code> - which represents a clock events device which supports periodic events and etc. So, the <code>tick_check_broadcast_device</code> function check <code>features</code> flags for <code>CLOCK_EVT_FEAT_ONESHOT</code>, <code>CLOCK_EVT_FEAT_DUMMY</code> and other flags and returns <code>false</code> if the given clock events device has one of these features. In other way the <code>tick_check_broadcast_device</code> function compares <code>ratings</code> of the given clock event device and current clock event device and returns the best.</p>
+<p>After the <code>tick_check_broadcast_device</code> function, we can see the call of the <code>try_module_get</code> function that checks module owner of the clock events. We need to do it to be sure that the given <code>clock events</code> device was correctly initialized. The next step is the call of the <code>clockevents_exchange_device</code> function that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/clockevents.c">kernel/time/clockevents.c</a> source code file and will release old clock events device and replace the previous functional handler with a dummy handler.</p>
+<p>In the last step of the <code>tick_install_broadcast_device</code> function we check that the <code>tick_broadcast_mask</code> is not empty and start the given <code>clock events</code> device in periodic mode with the call of the <code>tick_broadcast_start_periodic</code> function:</p>
+<pre><code class="language-C">if (!cpumask_empty(tick_broadcast_mask))
+	tick_broadcast_start_periodic(dev);
+
+if (dev-&gt;features &amp; CLOCK_EVT_FEAT_ONESHOT)
+	tick_clock_notify();
+</code></pre>
+<p>The <code>tick_broadcast_mask</code> filled in the <code>tick_device_uses_broadcast</code> function that checks a <code>clock events</code> device during registration of this <code>clock events</code> device:</p>
+<pre><code class="language-C">int cpu = smp_processor_id();
+
+int tick_device_uses_broadcast(struct clock_event_device *dev, int cpu)
+{
+	...
+	...
+	...
+	if (!tick_device_is_functional(dev)) {
+		...
+		cpumask_set_cpu(cpu, tick_broadcast_mask);
+		...
+	}
+	...
+	...
+	...
+}
+</code></pre>
+<p>More about the <code>smp_processor_id</code> macro you can read in the fourth <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-4">part</a> of the Linux kernel initialization process chapter.</p>
+<p>The <code>tick_broadcast_start_periodic</code> function check the given <code>clock event</code> device and call the <code>tick_setup_periodic</code> function:</p>
+<pre><code>static void tick_broadcast_start_periodic(struct clock_event_device *bc)
+{
+	if (bc)
+		tick_setup_periodic(bc, 1);
+}
+</code></pre>
+<p>that defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/tick-common.c">kernel/time/tick-common.c</a> source code file and sets broadcast handler for the given <code>clock event</code> device by the call of the following function:</p>
+<pre><code class="language-C">tick_set_periodic_handler(dev, broadcast);
+</code></pre>
+<p>This function checks the second parameter which represents broadcast state (<code>on</code> or <code>off</code>) and sets the broadcast handler depends on its value:</p>
+<pre><code class="language-C">void tick_set_periodic_handler(struct clock_event_device *dev, int broadcast)
+{
+	if (!broadcast)
+		dev-&gt;event_handler = tick_handle_periodic;
+	else
+		dev-&gt;event_handler = tick_handle_periodic_broadcast;
+}
+</code></pre>
+<p>When an <code>clock event</code> device will issue an interrupt, the <code>dev-&gt;event_handler</code> will be called. For example, let's look on the interrupt handler of the <a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">high precision event timer</a> which is located in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/hpet.c">arch/x86/kernel/hpet.c</a> source code file:</p>
+<pre><code class="language-C">static irqreturn_t hpet_interrupt_handler(int irq, void *data)
+{
+	struct hpet_dev *dev = (struct hpet_dev *)data;
+	struct clock_event_device *hevt = &amp;dev-&gt;evt;
+
+	if (!hevt-&gt;event_handler) {
+		printk(KERN_INFO &quot;Spurious HPET timer interrupt on HPET timer %d\n&quot;,
+				dev-&gt;num);
+		return IRQ_HANDLED;
+	}
+
+	hevt-&gt;event_handler(hevt);
+	return IRQ_HANDLED;
+}
+</code></pre>
+<p>The <code>hpet_interrupt_handler</code> gets the <a href="https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQ</a> specific data and check the event handler of the <code>clock event</code> device. Recall that we just set in the <code>tick_set_periodic_handler</code> function. So the <code>tick_handler_periodic_broadcast</code> function will be called in the end of the high precision event timer interrupt handler.</p>
+<p>The <code>tick_handler_periodic_broadcast</code> function calls the</p>
+<pre><code class="language-C">bc_local = tick_do_periodic_broadcast();
+</code></pre>
+<p>function which stores numbers of processors which have asked to be woken up in the temporary <code>cpumask</code> and call the <code>tick_do_broadcast</code> function:</p>
+<pre><code>cpumask_and(tmpmask, cpu_online_mask, tick_broadcast_mask);
+return tick_do_broadcast(tmpmask);
+</code></pre>
+<p>The <code>tick_do_broadcast</code> calls the <code>broadcast</code> function of the given clock events which sends <a href="https://en.wikipedia.org/wiki/Inter-processor_interrupt">IPI</a> interrupt to the set of the processors. In the end we can call the event handler of the given <code>tick_device</code>:</p>
+<pre><code class="language-C">if (bc_local)
+	td-&gt;evtdev-&gt;event_handler(td-&gt;evtdev);
+</code></pre>
+<p>which actually represents interrupt handler of the local timer of a processor. After this a processor will wake up. That is all about <code>tick broadcast</code> framework in the Linux kernel. We have missed some aspects of this framework, for example reprogramming of a <code>clock event</code> device and broadcast with the oneshot timer and etc. But the Linux kernel is very big, it is not realistic to cover all aspects of it. I think it will be interesting to dive into it yourself.</p>
+<p>If you remember, we have started this part with the call of the <code>tick_init</code> function. We just consider the <code>tick_broadcast_init</code> function and related theory, but the <code>tick_init</code> function contains another call of a function and this function is - <code>tick_nohz_init</code>. Let's look on the implementation of this function.</p>
+<h2 id="initialization-of-dyntick-related-data-structures"><a class="header" href="#initialization-of-dyntick-related-data-structures">Initialization of dyntick related data structures</a></h2>
+<p>We already saw some information about <code>dyntick</code> concept in this part and we know that this concept allows kernel to disable system timer interrupts in the <code>idle</code> state. The <code>tick_nohz_init</code> function makes initialization of the different data structures which are related to this concept. This function defined in the <a href="https://github.com/torvalds/linux/blob/master/kernel/time/tick-sched.c">kernel/time/tick-sched.c</a> source code file and starts from the check of the value of the <code>tick_nohz_full_running</code> variable which represents state of the tick-less mode for the <code>idle</code> state and the state when system timer interrupts are disabled during a processor has only one runnable task:</p>
+<pre><code class="language-C">if (!tick_nohz_full_running) {
+    if (tick_nohz_init_all() &lt; 0)
+    return;
+}
+</code></pre>
+<p>If this mode is not running we call the <code>tick_nohz_init_all</code> function that defined in the same source code file and check its result. The <code>tick_nohz_init_all</code> function tries to allocate the <code>tick_nohz_full_mask</code> with the call of the <code>alloc_cpumask_var</code> that will allocate space for a <code>tick_nohz_full_mask</code>. The <code>tick_nohz_full_mask</code> will store numbers of processors that have enabled full <code>NO_HZ</code>. After successful allocation of the <code>tick_nohz_full_mask</code> we set all bits in the <code>tick_nohz_full_mask</code>, set the <code>tick_nohz_full_running</code> and return result to the <code>tick_nohz_init</code> function:</p>
+<pre><code class="language-C">static int tick_nohz_init_all(void)
+{
+        int err = -1;
+#ifdef CONFIG_NO_HZ_FULL_ALL
+        if (!alloc_cpumask_var(&amp;tick_nohz_full_mask, GFP_KERNEL)) {
+                WARN(1, &quot;NO_HZ: Can't allocate full dynticks cpumask\n&quot;);
+                return err;
+        }
+        err = 0;
+        cpumask_setall(tick_nohz_full_mask);
+        tick_nohz_full_running = true;
+#endif
+        return err;
+}
+</code></pre>
+<p>In the next step we try to allocate a memory space for the <code>housekeeping_mask</code>:</p>
+<pre><code class="language-C">if (!alloc_cpumask_var(&amp;housekeeping_mask, GFP_KERNEL)) {
+	WARN(1, &quot;NO_HZ: Can't allocate not-full dynticks cpumask\n&quot;);
+	cpumask_clear(tick_nohz_full_mask);
+	tick_nohz_full_running = false;
+	return;
+}
+</code></pre>
+<p>This <code>cpumask</code> will store number of processor for <code>housekeeping</code> or in other words we need at least in one processor that will not be in <code>NO_HZ</code> mode, because it will do timekeeping and etc. After this we check the result of the architecture-specific <code>arch_irq_work_has_interrupt</code> function. This function checks ability to send inter-processor interrupt for the certain architecture. We need to check this, because system timer of a processor will be disabled during <code>NO_HZ</code> mode, so there must be at least one online processor which can send inter-processor interrupt to awake offline processor. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/irq_work.h">arch/x86/include/asm/irq_work.h</a> header file for the <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> and just checks that a processor has <a href="https://en.wikipedia.org/wiki/Advanced_Programmable_Interrupt_Controller">APIC</a> from the <a href="https://en.wikipedia.org/wiki/CPUID">CPUID</a>:</p>
+<pre><code class="language-C">static inline bool arch_irq_work_has_interrupt(void)
+{
+    return cpu_has_apic;
+}
+</code></pre>
+<p>If a processor has not <code>APIC</code>, the Linux kernel prints warning message, clears the <code>tick_nohz_full_mask</code> cpumask, copies numbers of all possible processors in the system to the <code>housekeeping_mask</code> and resets the value of the <code>tick_nohz_full_running</code> variable:</p>
+<pre><code class="language-C">if (!arch_irq_work_has_interrupt()) {
+	pr_warning(&quot;NO_HZ: Can't run full dynticks because arch doesn't &quot;
+		   &quot;support irq work self-IPIs\n&quot;);
+	cpumask_clear(tick_nohz_full_mask);
+	cpumask_copy(housekeeping_mask, cpu_possible_mask);
+	tick_nohz_full_running = false;
+	return;
+}
+</code></pre>
+<p>After this step, we get the number of the current processor by the call of the <code>smp_processor_id</code> and check this processor in the <code>tick_nohz_full_mask</code>. If the <code>tick_nohz_full_mask</code> contains a given processor we clear appropriate bit in the <code>tick_nohz_full_mask</code>:</p>
+<pre><code class="language-C">cpu = smp_processor_id();
+
+if (cpumask_test_cpu(cpu, tick_nohz_full_mask)) {
+	pr_warning(&quot;NO_HZ: Clearing %d from nohz_full range for timekeeping\n&quot;, cpu);
+	cpumask_clear_cpu(cpu, tick_nohz_full_mask);
+}
+</code></pre>
+<p>Because this processor will be used for timekeeping. After this step we put all numbers of processors that are in the <code>cpu_possible_mask</code> and not in the <code>tick_nohz_full_mask</code>:</p>
+<pre><code class="language-C">cpumask_andnot(housekeeping_mask,
+	       cpu_possible_mask, tick_nohz_full_mask);
+</code></pre>
+<p>After this operation, the <code>housekeeping_mask</code> will contain all processors of the system except a processor for timekeeping. In the last step of the <code>tick_nohz_init_all</code> function, we are going through all processors that are defined in the <code>tick_nohz_full_mask</code> and call the following function for an each processor:</p>
+<pre><code class="language-C">for_each_cpu(cpu, tick_nohz_full_mask)
+	context_tracking_cpu_set(cpu);
+</code></pre>
+<p>The <code>context_tracking_cpu_set</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/context_tracking.c">kernel/context_tracking.c</a> source code file and main point of this function is to set the <code>context_tracking.active</code> <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">percpu</a> variable to <code>true</code>. When the <code>active</code> field will be set to <code>true</code> for the certain processor, all <a href="https://en.wikipedia.org/wiki/Context_switch">context switches</a> will be ignored by the Linux kernel context tracking subsystem for this processor.</p>
+<p>That's all. This is the end of the <code>tick_nohz_init</code> function. After this <code>NO_HZ</code> related data structures will be initialized. We didn't see API of the <code>NO_HZ</code> mode, but will see it soon.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the third part of the chapter that describes timers and timer management related stuff in the Linux kernel. In the previous part got acquainted with the <code>clocksource</code> concept in the Linux kernel which represents framework for managing different clock source in a interrupt and hardware characteristics independent way. We continued to look on the Linux kernel initialization process in a time management context in this part and got acquainted with two new concepts for us: the <code>tick broadcast</code> framework and <code>tick-less</code> mode. The first concept helps the Linux kernel to deal with processors which are in deep sleep and the second concept represents the mode in which kernel may work to improve power management of <code>idle</code> processors.</p>
+<p>In the next part we will continue to dive into timer management related things in the Linux kernel and will see new concept for us - <code>timers</code>.</p>
+<p>If you have questions or suggestions, feel free to ping me in twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me <a href="mailto:anotherworldofworld@gmail.com">email</a> or just create <a href="https://github.com/0xAX/linux-insides/issues/new">issue</a>.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Initrd">initrd</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt">interrupt</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Desktop_Management_Interface">DMI</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Printk">printk</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Idle_%28CPU%29">CPU idle</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Power_management">power management</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/timers/NO_HZ.txt">NO_HZ documentation</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">cpumasks</a></li>
+<li><a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">high precision event timer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQ</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Inter-processor_interrupt">IPI</a></li>
+<li><a href="https://en.wikipedia.org/wiki/CPUID">CPUID</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Advanced_Programmable_Interrupt_Controller">APIC</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">percpu</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Context_switch">context switches</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-2">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Timers/linux-timers-2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Timers/linux-timers-4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Timers/linux-timers-2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Timers/linux-timers-4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

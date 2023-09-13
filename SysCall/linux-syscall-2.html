@@ -1,0 +1,453 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>How the Linux kernel handles a system call - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html" class="active">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="system-calls-in-the-linux-kernel-part-2"><a class="header" href="#system-calls-in-the-linux-kernel-part-2">System calls in the Linux kernel. Part 2.</a></h1>
+<h2 id="how-does-the-linux-kernel-handle-a-system-call"><a class="header" href="#how-does-the-linux-kernel-handle-a-system-call">How does the Linux kernel handle a system call</a></h2>
+<p>The previous <a href="https://0xax.gitbook.io/linux-insides/summary/syscall/linux-syscall-1">part</a> was the first part of the chapter that describes the <a href="https://en.wikipedia.org/wiki/System_call">system call</a> concepts in the Linux kernel.
+In the previous part we learned what a system call is in the Linux kernel, and in operating systems in general. This was introduced from a user-space perspective, and part of the <a href="http://man7.org/linux/man-pages/man2/write.2.html">write</a> system call implementation was discussed. In this part we continue our look at system calls, starting with some theory before moving onto the Linux kernel code.</p>
+<p>A user application does not make the system call directly from our applications. We did not write the <code>Hello world!</code> program like:</p>
+<pre><code class="language-C">int main(int argc, char **argv)
+{
+	...
+	...
+	...
+	sys_write(fd1, buf, strlen(buf));
+	...
+	...
+}
+</code></pre>
+<p>We can use something similar with the help of <a href="https://en.wikipedia.org/wiki/GNU_C_Library">C standard library</a> and it will look something like this:</p>
+<pre><code class="language-C">#include &lt;unistd.h&gt;
+
+int main(int argc, char **argv)
+{
+	...
+	...
+	...
+	write(fd1, buf, strlen(buf));
+	...
+	...
+}
+</code></pre>
+<p>But anyway, <code>write</code> is not a direct system call and not a kernel function. An application must fill general purpose registers with the correct values in the correct order and use the <code>syscall</code> instruction to make the actual system call. In this part we will look at what occurs in the Linux kernel when the <code>syscall</code> instruction is met by the processor.</p>
+<h2 id="initialization-of-the-system-calls-table"><a class="header" href="#initialization-of-the-system-calls-table">Initialization of the system calls table</a></h2>
+<p>From the previous part we know that system call concept is very similar to an interrupt. Furthermore, system calls are implemented as software interrupts. So, when the processor handles a <code>syscall</code> instruction from a user application, this instruction causes an exception which transfers control to an exception handler. As we know, all exception handlers (or in other words kernel <a href="https://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> functions that will react on an exception) are placed in the kernel code. But how does the Linux kernel search for the address of the necessary system call handler for the related system call? The Linux kernel contains a special table called the <code>system call table</code>. The system call table is represented by the <code>sys_call_table</code> array in the Linux kernel which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscall_64.c">arch/x86/entry/syscall_64.c</a> source code file. Let's look at its implementation:</p>
+<pre><code class="language-C">asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
+	[0 ... __NR_syscall_max] = &amp;sys_ni_syscall,
+    #include &lt;asm/syscalls_64.h&gt;
+};
+</code></pre>
+<p>As we can see, the <code>sys_call_table</code> is an array of <code>__NR_syscall_max + 1</code> size where the <code>__NR_syscall_max</code> macro represents the maximum number of system calls for the given <a href="https://en.wikipedia.org/wiki/List_of_CPU_architectures">architecture</a>. This book is about the <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> architecture, so for our case the <code>__NR_syscall_max</code> is <code>547</code> and this is the correct number at the time of writing (current Linux kernel version is <code>5.0.0-rc7</code>). We can see this macro in the header file generated by <a href="https://www.kernel.org/doc/Documentation/kbuild/makefiles.txt">Kbuild</a> during kernel compilation - <code>include/generated/asm-offsets.h</code>:</p>
+<pre><code class="language-C">#define __NR_syscall_max 547
+</code></pre>
+<p>There will be the same number of system calls in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl#L331">arch/x86/entry/syscalls/syscall_64.tbl</a> for the <code>x86_64</code>. There are two important topics here; the type of the <code>sys_call_table</code> array, and the initialization of elements in this array. First of all, the type. The <code>sys_call_ptr_t</code> represents a pointer to a system call table. It is defined as <a href="https://en.wikipedia.org/wiki/Typedef">typedef</a> for a function pointer that returns nothing and does not take arguments:</p>
+<pre><code class="language-C">typedef void (*sys_call_ptr_t)(void);
+</code></pre>
+<p>The second thing is the initialization of the <code>sys_call_table</code> array. As we can see in the code above, all elements of our array that contain pointers to the system call handlers point to the <code>sys_ni_syscall</code>. The <code>sys_ni_syscall</code> function represents not-implemented system calls. To start with, all elements of the <code>sys_call_table</code> array point to the not-implemented system call. This is the correct initial behaviour, because we only initialize storage of the pointers to the system call handlers, it is populated later on. Implementation of the <code>sys_ni_syscall</code> is pretty easy, it just returns <a href="http://man7.org/linux/man-pages/man3/errno.3.html">-errno</a> or <code>-ENOSYS</code> in our case:</p>
+<pre><code class="language-C">asmlinkage long sys_ni_syscall(void)
+{
+	return -ENOSYS;
+}
+</code></pre>
+<p>The <code>-ENOSYS</code> error tells us that:</p>
+<pre><code>ENOSYS          Function not implemented (POSIX.1)
+</code></pre>
+<p>Also a note on <code>...</code> in the initialization of the <code>sys_call_table</code>. We can do it with a <a href="https://en.wikipedia.org/wiki/GNU_Compiler_Collection">GCC</a> compiler extension called - <a href="https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html">Designated Initializers</a>. This extension allows us to initialize elements in non-fixed order. As you can see, we include the <code>asm/syscalls_64.h</code> header at the end of the array. This header file is generated by the special script at <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscalltbl.sh">arch/x86/entry/syscalls/syscalltbl.sh</a> and generates our header file from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscalls/syscall_64.tbl">syscall table</a>. The <code>asm/syscalls_64.h</code> contains definitions of the following macros:</p>
+<pre><code class="language-C">__SYSCALL_COMMON(0, sys_read, sys_read)
+__SYSCALL_COMMON(1, sys_write, sys_write)
+__SYSCALL_COMMON(2, sys_open, sys_open)
+__SYSCALL_COMMON(3, sys_close, sys_close)
+__SYSCALL_COMMON(5, sys_newfstat, sys_newfstat)
+...
+...
+...
+</code></pre>
+<p>The <code>__SYSCALL_COMMON</code> macro is defined in the same source code <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/syscall_64.c">file</a> and expands to the <code>__SYSCALL_64</code> macro which expands to the function definition:</p>
+<pre><code class="language-C">#define __SYSCALL_COMMON(nr, sym, compat) __SYSCALL_64(nr, sym, compat)
+#define __SYSCALL_64(nr, sym, compat) [nr] = sym,
+</code></pre>
+<p>So, after this, our <code>sys_call_table</code> takes the following form:</p>
+<pre><code class="language-C">asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
+	[0 ... __NR_syscall_max] = &amp;sys_ni_syscall,
+	[0] = sys_read,
+	[1] = sys_write,
+	[2] = sys_open,
+	...
+	...
+	...
+};
+</code></pre>
+<p>After this all elements that point to the non-implemented system calls will contain the address of the <code>sys_ni_syscall</code> function that just returns <code>-ENOSYS</code> as we saw above, and other elements will point to the <code>sys_syscall_name</code> functions.</p>
+<p>At this point, we have filled the system call table and the Linux kernel knows where each system call handler is. But the Linux kernel does not call a <code>sys_syscall_name</code> function immediately after it is instructed to handle a system call from a user space application. Remember the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts">chapter</a> about interrupts and interrupt handling. When the Linux kernel gets the control to handle an interrupt, it had to do some preparations like save user space registers, switch to a new stack and many more tasks before it will call an interrupt handler. There is the same situation with the system call handling. The preparation for handling a system call is the first thing, but before the Linux kernel will start these preparations, the entry point of a system call must be initialized and only the Linux kernel knows how to perform this preparation. In the next paragraph we will see the process of the initialization of the system call entry in the Linux kernel.</p>
+<h2 id="initialization-of-the-system-call-entry"><a class="header" href="#initialization-of-the-system-call-entry">Initialization of the system call entry</a></h2>
+<p>When a system call occurs in the system, where are the first bytes of code that starts to handle it? As we can read in the Intel manual - <a href="http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html">64-ia-32-architectures-software-developer-vol-2b-manual</a>:</p>
+<pre><code>SYSCALL invokes an OS system-call handler at privilege level 0.
+It does so by loading RIP from the IA32_LSTAR MSR
+</code></pre>
+<p>It means that we need to put the system call entry in to the <code>IA32_LSTAR</code> <a href="https://en.wikipedia.org/wiki/Model-specific_register">model specific register</a>. This operation takes place during the Linux kernel initialization process. If you have read the fourth <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-4">part</a> of the chapter that describes interrupts and interrupt handling in the Linux kernel, you know that the Linux kernel calls the <code>trap_init</code> function during the initialization process. This function is defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/setup.c">arch/x86/kernel/setup.c</a> source code file and executes the initialization of the <code>non-early</code> exception handlers like divide error, <a href="https://en.wikipedia.org/wiki/Coprocessor">coprocessor</a> error, etc. Besides the initialization of the <code>non-early</code> exceptions handlers, this function calls the <code>cpu_init</code> function from the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/cpu/common.c">arch/x86/kernel/cpu/common.c</a> source code file which besides initialization of <code>per-cpu</code> state, calls the <code>syscall_init</code> function from the same source code file.</p>
+<p>This function performs the initialization of the system call entry point. Let's look on the implementation of this function. It does not take parameters and first of all it fills two model specific registers:</p>
+<pre><code class="language-C">wrmsrl(MSR_STAR,  ((u64)__USER32_CS)&lt;&lt;48  | ((u64)__KERNEL_CS)&lt;&lt;32);
+wrmsrl(MSR_LSTAR, entry_SYSCALL_64);
+</code></pre>
+<p>The first model specific register - <code>MSR_STAR</code> contains <code>63:48</code> bits of the user code segment. These bits will be loaded to the <code>CS</code> and <code>SS</code> segment registers for the <code>sysret</code> instruction which provides functionality to return from a system call to user code with the related privilege. Also the <code>MSR_STAR</code> contains <code>47:32</code> bits from the kernel code that will be used as the base selector for <code>CS</code> and <code>SS</code> segment registers when user space applications execute a system call. In the second line of code we fill the <code>MSR_LSTAR</code> register with the <code>entry_SYSCALL_64</code> symbol that represents system call entry. The <code>entry_SYSCALL_64</code> is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> assembly file and contains code related to the preparation performed before a system call handler is executed (I already wrote about these preparations, read above). We will not consider the <code>entry_SYSCALL_64</code> now, but will return to it later in this chapter.</p>
+<p>After we have set the entry point for system calls, we need to set the following model specific registers:</p>
+<ul>
+<li><code>MSR_CSTAR</code> - target <code>rip</code> for the compatibility mode callers;</li>
+<li><code>MSR_IA32_SYSENTER_CS</code> - target <code>cs</code> for the <code>sysenter</code> instruction;</li>
+<li><code>MSR_IA32_SYSENTER_ESP</code> - target <code>esp</code> for the <code>sysenter</code> instruction;</li>
+<li><code>MSR_IA32_SYSENTER_EIP</code> - target <code>eip</code> for the <code>sysenter</code> instruction.</li>
+</ul>
+<p>The values of these model specific register depend on the <code>CONFIG_IA32_EMULATION</code> kernel configuration option. If this kernel configuration option is enabled, it allows legacy 32-bit programs to run under a 64-bit kernel. In the first case, if the <code>CONFIG_IA32_EMULATION</code> kernel configuration option is enabled, we fill these model specific registers with the entry point for the system calls the compatibility mode:</p>
+<pre><code class="language-C">wrmsrl(MSR_CSTAR, entry_SYSCALL_compat);
+</code></pre>
+<p>and with the kernel code segment, put zero to the stack pointer and write the address of the <code>entry_SYSENTER_compat</code> symbol to the <a href="https://en.wikipedia.org/wiki/Program_counter">instruction pointer</a>:</p>
+<pre><code class="language-C">wrmsrl_safe(MSR_IA32_SYSENTER_CS, (u64)__KERNEL_CS);
+wrmsrl_safe(MSR_IA32_SYSENTER_ESP, 0ULL);
+wrmsrl_safe(MSR_IA32_SYSENTER_EIP, (u64)entry_SYSENTER_compat);
+</code></pre>
+<p>In another way, if the <code>CONFIG_IA32_EMULATION</code> kernel configuration option is disabled, we write <code>ignore_sysret</code> symbol to the <code>MSR_CSTAR</code>:</p>
+<pre><code class="language-C">wrmsrl(MSR_CSTAR, ignore_sysret);
+</code></pre>
+<p>that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a> assembly file and just returns <code>-ENOSYS</code> error code:</p>
+<pre><code class="language-assembly">ENTRY(ignore_sysret)
+	mov	$-ENOSYS, %eax
+	sysret
+END(ignore_sysret)
+</code></pre>
+<p>Now we need to fill <code>MSR_IA32_SYSENTER_CS</code>, <code>MSR_IA32_SYSENTER_ESP</code>, <code>MSR_IA32_SYSENTER_EIP</code> model specific registers as we did in the previous code when the <code>CONFIG_IA32_EMULATION</code> kernel configuration option was enabled. In this case (when the <code>CONFIG_IA32_EMULATION</code> configuration option is not set) we fill the <code>MSR_IA32_SYSENTER_ESP</code> and the <code>MSR_IA32_SYSENTER_EIP</code> with zero and put the invalid segment of the <a href="https://en.wikipedia.org/wiki/Global_Descriptor_Table">Global Descriptor Table</a> to the <code>MSR_IA32_SYSENTER_CS</code> model specific register:</p>
+<pre><code class="language-C">wrmsrl_safe(MSR_IA32_SYSENTER_CS, (u64)GDT_ENTRY_INVALID_SEG);
+wrmsrl_safe(MSR_IA32_SYSENTER_ESP, 0ULL);
+wrmsrl_safe(MSR_IA32_SYSENTER_EIP, 0ULL);
+</code></pre>
+<p>You can read more about the <code>Global Descriptor Table</code> in the second <a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-2">part</a> of the chapter that describes the booting process of the Linux kernel.</p>
+<p>At the end of the <code>syscall_init</code> function, we just mask flags in the <a href="https://en.wikipedia.org/wiki/FLAGS_register">flags register</a> by writing the set of flags to the <code>MSR_SYSCALL_MASK</code> model specific register:</p>
+<pre><code class="language-C">wrmsrl(MSR_SYSCALL_MASK,
+	   X86_EFLAGS_TF|X86_EFLAGS_DF|X86_EFLAGS_IF|
+	   X86_EFLAGS_IOPL|X86_EFLAGS_AC|X86_EFLAGS_NT);
+</code></pre>
+<p>These flags will be cleared during syscall initialization. That's all, it is the end of the <code>syscall_init</code> function and it means that system call entry is ready to work. Now we can see what will occur when a user application executes the <code>syscall</code> instruction.</p>
+<h2 id="preparation-before-system-call-handler-is-called"><a class="header" href="#preparation-before-system-call-handler-is-called">Preparation before system call handler is called</a></h2>
+<p>As I already wrote, before a system call or an interrupt handler is called by the Linux kernel we need to do some preparations. The <code>idtentry</code> macro performs the preparations required before an exception handler is executed, the <code>interrupt</code> macro performs the preparations required before an interrupt handler is called and the <code>entry_SYSCALL_64</code> will do the preparations required before a system call handler is executed.</p>
+<p>The <code>entry_SYSCALL_64</code> is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a>  assembly file and starts from the following macro:</p>
+<pre><code class="language-assembly">SWAPGS_UNSAFE_STACK
+</code></pre>
+<p>This macro is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/irqflags.h">arch/x86/include/asm/irqflags.h</a> header file and expands to the <code>swapgs</code> instruction:</p>
+<pre><code class="language-C">#define SWAPGS_UNSAFE_STACK	swapgs
+</code></pre>
+<p>which exchanges the current GS base register value with the value contained in the <code>MSR_KERNEL_GS_BASE </code> model specific register. In other words we moved it on to the kernel stack. After this we point the old stack pointer to the <code>rsp_scratch</code> <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a> variable and setup the stack pointer to point to the top of stack for the current processor:</p>
+<pre><code class="language-assembly">movq	%rsp, PER_CPU_VAR(rsp_scratch)
+movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+</code></pre>
+<p>In the next step we push the stack segment and the old stack pointer to the stack:</p>
+<pre><code class="language-assembly">pushq	$__USER_DS
+pushq	PER_CPU_VAR(rsp_scratch)
+</code></pre>
+<p>After this we enable interrupts, because interrupts are <code>off</code> on entry and save the general purpose <a href="https://en.wikipedia.org/wiki/Processor_register">registers</a> (besides <code>bp</code>, <code>bx</code> and from <code>r12</code> to <code>r15</code>), flags, <code>-ENOSYS</code> for the non-implemented system call and code segment register on the stack:</p>
+<pre><code class="language-assembly">ENABLE_INTERRUPTS(CLBR_NONE)
+
+pushq	%r11
+pushq	$__USER_CS
+pushq	%rcx
+pushq	%rax
+pushq	%rdi
+pushq	%rsi
+pushq	%rdx
+pushq	%rcx
+pushq	$-ENOSYS
+pushq	%r8
+pushq	%r9
+pushq	%r10
+pushq	%r11
+sub	$(6*8), %rsp
+</code></pre>
+<p>When a system call occurs from the user's application, general purpose registers have the following state:</p>
+<ul>
+<li><code>rax</code> - contains system call number;</li>
+<li><code>rcx</code> - contains return address to the user space;</li>
+<li><code>r11</code> - contains register flags;</li>
+<li><code>rdi</code> - contains first argument of a system call handler;</li>
+<li><code>rsi</code> - contains second argument of a system call handler;</li>
+<li><code>rdx</code> - contains third argument of a system call handler;</li>
+<li><code>r10</code> - contains fourth argument of a system call handler;</li>
+<li><code>r8</code>  - contains fifth argument of a system call handler;</li>
+<li><code>r9</code>  - contains sixth argument of a system call handler;</li>
+</ul>
+<p>Other general purpose registers (as <code>rbp</code>, <code>rbx</code> and from <code>r12</code> to <code>r15</code>) are callee-preserved in <a href="http://www.x86-64.org/documentation/abi.pdf">C ABI</a>). So we push register flags on the top of the stack, then user code segment, return address to the user space, system call number, first three arguments, dump error code for the non-implemented system call and other arguments on the stack.</p>
+<p>In the next step we check the <code>_TIF_WORK_SYSCALL_ENTRY</code> in the current <code>thread_info</code>:</p>
+<pre><code class="language-assembly">testl	$_TIF_WORK_SYSCALL_ENTRY, ASM_THREAD_INFO(TI_flags, %rsp, SIZEOF_PTREGS)
+jnz	tracesys
+</code></pre>
+<p>The <code>_TIF_WORK_SYSCALL_ENTRY</code> macro is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/thread_info.h">arch/x86/include/asm/thread_info.h</a> header file and provides set of the thread information flags that are related to the system calls tracing:</p>
+<pre><code class="language-C">#define _TIF_WORK_SYSCALL_ENTRY \
+    (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_EMU | _TIF_SYSCALL_AUDIT |   \
+    _TIF_SECCOMP | _TIF_SINGLESTEP | _TIF_SYSCALL_TRACEPOINT |     \
+    _TIF_NOHZ)
+</code></pre>
+<p>We will not consider debugging/tracing related stuff in this chapter, but will see it in the separate chapter that will be devoted to the debugging and tracing techniques in the Linux kernel. After the <code>tracesys</code> label, the next label is the <code>entry_SYSCALL_64_fastpath</code>. In the <code>entry_SYSCALL_64_fastpath</code> we check the <code>__SYSCALL_MASK</code> that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/unistd.h">arch/x86/include/asm/unistd.h</a> header file and</p>
+<pre><code class="language-C"># ifdef CONFIG_X86_X32_ABI
+#  define __SYSCALL_MASK (~(__X32_SYSCALL_BIT))
+# else
+#  define __SYSCALL_MASK (~0)
+# endif
+</code></pre>
+<p>where the <code>__X32_SYSCALL_BIT</code> is</p>
+<pre><code class="language-C">#define __X32_SYSCALL_BIT	0x40000000
+</code></pre>
+<p>As we can see the <code>__SYSCALL_MASK</code> depends on the <code>CONFIG_X86_X32_ABI</code> kernel configuration option and represents the mask for the 32-bit <a href="https://en.wikipedia.org/wiki/Application_binary_interface">ABI</a> in the 64-bit kernel.</p>
+<p>So we check the value of the <code>__SYSCALL_MASK</code> and if the <code>CONFIG_X86_X32_ABI</code> is disabled we compare the value of the <code>rax</code> register to the maximum syscall number (<code>__NR_syscall_max</code>), alternatively if the <code>CONFIG_X86_X32_ABI</code> is enabled we mask the <code>eax</code> register with the <code>__X32_SYSCALL_BIT</code> and do the same comparison:</p>
+<pre><code class="language-assembly">#if __SYSCALL_MASK == ~0
+	cmpq	$__NR_syscall_max, %rax
+#else
+	andl	$__SYSCALL_MASK, %eax
+	cmpl	$__NR_syscall_max, %eax
+#endif
+</code></pre>
+<p>After this we check the result of the last comparison with the <code>ja</code> instruction that executes if <code>CF</code> and <code>ZF</code> flags are zero:</p>
+<pre><code class="language-assembly">ja	1f
+</code></pre>
+<p>and if we have the correct system call for this, we move the fourth argument from the <code>r10</code> to the <code>rcx</code> to keep <a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 C ABI</a> compliant and execute the <code>call</code> instruction with the address of a system call handler:</p>
+<pre><code class="language-assembly">movq	%r10, %rcx
+call	*sys_call_table(, %rax, 8)
+</code></pre>
+<p>Note, the <code>sys_call_table</code> is an array that we saw above in this part. As we already know the <code>rax</code> general purpose register contains the number of a system call and each element of the <code>sys_call_table</code> is 8-bytes. So we are using <code>*sys_call_table(, %rax, 8)</code> this notation to find the correct offset in the <code>sys_call_table</code> array for the given system call handler.</p>
+<p>That's all. We did all the required preparations and the system call handler was called for the given interrupt handler, for example <code>sys_read</code>, <code>sys_write</code> or other system call handler that is defined with the <code>SYSCALL_DEFINE[N]</code> macro in the Linux kernel code.</p>
+<h2 id="exit-from-a-system-call"><a class="header" href="#exit-from-a-system-call">Exit from a system call</a></h2>
+<p>After a system call handler finishes its work, we will return back to the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/entry/entry_64.S">arch/x86/entry/entry_64.S</a>, right after where we have called the system call handler:</p>
+<pre><code class="language-assembly">call	*sys_call_table(, %rax, 8)
+</code></pre>
+<p>The next step after we've returned from a system call handler is to put the return value of a system handler on to the stack. We know that a system call returns the result to the user program in the general purpose <code>rax</code> register, so we are moving its value on to the stack after the system call handler has finished its work:</p>
+<pre><code class="language-C">movq	%rax, RAX(%rsp)
+</code></pre>
+<p>on the <code>RAX</code> place.</p>
+<p>After this we can see the call of the <code>LOCKDEP_SYS_EXIT</code> macro from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/irqflags.h">arch/x86/include/asm/irqflags.h</a>:</p>
+<pre><code class="language-assembly">LOCKDEP_SYS_EXIT
+</code></pre>
+<p>The implementation of this macro depends on the <code>CONFIG_DEBUG_LOCK_ALLOC</code> kernel configuration option that allows us to debug locks on exit from a system call. And again, we will not consider it in this chapter, but will return to it in a separate one. In the end of the <code>entry_SYSCALL_64</code> function we restore all general purpose registers besides <code>rcx</code> and <code>r11</code>, because the <code>rcx</code> register must contain the return address to the application that called system call and the <code>r11</code> register contains the old <a href="https://en.wikipedia.org/wiki/FLAGS_register">flags register</a>. After all general purpose registers are restored, we fill <code>rcx</code> with the return address, <code>r11</code> register with the flags and <code>rsp</code> with the old stack pointer:</p>
+<pre><code class="language-assembly">RESTORE_C_REGS_EXCEPT_RCX_R11
+
+movq	RIP(%rsp), %rcx
+movq	EFLAGS(%rsp), %r11
+movq	RSP(%rsp), %rsp
+
+USERGS_SYSRET64
+</code></pre>
+<p>In the end we just call the <code>USERGS_SYSRET64</code> macro that expands to the call of the <code>swapgs</code> instruction which exchanges again the user <code>GS</code> and kernel <code>GS</code> and the <code>sysretq</code> instruction which executes on exit from a system call handler:</p>
+<pre><code class="language-C">#define USERGS_SYSRET64				\
+	swapgs;	           				\
+	sysretq;
+</code></pre>
+<p>Now we know what occurs when a user application calls a system call. The full path of this process is as follows:</p>
+<ul>
+<li>User application contains code that fills general purpose register with the values (system call number and arguments of this system call);</li>
+<li>Processor switches from the user mode to kernel mode and starts execution of the system call entry - <code>entry_SYSCALL_64</code>;</li>
+<li><code>entry_SYSCALL_64</code> switches to the kernel stack and saves some general purpose registers, old stack and code segment, flags and etc... on the stack;</li>
+<li><code>entry_SYSCALL_64</code> checks the system call number in the <code>rax</code> register, searches a system call handler in the <code>sys_call_table</code> and calls it, if the number of a system call is correct;</li>
+<li>If a system call is not correct, jump on exit from system call;</li>
+<li>After a system call handler will finish its work, restore general purpose registers, old stack, flags and return address and exit from the <code>entry_SYSCALL_64</code> with the <code>sysretq</code> instruction.</li>
+</ul>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the second part about the system calls concept in the Linux kernel. In the previous <a href="https://0xax.gitbook.io/linux-insides/summary/syscall/linux-syscall-1">part</a> we saw theory about this concept from the user application view. In this part we continued to dive into the stuff which is related to the system call concept and saw what the Linux kernel does when a system call occurs.</p>
+<p>If you have questions or suggestions, feel free to ping me in twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me <a href="mailto:anotherworldofworld@gmail.com">email</a> or just create <a href="https://github.com/0xAX/linux-insides/issues/new">issue</a>.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/System_call">system call</a></li>
+<li><a href="http://man7.org/linux/man-pages/man2/write.2.html">write</a></li>
+<li><a href="https://en.wikipedia.org/wiki/GNU_C_Library">C standard library</a></li>
+<li><a href="https://en.wikipedia.org/wiki/List_of_CPU_architectures">list of cpu architectures</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/kbuild/makefiles.txt">kbuild</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Typedef">typedef</a></li>
+<li><a href="http://man7.org/linux/man-pages/man3/errno.3.html">errno</a></li>
+<li><a href="https://en.wikipedia.org/wiki/GNU_Compiler_Collection">gcc</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Model-specific_register">model specific register</a></li>
+<li><a href="http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html">intel 2b manual</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Coprocessor">coprocessor</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Program_counter">instruction pointer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/FLAGS_register">flags register</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Global_Descriptor_Table">Global Descriptor Table</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Processor_register">general purpose registers</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Application_binary_interface">ABI</a></li>
+<li><a href="http://www.x86-64.org/documentation/abi.pdf">x86_64 C ABI</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/syscall/linux-syscall-1">previous chapter</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../SysCall/linux-syscall-1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../SysCall/linux-syscall-3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../SysCall/linux-syscall-1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../SysCall/linux-syscall-3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Kernel entry point - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html" class="active">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-initialization-part-4"><a class="header" href="#kernel-initialization-part-4">Kernel initialization. Part 4.</a></h1>
+<h1 id="kernel-entry-point"><a class="header" href="#kernel-entry-point">Kernel entry point</a></h1>
+<p>If you have read the previous part - <a href="https://github.com/0xAX/linux-insides/blob/master/Initialization/linux-initialization-3.md">Last preparations before the kernel entry point</a>, you can remember that we finished all pre-initialization stuff and stopped right before the call to the <code>start_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>. The <code>start_kernel</code> is the entry of the generic and architecture independent kernel code, although we will return to the <code>arch/</code> folder many times. If you look inside of the <code>start_kernel</code> function, you will see that this function is very big. For this moment it contains about <code>86</code> function calls. Yes, it's very big and of course this part will not cover all the processes that occur in this function. In the current part we will only start to do it. This part and all the next which will be in the <a href="https://github.com/0xAX/linux-insides/blob/master/Initialization/README.md">Kernel initialization process</a> chapter will cover it.</p>
+<p>The main purpose of the <code>start_kernel</code> to finish kernel initialization process and launch the first <code>init</code> process. Before the first process will be started, the <code>start_kernel</code> must do many things such as: to enable <a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a>, to initialize processor id, to enable early <a href="http://en.wikipedia.org/wiki/Cgroups">cgroups</a> subsystem, to setup per-cpu areas, to initialize different caches in <a href="http://en.wikipedia.org/wiki/Virtual_file_system">vfs</a>, to initialize memory manager, rcu, vmalloc, scheduler, IRQs, ACPI and many many more. Only after these steps will we see the launch of the first <code>init</code> process in the last part of this chapter. So much kernel code awaits us, let's start.</p>
+<p><strong>NOTE: All parts from this big chapter <code>Linux Kernel initialization process</code> will not cover anything about debugging. There will be a separate chapter about kernel debugging tips.</strong></p>
+<h2 id="a-little-about-function-attributes"><a class="header" href="#a-little-about-function-attributes">A little about function attributes</a></h2>
+<p>As I wrote above, the <code>start_kernel</code> function is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>. This function defined with the <code>__init</code> attribute and as you already may know from other parts, all functions which are defined with this attribute are necessary during kernel initialization.</p>
+<pre><code class="language-C">#define __init      __section(.init.text) __cold notrace
+</code></pre>
+<p>After the initialization process have finished, the kernel will release these sections with a call to the <code>free_initmem</code> function. Note also that <code>__init</code> is defined with two attributes: <code>__cold</code> and <code>notrace</code>. The purpose of the first <code>cold</code> attribute is to mark that the function is rarely used and the compiler must optimize this function for size. The second <code>notrace</code> is defined as:</p>
+<pre><code class="language-C">#define notrace __attribute__((no_instrument_function))
+</code></pre>
+<p>where <code>no_instrument_function</code> says to the compiler not to generate profiling function calls.</p>
+<p>In the definition of the <code>start_kernel</code> function, you can also see the <code>__visible</code> attribute which expands to the:</p>
+<pre><code>#define __visible __attribute__((externally_visible))
+</code></pre>
+<p>where <code>externally_visible</code> tells to the compiler that something uses this function or variable, to prevent marking this function/variable as <code>unusable</code>. You can find the definition of this and other macro attributes in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/init.h">include/linux/init.h</a>.</p>
+<h2 id="first-steps-in-the-start_kernel"><a class="header" href="#first-steps-in-the-start_kernel">First steps in the start_kernel</a></h2>
+<p>At the beginning of the <code>start_kernel</code> you can see the definition of these two variables:</p>
+<pre><code class="language-C">char *command_line;
+char *after_dashes;
+</code></pre>
+<p>The first represents a pointer to the kernel command line and the second will contain the result of the <code>parse_args</code> function which parses an input string with parameters in the form <code>name=value</code>, looking for specific keywords and invoking the right handlers. We will not go into the details related with these two variables at this time, but will see it in the next parts. In the next step we can see a call to the <code>set_task_stack_end_magic</code> function. This function takes address of the <code>init_task</code> and sets <code>STACK_END_MAGIC</code> (<code>0x57AC6E9D</code>) as canary for it. <code>init_task</code> represents the initial task structure:</p>
+<pre><code class="language-C">struct task_struct init_task = INIT_TASK(init_task);
+</code></pre>
+<p>where <code>task_struct</code> stores all the information about a process. I will not explain this structure in this book because it's very big. You can find its definition in <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/sched.h#L1278">include/linux/sched.h</a>. At this moment <code>task_struct</code> contains more than <code>100</code> fields! Although you will not see the explanation of the <code>task_struct</code> in this book, we will use it very often since it is the fundamental structure which describes the <code>process</code> in the Linux kernel. I will describe the meaning of the fields of this structure as we meet them in practice.</p>
+<p>You can see the definition of the <code>init_task</code> and it is initialized by the <code>INIT_TASK</code> macro. This macro is from <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/init_task.h">include/linux/init_task.h</a> and it just fills the <code>init_task</code> with the values for the first process. For example it sets:</p>
+<ul>
+<li>init process state to zero or <code>runnable</code>. A runnable process is one which is waiting only for a CPU to run on;</li>
+<li>init process flags - <code>PF_KTHREAD</code> which means - kernel thread;</li>
+<li>a list of runnable task;</li>
+<li>process address space;</li>
+<li>init process stack to the <code>&amp;init_thread_info</code> which is <code>init_thread_union.thread_info</code> and <code>initthread_union</code> has type - <code>thread_union</code> which contains <code>thread_info</code> and process stack:</li>
+</ul>
+<pre><code class="language-C">union thread_union {
+    struct thread_info thread_info;
+    unsigned long stack[THREAD_SIZE/sizeof(long)];
+};
+</code></pre>
+<p>Every process has its own stack and it is 16 kilobytes or 4 page frames in <code>x86_64</code>. We can note that it is defined as array of <code>unsigned long</code>. The next field of the <code>thread_union</code> is - <code>thread_info</code> defined as:</p>
+<pre><code class="language-C">struct thread_info {
+        struct task_struct      *task;
+        struct exec_domain      *exec_domain;
+        __u32                   flags;
+        __u32                   status;
+        __u32                   cpu;
+        int                     saved_preempt_count;
+        mm_segment_t            addr_limit;
+        struct restart_block    restart_block;
+        void __user             *sysenter_return;
+        unsigned int            sig_on_uaccess_error:1;
+        unsigned int            uaccess_err:1;
+};
+</code></pre>
+<p>and occupies 52 bytes. The <code>thread_info</code> structure contains architecture-specific information on the thread. We know that on <code>x86_64</code> the stack grows down and <code>thread_union.thread_info</code> is stored at the bottom of the stack in our case. So the process stack is 16 kilobytes and <code>thread_info</code> is at the bottom. The remaining thread size will be <code>16 kilobytes - 62 bytes = 16332 bytes</code>. Note that <code>thread_union</code> represented as the <a href="http://en.wikipedia.org/wiki/Union_type">union</a> and not structure, it means that <code>thread_info</code> and stack share the memory space.</p>
+<p>Schematically it can be represented as follows:</p>
+<pre><code class="language-C">+-----------------------+
+|                       |
+|                       |
+|        stack          |
+|                       |
+|_______________________|
+|          |            |
+|          |            |
+|          |            |
+|__________↓____________|             +--------------------+
+|                       |             |                    |
+|      thread_info      |&lt;-----------&gt;|     task_struct    |
+|                       |             |                    |
++-----------------------+             +--------------------+
+</code></pre>
+<p>http://www.quora.com/In-Linux-kernel-Why-thread_info-structure-and-the-kernel-stack-of-a-process-binds-in-union-construct</p>
+<p>So the <code>INIT_TASK</code> macro fills these <code>task_struct's</code> fields and many many more. As I already wrote above, I will not describe all the fields and values in the <code>INIT_TASK</code> macro but we will see them soon.</p>
+<p>Now let's go back to the <code>set_task_stack_end_magic</code> function. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/fork.c#L297">kernel/fork.c</a> and sets a <a href="http://en.wikipedia.org/wiki/Stack_buffer_overflow">canary</a> to the <code>init</code> process stack to prevent stack overflow.</p>
+<pre><code class="language-C">void set_task_stack_end_magic(struct task_struct *tsk)
+{
+	unsigned long *stackend;
+	stackend = end_of_stack(tsk);
+	*stackend = STACK_END_MAGIC; /* for overflow detection */
+}
+</code></pre>
+<p>Its implementation is simple. <code>set_task_stack_end_magic</code> gets the end of the stack for the given <code>task_struct</code> with the <code>end_of_stack</code> function. Earlier (and now for all architectures besides <code>x86_64</code>) stack was located in the <code>thread_info</code> structure. So the end of a process stack depends on the <code>CONFIG_STACK_GROWSUP</code> configuration option. As we learn in <code>x86_64</code> architecture, the stack grows down. So the end of the process stack will be:</p>
+<pre><code class="language-C">(unsigned long *)(task_thread_info(p) + 1);
+</code></pre>
+<p>where <code>task_thread_info</code> just returns the stack which we filled with the <code>INIT_TASK</code> macro:</p>
+<pre><code class="language-C">#define task_thread_info(task)  ((struct thread_info *)(task)-&gt;stack)
+</code></pre>
+<p>From the Linux kernel <code>v4.9-rc1</code> release, <code>thread_info</code> structure may contains only flags and stack pointer resides in <code>task_struct</code> structure which represents a thread in the Linux kernel. This depends on <code>CONFIG_THREAD_INFO_IN_TASK</code> kernel configuration option which is enabled by default for <code>x86_64</code>. You can be sure in this if you will look in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> configuration build file:</p>
+<pre><code>config THREAD_INFO_IN_TASK
+	bool
+	help
+	  Select this to move thread_info off the stack into task_struct.  To
+	  make this work, an arch will need to remove all thread_info fields
+	  except flags and fix any runtime bugs.
+
+	  One subtle change that will be needed is to use try_get_task_stack()
+	  and put_task_stack() in save_thread_stack_tsk() and get_wchan().
+</code></pre>
+<p>and <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/Kconfig">arch/x86/Kconfig</a>:</p>
+<pre><code>config X86
+	def_bool y
+        ...
+        ...
+        ...
+        select THREAD_INFO_IN_TASK
+        ...
+        ...
+        ...
+</code></pre>
+<p>So, in this way we may just get end of a thread stack from the given <code>task_struct</code> structure:</p>
+<pre><code class="language-C">#ifdef CONFIG_THREAD_INFO_IN_TASK
+static inline unsigned long *end_of_stack(const struct task_struct *task)
+{
+	return task-&gt;stack;
+}
+#endif
+</code></pre>
+<p>As we got the end of the <code>init</code> process stack, we write <code>STACK_END_MAGIC</code> there. After <code>canary</code> is set, we can check it like this:</p>
+<pre><code class="language-C">if (*end_of_stack(task) != STACK_END_MAGIC) {
+        //
+        // handle stack overflow here
+        //
+}
+</code></pre>
+<p>The next function after the <code>set_task_stack_end_magic</code> is <code>smp_setup_processor_id</code>. This function has an empty body for <code>x86_64</code>:</p>
+<pre><code class="language-C">void __init __weak smp_setup_processor_id(void)
+{
+}
+</code></pre>
+<p>as it not implemented for all architectures, but some such as <a href="http://en.wikipedia.org/wiki/IBM_ESA/390">s390</a> and <a href="http://en.wikipedia.org/wiki/ARM_architecture#64.2F32-bit_architecture">arm64</a>.</p>
+<p>The next function in <code>start_kernel</code> is <code>debug_objects_early_init</code>. Implementation of this function is almost the same as <code>lockdep_init</code>, but fills hashes for object debugging. As I wrote above, we will not see the explanation of this and other functions which are for debugging purposes in this chapter.</p>
+<p>After the <code>debug_object_early_init</code> function we can see the call of the <code>boot_init_stack_canary</code> function which fills <code>task_struct-&gt;canary</code> with the <code>canary</code> value for the <code>-fstack-protector</code> gcc feature. This function depends on the <code>CONFIG_CC_STACKPROTECTOR</code> configuration option and if this option is disabled, <code>boot_init_stack_canary</code> does nothing, otherwise it generates random numbers based on random pool and the <a href="http://en.wikipedia.org/wiki/Time_Stamp_Counter">TSC</a>:</p>
+<pre><code class="language-C">get_random_bytes(&amp;canary, sizeof(canary));
+tsc = __native_read_tsc();
+canary += tsc + (tsc &lt;&lt; 32UL);
+</code></pre>
+<p>After we got a random number, we fill the <code>stack_canary</code> field of <code>task_struct</code> with it:</p>
+<pre><code class="language-C">current-&gt;stack_canary = canary;
+</code></pre>
+<p>and write this value to the top of the IRQ stack with the:</p>
+<pre><code class="language-C">this_cpu_write(irq_stack_union.stack_canary, canary); // read below about this_cpu_write
+</code></pre>
+<p>Again, we will not dive into details here, we will cover it in the part about <a href="http://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQs</a>. As <code>canary</code> is set, we disable local and early boot IRQs and register the bootstrap CPU in the CPU maps. We disable local IRQs (interrupts for current CPU) with the <code>local_irq_disable</code> macro which expands to the call of the <code>arch_local_irq_disable</code> function from <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/percpu-defs.h">include/linux/percpu-defs.h</a>:</p>
+<pre><code class="language-C">static inline notrace void arch_local_irq_disable(void)
+{
+        native_irq_disable();
+}
+</code></pre>
+<p>Where <code>native_irq_disable</code> is <code>cli</code> instruction for <code>x86_64</code>. As interrupts are disabled we can register the current CPU with the given ID in the CPU bitmap.</p>
+<h2 id="the-first-processor-activation"><a class="header" href="#the-first-processor-activation">The first processor activation</a></h2>
+<p>The current function from the <code>start_kernel</code> is <code>boot_cpu_init</code>. This function initializes various CPU masks for the bootstrap processor. First of all it gets the bootstrap processor id with a call to:</p>
+<pre><code class="language-C">int cpu = smp_processor_id();
+</code></pre>
+<p>For now it is just zero. If the <code>CONFIG_DEBUG_PREEMPT</code> configuration option is disabled, <code>smp_processor_id</code> just expands to the call of <code>raw_smp_processor_id</code> which expands to the:</p>
+<pre><code class="language-C">#define raw_smp_processor_id() (this_cpu_read(cpu_number))
+</code></pre>
+<p><code>this_cpu_read</code> as many other function like this (<code>this_cpu_write</code>, <code>this_cpu_add</code> and etc...) defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/percpu-defs.h">include/linux/percpu-defs.h</a> and presents <code>this_cpu</code> operation. These operations provide a way of optimizing access to the <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a> variables which are associated with the current processor. In our case it is <code>this_cpu_read</code>:</p>
+<pre><code>__pcpu_size_call_return(this_cpu_read_, pcp)
+</code></pre>
+<p>Remember that we have passed <code>cpu_number</code> as <code>pcp</code> to the <code>this_cpu_read</code> from the <code>raw_smp_processor_id</code>. Now let's look at the <code>__pcpu_size_call_return</code> implementation:</p>
+<pre><code class="language-C">#define __pcpu_size_call_return(stem, variable)                         \
+({                                                                      \
+        typeof(variable) pscr_ret__;                                    \
+        __verify_pcpu_ptr(&amp;(variable));                                 \
+        switch(sizeof(variable)) {                                      \
+        case 1: pscr_ret__ = stem##1(variable); break;                  \
+        case 2: pscr_ret__ = stem##2(variable); break;                  \
+        case 4: pscr_ret__ = stem##4(variable); break;                  \
+        case 8: pscr_ret__ = stem##8(variable); break;                  \
+        default:                                                        \
+                __bad_size_call_parameter(); break;                     \
+        }                                                               \
+        pscr_ret__;                                                     \
+})
+</code></pre>
+<p>Yes, it looks a little strange but it's easy. First of all we can see the definition of the <code>pscr_ret__</code> variable with the <code>int</code> type. Why int? Ok, <code>variable</code> is <code>cpu_number</code> and it was declared as per-cpu int variable:</p>
+<pre><code class="language-C">DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
+</code></pre>
+<p>In the next step we call <code>__verify_pcpu_ptr</code> with the address of <code>cpu_number</code>. <code>__veryf_pcpu_ptr</code> used to verify that the given parameter is a per-cpu pointer. After that we set <code>pscr_ret__</code> value which depends on the size of the variable. Our <code>cpu_number</code> variable is <code>int</code>, so it's 4 bytes in size. It means that we will get <code>this_cpu_read_4(cpu_number)</code> in <code>pscr_ret__</code>. In the end of the <code>__pcpu_size_call_return</code> we just call it. <code>this_cpu_read_4</code> is a macro:</p>
+<pre><code class="language-C">#define this_cpu_read_4(pcp)       percpu_from_op(&quot;mov&quot;, pcp)
+</code></pre>
+<p>which calls <code>percpu_from_op</code> and pass <code>mov</code> instruction and per-cpu variable there. <code>percpu_from_op</code> will expand to the inline assembly call:</p>
+<pre><code class="language-C">asm(&quot;movl %%gs:%1,%0&quot; : &quot;=r&quot; (pfo_ret__) : &quot;m&quot; (cpu_number))
+</code></pre>
+<p>Let's try to understand how it works and what it does. The <code>gs</code> segment register contains the base of per-cpu area. Here we just copy <code>cpu_number</code> which is in memory to the <code>pfo_ret__</code> with the <code>movl</code> instruction. Or with another words:</p>
+<pre><code class="language-C">this_cpu_read(cpu_number)
+</code></pre>
+<p>is the same as:</p>
+<pre><code class="language-C">movl %gs:$cpu_number, $pfo_ret__
+</code></pre>
+<p>As we didn't setup per-cpu area, we have only one - for the current running CPU, we will get <code>zero</code> as a result of the <code>smp_processor_id</code>.</p>
+<p>As we got the current processor id, <code>boot_cpu_init</code> sets the given CPU online, active, present and possible with the:</p>
+<pre><code class="language-C">set_cpu_online(cpu, true);
+set_cpu_active(cpu, true);
+set_cpu_present(cpu, true);
+set_cpu_possible(cpu, true);
+</code></pre>
+<p>All of these functions use the concept - <code>cpumask</code>. <code>cpu_possible</code> is a set of CPU ID's which can be plugged in at any time during the life of that system boot. <code>cpu_present</code> represents which CPUs are currently plugged in. <code>cpu_online</code> represents subset of the <code>cpu_present</code> and indicates CPUs which are available for scheduling. These masks depend on the <code>CONFIG_HOTPLUG_CPU</code> configuration option and if this option is disabled <code>possible == present</code> and <code>active == online</code>. Implementation of the all of these functions are very similar. Every function checks the second parameter. If it is <code>true</code>, it calls <code>cpumask_set_cpu</code> or <code>cpumask_clear_cpu</code> otherwise.</p>
+<p>For example let's look at <code>set_cpu_possible</code>. As we passed <code>true</code> as the second parameter, the:</p>
+<pre><code class="language-C">cpumask_set_cpu(cpu, to_cpumask(cpu_possible_bits));
+</code></pre>
+<p>will be called. First of all let's try to understand the <code>to_cpumask</code> macro. This macro casts a bitmap to a <code>struct cpumask *</code>. CPU masks provide a bitmap suitable for representing the set of CPU's in a system, one bit position per CPU number. CPU mask presented by the <code>cpumask</code> structure:</p>
+<pre><code class="language-C">typedef struct cpumask { DECLARE_BITMAP(bits, NR_CPUS); } cpumask_t;
+</code></pre>
+<p>which is just bitmap declared with the <code>DECLARE_BITMAP</code> macro:</p>
+<pre><code class="language-C">#define DECLARE_BITMAP(name, bits) unsigned long name[BITS_TO_LONGS(bits)]
+</code></pre>
+<p>As we can see from its definition, the <code>DECLARE_BITMAP</code> macro expands to the array of <code>unsigned long</code>. Now let's look at how the <code>to_cpumask</code> macro is implemented:</p>
+<pre><code class="language-C">#define to_cpumask(bitmap)                                              \
+        ((struct cpumask *)(1 ? (bitmap)                                \
+                            : (void *)sizeof(__check_is_bitmap(bitmap))))
+</code></pre>
+<p>I don't know about you, but it looked really weird for me at the first time. We can see a ternary operator here which is <code>true</code> every time, but why the <code>__check_is_bitmap</code> here? It's simple, let's look at it:</p>
+<pre><code class="language-C">static inline int __check_is_bitmap(const unsigned long *bitmap)
+{
+        return 1;
+}
+</code></pre>
+<p>Yeah, it just returns <code>1</code> every time. Actually we need in it here only for one purpose: at compile time it checks that the given <code>bitmap</code> is a bitmap, or in other words it checks that the given <code>bitmap</code> has a type of <code>unsigned long *</code>. So we just pass <code>cpu_possible_bits</code> to the <code>to_cpumask</code> macro for converting the array of <code>unsigned long</code> to the <code>struct cpumask *</code>. Now we can call <code>cpumask_set_cpu</code> function with the <code>cpu</code> - 0 and <code>struct cpumask *cpu_possible_bits</code>. This function makes only one call of the <code>set_bit</code> function which sets the given <code>cpu</code> in the cpumask. All of these <code>set_cpu_*</code> functions work on the same principle.</p>
+<p>If you're not sure that this <code>set_cpu_*</code> operations and <code>cpumask</code> are not clear for you, don't worry about it. You can get more info by reading the special part about it - <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-2">cpumask</a> or <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">documentation</a>.</p>
+<p>As we activated the bootstrap processor, it's time to go to the next function in the <code>start_kernel.</code> Now it is <code>page_address_init</code>, but this function does nothing in our case, because it executes only when all <code>RAM</code> can't be mapped directly.</p>
+<h2 id="print-linux-banner"><a class="header" href="#print-linux-banner">Print Linux banner</a></h2>
+<p>The next call is <code>pr_notice</code>:</p>
+<pre><code class="language-C">#define pr_notice(fmt, ...) \
+    printk(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
+</code></pre>
+<p>as you can see it just expands to the <code>printk</code> call. At this moment we use <code>pr_notice</code> to print the Linux banner:</p>
+<pre><code class="language-C">pr_notice(&quot;%s&quot;, linux_banner);
+</code></pre>
+<p>which is just the kernel version with some additional parameters:</p>
+<pre><code>Linux version 4.0.0-rc6+ (alex@localhost) (gcc version 4.9.1 (Ubuntu 4.9.1-16ubuntu6) ) #319 SMP
+</code></pre>
+<h2 id="architecture-dependent-parts-of-initialization"><a class="header" href="#architecture-dependent-parts-of-initialization">Architecture-dependent parts of initialization</a></h2>
+<p>The next step is architecture-specific initialization. The Linux kernel does it with the call of the <code>setup_arch</code> function. This is a very big function like <code>start_kernel</code> and we do not have time to consider all of its implementation in this part. Here we'll only start to do it and continue in the next part. As it is <code>architecture-specific</code>, we need to go again to the <code>arch/</code> directory. The <code>setup_arch</code> function defined in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/setup.c">arch/x86/kernel/setup.c</a> source code file and takes only one argument - address of the kernel command line.</p>
+<p>This function starts from the reserving memory block for the kernel <code>_text</code> and <code>_data</code> which starts from the <code>_text</code> symbol (you can remember it from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head_64.S#L46">arch/x86/kernel/head_64.S</a>) and ends before <code>__bss_stop</code>. We are using <code>memblock</code> for the reserving of memory block:</p>
+<pre><code class="language-C">memblock_reserve(__pa_symbol(_text), (unsigned long)__bss_stop - (unsigned long)_text);
+</code></pre>
+<p>You can read about <code>memblock</code> in the <a href="https://0xax.gitbook.io/linux-insides/summary/mm/linux-mm-1">Linux kernel memory management Part 1.</a>. As you can remember <code>memblock_reserve</code> function takes two parameters:</p>
+<ul>
+<li>base physical address of a memory block;</li>
+<li>size of a memory block.</li>
+</ul>
+<p>We can get the base physical address of the <code>_text</code> symbol with the <code>__pa_symbol</code> macro:</p>
+<pre><code class="language-C">#define __pa_symbol(x) \
+	__phys_addr_symbol(__phys_reloc_hide((unsigned long)(x)))
+</code></pre>
+<p>First of all it calls <code>__phys_reloc_hide</code> macro on the given parameter. The <code>__phys_reloc_hide</code> macro does nothing for <code>x86_64</code> and just returns the given parameter. Implementation of the <code>__phys_addr_symbol</code> macro is easy. It just subtracts the symbol address from the base address of the kernel text mapping base virtual address (you can remember that it is <code>__START_KERNEL_map</code>) and adds <code>phys_base</code> which is the base address of <code>_text</code>:</p>
+<pre><code class="language-C">#define __phys_addr_symbol(x) \
+ ((unsigned long)(x) - __START_KERNEL_map + phys_base)
+</code></pre>
+<p>After we got the physical address of the <code>_text</code> symbol, <code>memblock_reserve</code> can reserve a memory block from the <code>_text</code> to the <code>__bss_stop - _text</code>.</p>
+<h2 id="reserve-memory-for-initrd"><a class="header" href="#reserve-memory-for-initrd">Reserve memory for initrd</a></h2>
+<p>In the next step after we reserved place for the kernel text and data is reserving place for the <a href="http://en.wikipedia.org/wiki/Initrd">initrd</a>. We will not see details about <code>initrd</code> in this post, you just may know that it is temporary root file system stored in memory and used by the kernel during its startup. The <code>early_reserve_initrd</code> function does all work. First of all this function gets the base address of the ram disk, its size and the end address with:</p>
+<pre><code class="language-C">u64 ramdisk_image = get_ramdisk_image();
+u64 ramdisk_size  = get_ramdisk_size();
+u64 ramdisk_end   = PAGE_ALIGN(ramdisk_image + ramdisk_size);
+</code></pre>
+<p>All of these parameters are taken from <code>boot_params</code>. If you have read the chapter about <a href="https://0xax.gitbook.io/linux-insides/summary/booting">Linux Kernel Booting Process</a>, you must remember that we filled the <code>boot_params</code> structure during boot time. The kernel setup header contains a couple of fields which describes ramdisk, for example:</p>
+<pre><code>Field name:	ramdisk_image
+Type:		write (obligatory)
+Offset/size:	0x218/4
+Protocol:	2.00+
+
+  The 32-bit linear address of the initial ramdisk or ramfs.  Leave at
+  zero if there is no initial ramdisk/ramfs.
+</code></pre>
+<p>So we can get all the information that interests us from <code>boot_params</code>. For example let's look at <code>get_ramdisk_image</code>:</p>
+<pre><code class="language-C">static u64 __init get_ramdisk_image(void)
+{
+        u64 ramdisk_image = boot_params.hdr.ramdisk_image;
+
+        ramdisk_image |= (u64)boot_params.ext_ramdisk_image &lt;&lt; 32;
+
+        return ramdisk_image;
+}
+</code></pre>
+<p>Here we get the address of the ramdisk from the <code>boot_params</code> and shift left it on <code>32</code>. We need to do it because as you can read in the <a href="https://github.com/0xAX/linux/blob/0a07b238e5f488b459b6113a62e06b6aab017f71/Documentation/x86/zero-page.txt">Documentation/x86/zero-page.txt</a>:</p>
+<pre><code>0C0/004	ALL	ext_ramdisk_image ramdisk_image high 32bits
+</code></pre>
+<p>So after shifting it on 32, we're getting a 64-bit address in <code>ramdisk_image</code> and we return it. <code>get_ramdisk_size</code> works on the same principle as <code>get_ramdisk_image</code>, but it used <code>ext_ramdisk_size</code> instead of <code>ext_ramdisk_image</code>. After we got ramdisk's size, base address and end address, we check that bootloader provided ramdisk with the:</p>
+<pre><code class="language-C">if (!boot_params.hdr.type_of_loader ||
+    !ramdisk_image || !ramdisk_size)
+	return;
+</code></pre>
+<p>and reserve memory block with the calculated addresses for the initial ramdisk in the end:</p>
+<pre><code class="language-C">memblock_reserve(ramdisk_image, ramdisk_end - ramdisk_image);
+</code></pre>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the fourth part about the Linux kernel initialization process. We started to dive in the kernel generic code from the <code>start_kernel</code> function in this part and stopped on the architecture-specific initialization in the <code>setup_arch</code>. In the next part we will continue with architecture-dependent initialization steps.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me a PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html">GCC function attributes</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/this_cpu_ops.txt">this_cpu operations</a></li>
+<li><a href="http://www.crashcourse.ca/wiki/index.php/Cpumask">cpumask</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Cgroups">cgroups</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Stack_buffer_overflow">stack buffer overflow</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Interrupt_request_%28PC_architecture%29">IRQs</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Initrd">initrd</a></li>
+<li><a href="https://github.com/0xAX/linux-insides/blob/master/Initialization/linux-initialization-3.md">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Initialization/linux-initialization-3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Initialization/linux-initialization-5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Initialization/linux-initialization-3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Initialization/linux-initialization-5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

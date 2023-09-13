@@ -1,0 +1,478 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introduction - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html" class="active">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="timers-and-time-management-in-the-linux-kernel-part-1"><a class="header" href="#timers-and-time-management-in-the-linux-kernel-part-1">Timers and time management in the Linux kernel. Part 1.</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>This is yet another post that opens a new chapter in the <a href="https://github.com/0xAX/linux-insides/blob/master/SUMMARY.md">linux-insides</a> book. The previous <a href="https://0xax.gitbook.io/linux-insides/summary/syscall/linux-syscall-4">part</a> described <a href="https://en.wikipedia.org/wiki/System_call">system call</a> concepts, and now it's time to start new chapter. As one might understand from the title, this chapter will be devoted to the <code>timers</code> and <code>time management</code> in the Linux kernel. The choice of topic for the current chapter is not accidental. Timers (and generally, time management) are very important and widely used in the Linux kernel. The Linux kernel uses timers for various tasks, for example different timeouts in the <a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol">TCP</a> implementation, the kernel knowing current time, scheduling asynchronous functions, next event interrupt scheduling and many many more.</p>
+<p>So, we will start to learn implementation of the different time management related stuff in this part. We will see different types of timers and how different Linux kernel subsystems use them. As always, we will start from the earliest part of the Linux kernel and go through the initialization process of the Linux kernel. We already did it in the special <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">chapter</a> which describes the initialization process of the Linux kernel, but as you may remember we missed some things there. And one of them is the initialization of timers.</p>
+<p>Let's start.</p>
+<h2 id="initialization-of-non-standard-pc-hardware-clock"><a class="header" href="#initialization-of-non-standard-pc-hardware-clock">Initialization of non-standard PC hardware clock</a></h2>
+<p>After the Linux kernel was decompressed (more about this you can read in the <a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-5">Kernel decompression</a> part) the architecture non-specific code starts to work in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> source code file. After initialization of the <a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a>, initialization of <a href="https://en.wikipedia.org/wiki/Cgroups">cgroups</a> and setting <a href="https://en.wikipedia.org/wiki/Buffer_overflow_protection">canary</a> value we can see the call of the <code>setup_arch</code> function.</p>
+<p>As you may remember, this function (defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/setup.c#L842">arch/x86/kernel/setup.c</a>) prepares/initializes architecture-specific stuff (for example it reserves a place for <a href="https://en.wikipedia.org/wiki/.bss">bss</a> section, reserves a place for <a href="https://en.wikipedia.org/wiki/Initrd">initrd</a>, parses kernel command line, and many, many other things). Besides this, we can find some time management related functions there.</p>
+<p>The first is:</p>
+<pre><code class="language-C">x86_init.timers.wallclock_init();
+</code></pre>
+<p>We already saw <code>x86_init</code> structure in the chapter that describes initialization of the Linux kernel. This structure contains pointers to the default setup functions for the different platforms like <a href="https://en.wikipedia.org/wiki/Mobile_Internet_device#Intel_MID_platforms">Intel MID</a>, <a href="http://www.wpgholdings.com/epaper/US/newsRelease_20091215/255874.pdf">Intel CE4100</a>, etc. The <code>x86_init</code> structure is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/x86_init.c#L36">arch/x86/kernel/x86_init.c</a>, and as you can see it determines standard PC hardware by default.</p>
+<p>As we can see, the <code>x86_init</code> structure has the <code>x86_init_ops</code> type that provides a set of functions for platform specific setup like reserving standard resources, platform specific memory setup, initialization of interrupt handlers, etc. This structure looks like:</p>
+<pre><code class="language-C">struct x86_init_ops {
+	struct x86_init_resources       resources;
+    struct x86_init_mpparse         mpparse;
+    struct x86_init_irqs            irqs;
+    struct x86_init_oem             oem;
+    struct x86_init_paging          paging;
+    struct x86_init_timers          timers;
+    struct x86_init_iommu           iommu;
+    struct x86_init_pci             pci;
+};
+</code></pre>
+<p>Note the <code>timers</code> field that has the <code>x86_init_timers</code> type. We can understand by its name that this field is related to time management and timers. <code>x86_init_timers</code> contains four fields which are all functions that returns pointer on <a href="https://en.wikipedia.org/wiki/Void_type">void</a>:</p>
+<ul>
+<li><code>setup_percpu_clockev</code> - set up the per cpu clock event device for the boot cpu;</li>
+<li><code>tsc_pre_init</code> - platform function called before <a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">TSC</a> init;</li>
+<li><code>timer_init</code> - initialize the platform timer;</li>
+<li><code>wallclock_init</code> - initialize the wallclock device.</li>
+</ul>
+<p>So, as we already know, in our case the <code>wallclock_init</code> executes initialization of the wallclock device. If we look on the <code>x86_init</code> structure, we see that <code>wallclock_init</code> points to the <code>x86_init_noop</code>:</p>
+<pre><code class="language-C">struct x86_init_ops x86_init __initdata = {
+	...
+	...
+	...
+	.timers = {
+		.wallclock_init		    = x86_init_noop,
+	},
+	...
+	...
+	...
+}
+</code></pre>
+<p>Where the <code>x86_init_noop</code> is just a function that does nothing:</p>
+<pre><code class="language-C">void __cpuinit x86_init_noop(void) { }
+</code></pre>
+<p>for the standard PC hardware. Actually, the <code>wallclock_init</code> function is used in the <a href="https://en.wikipedia.org/wiki/Mobile_Internet_device#Intel_MID_platforms">Intel MID</a> platform. Initialization of the <code>x86_init.timers.wallclock_init</code> is located in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/platform/intel-mid/intel-mid.c">arch/x86/platform/intel-mid/intel-mid.c</a> source code file in the <code>x86_intel_mid_early_setup</code> function:</p>
+<pre><code class="language-C">void __init x86_intel_mid_early_setup(void)
+{
+	...
+	...
+	...
+	x86_init.timers.wallclock_init = intel_mid_rtc_init;
+	...
+	...
+	...
+}
+</code></pre>
+<p>Implementation of the <code>intel_mid_rtc_init</code> function is in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/platform/intel-mid/intel_mid_vrtc.c">arch/x86/platform/intel-mid/intel_mid_vrtc.c</a> source code file and looks pretty simple. First of all, this function parses <a href="https://en.wikipedia.org/wiki/Simple_Firmware_Interface">Simple Firmware Interface</a> M-Real-Time-Clock table for getting such devices to the <code>sfi_mrtc_array</code> array and initialization of the <code>set_time</code> and <code>get_time</code> functions:</p>
+<pre><code class="language-C">void __init intel_mid_rtc_init(void)
+{
+	unsigned long vrtc_paddr;
+
+	sfi_table_parse(SFI_SIG_MRTC, NULL, NULL, sfi_parse_mrtc);
+
+	vrtc_paddr = sfi_mrtc_array[0].phys_addr;
+	if (!sfi_mrtc_num || !vrtc_paddr)
+		return;
+
+	vrtc_virt_base = (void __iomem *)set_fixmap_offset_nocache(FIX_LNW_VRTC,
+								vrtc_paddr);
+
+    x86_platform.get_wallclock = vrtc_get_time;
+	x86_platform.set_wallclock = vrtc_set_mmss;
+}
+</code></pre>
+<p>That's all, after this a device based on <code>Intel MID</code> will be able to get time from the hardware clock. As I already wrote, the standard PC <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> architecture does not support <code>x86_init_noop</code> and just do nothing during call of this function. We just saw initialization of the <a href="https://en.wikipedia.org/wiki/Real-time_clock">real time clock</a> for the <a href="https://en.wikipedia.org/wiki/Mobile_Internet_device#Intel_MID_platforms">Intel MID</a> architecture, now it's time to return to the general <code>x86_64</code> architecture and will look on the time management related stuff there.</p>
+<h2 id="acquainted-with-jiffies"><a class="header" href="#acquainted-with-jiffies">Acquainted with jiffies</a></h2>
+<p>If we return to the <code>setup_arch</code> function (which is located, as you remember, in the  <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/setup.c#L842">arch/x86/kernel/setup.c</a> source code file), we see the next call of the time management related function:</p>
+<pre><code class="language-C">register_refined_jiffies(CLOCK_TICK_RATE);
+</code></pre>
+<p>Before we look at the implementation of this function, we must know about <a href="https://en.wikipedia.org/wiki/Jiffy_%28time%29">jiffy</a>. As we can read on wikipedia:</p>
+<pre><code>Jiffy is an informal term for any unspecified short period of time
+</code></pre>
+<p>This definition is very similar to the <code>jiffy</code> in the Linux kernel. There is global variable with the <code>jiffies</code> which holds the number of ticks that have occurred since the system booted. The Linux kernel sets this variable to zero:</p>
+<pre><code class="language-C">extern unsigned long volatile __jiffy_data jiffies;
+</code></pre>
+<p>during initialization process. This global variable will be increased each time during timer interrupt. Besides this, near the <code>jiffies</code> variable we can see the definition of the similar variable</p>
+<pre><code class="language-C">extern u64 jiffies_64;
+</code></pre>
+<p>Actually, only one of these variables is in use in the Linux kernel, and it depends on the processor type. For the <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> it will be <code>u64</code> use and for the <a href="https://en.wikipedia.org/wiki/X86">x86</a> it's <code>unsigned long</code>. We see this looking at the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/vmlinux.lds.S">arch/x86/kernel/vmlinux.lds.S</a> linker script:</p>
+<pre><code>#ifdef CONFIG_X86_32
+...
+jiffies = jiffies_64;
+...
+#else
+...
+jiffies_64 = jiffies;
+...
+#endif
+</code></pre>
+<p>In the case of <code>x86_32</code> the <code>jiffies</code> will be the lower <code>32</code> bits of the <code>jiffies_64</code> variable. Schematically, we can imagine it as follows</p>
+<pre><code>                    jiffies_64
++-----------------------------------------------------+
+|                       |                             |
+|                       |                             |
+|                       |       jiffies on `x86_32`   |
+|                       |                             |
+|                       |                             |
++-----------------------------------------------------+
+63                     31                             0
+</code></pre>
+<p>Now we know a little theory about <code>jiffies</code> and can return to our function. There is no architecture-specific implementation for our function - the <code>register_refined_jiffies</code>. This function is located in the generic kernel code - <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/jiffies.c">kernel/time/jiffies.c</a> source code file. Main point of the <code>register_refined_jiffies</code> is registration of the jiffy <code>clocksource</code>. Before we look on the implementation of the <code>register_refined_jiffies</code> function, we must know what <code>clocksource</code> is. As we can read in the comments:</p>
+<pre><code>The `clocksource` is hardware abstraction for a free-running counter.
+</code></pre>
+<p>I'm not sure about you, but that description didn't give a good understanding about the <code>clocksource</code> concept. Let's try to understand what is it, but we will not go deeper because this topic will be described in a separate part in much more detail. The main point of the <code>clocksource</code> is timekeeping abstraction or in very simple words - it provides a time value to the kernel. We already know about the <code>jiffies</code> interface that represents number of ticks that have occurred since the system booted. It is represented by a global variable in the Linux kernel and increases each timer interrupt. The Linux kernel can use <code>jiffies</code> for time measurement. So why do we need in separate context like the <code>clocksource</code>? Actually, different hardware devices provide different clock sources that are varied in their capabilities. The availability of more precise techniques for time intervals measurement is hardware-dependent.</p>
+<p>For example <code>x86</code> has on-chip a 64-bit counter that is called <a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">Time Stamp  Counter</a> and its frequency can be equal to processor frequency. Or for example the <a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">High Precision Event Timer</a>, that consists of a <code>64-bit</code> counter of at least <code>10 MHz</code> frequency. Two different timers and they are both for <code>x86</code>. If we will add timers from other architectures, this only makes this problem more complex. The Linux kernel provides the <code>clocksource</code> concept to solve the problem.</p>
+<p>The clocksource concept is represented by the <code>clocksource</code> structure in the Linux kernel. This structure is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/clocksource.h">include/linux/clocksource.h</a> header file and contains a couple of fields that describe a time counter. For example, it contains - <code>name</code> field which is the name of a counter, <code>flags</code> field that describes different properties of a counter, pointers to the <code>suspend</code> and <code>resume</code> functions, and many more.</p>
+<p>Let's look at the <code>clocksource</code> structure for jiffies that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/jiffies.c">kernel/time/jiffies.c</a> source code file:</p>
+<pre><code class="language-C">static struct clocksource clocksource_jiffies = {
+	.name		= &quot;jiffies&quot;,
+	.rating		= 1,
+	.read		= jiffies_read,
+	.mask		= 0xffffffff,
+	.mult		= NSEC_PER_JIFFY &lt;&lt; JIFFIES_SHIFT,
+	.shift		= JIFFIES_SHIFT,
+	.max_cycles	= 10,
+};
+</code></pre>
+<p>We can see the definition of the default name here - <code>jiffies</code>. The next is the <code>rating</code> field, which allows the best registered clock source to be chosen by the clock source management code available for the specified hardware. The <code>rating</code> may have following value:</p>
+<ul>
+<li><code>1-99</code>    - Only available for bootup and testing purposes;</li>
+<li><code>100-199</code> - Functional for real use, but not desired.</li>
+<li><code>200-299</code> - A correct and usable clocksource.</li>
+<li><code>300-399</code> - A reasonably fast and accurate clocksource.</li>
+<li><code>400-499</code> - The ideal clocksource. A must-use where available;</li>
+</ul>
+<p>For example, rating of the <a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">time stamp counter</a> is <code>300</code>, but rating of the <a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">high precision event timer</a> is <code>250</code>. The next field is <code>read</code> - it is pointer to the function that allows it to read clocksource's cycle value; or in other words, it just returns <code>jiffies</code> variable with <code>cycle_t</code> type:</p>
+<pre><code class="language-C">static cycle_t jiffies_read(struct clocksource *cs)
+{
+        return (cycle_t) jiffies;
+}
+</code></pre>
+<p>that is just 64-bit unsigned type:</p>
+<pre><code class="language-C">typedef u64 cycle_t;
+</code></pre>
+<p>The next field is the <code>mask</code> value, which ensures that subtraction between counters values from non <code>64 bit</code> counters do not need special overflow logic. In our case the mask is <code>0xffffffff</code> and it is <code>32</code> bits. This means that <code>jiffy</code> wraps around to zero after <code>42</code> seconds:</p>
+<pre><code class="language-python">&gt;&gt;&gt; 0xffffffff
+4294967295
+# 42 nanoseconds
+&gt;&gt;&gt; 42 * pow(10, -9)
+4.2000000000000006e-08
+# 43 nanoseconds
+&gt;&gt;&gt; 43 * pow(10, -9)
+4.3e-08
+</code></pre>
+<p>The next two fields <code>mult</code> and <code>shift</code> are used to convert the clocksource's period to nanoseconds per cycle. When the kernel calls the <code>clocksource.read</code> function, this function returns a value in <code>machine</code> time units represented with <code>cycle_t</code> data type that we saw just now. To convert this return value to <a href="https://en.wikipedia.org/wiki/Nanosecond">nanoseconds</a> we need these two fields: <code>mult</code> and <code>shift</code>. The <code>clocksource</code> provides the <code>clocksource_cyc2ns</code> function that will do it for us with the following expression:</p>
+<pre><code class="language-C">((u64) cycles * mult) &gt;&gt; shift;
+</code></pre>
+<p>As we can see the <code>mult</code> field is equal:</p>
+<pre><code class="language-C">NSEC_PER_JIFFY &lt;&lt; JIFFIES_SHIFT
+
+#define NSEC_PER_JIFFY  ((NSEC_PER_SEC+HZ/2)/HZ)
+#define NSEC_PER_SEC    1000000000L
+</code></pre>
+<p>by default, and the <code>shift</code> is</p>
+<pre><code class="language-C">#if HZ &lt; 34
+  #define JIFFIES_SHIFT   6
+#elif HZ &lt; 67
+  #define JIFFIES_SHIFT   7
+#else
+  #define JIFFIES_SHIFT   8
+#endif
+</code></pre>
+<p>The <code>jiffies</code> clock source uses the <code>NSEC_PER_JIFFY</code> multiplier conversion to specify the nanosecond over cycle ratio. Note that values of the  <code>JIFFIES_SHIFT</code> and <code>NSEC_PER_JIFFY</code> depend on <code>HZ</code> value. The <code>HZ</code> represents the frequency of the system timer. This macro defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/asm-generic/param.h">include/asm-generic/param.h</a> and depends on the <code>CONFIG_HZ</code> kernel configuration option. The value of <code>HZ</code> differs for each supported architecture, but for <code>x86</code> it's defined like:</p>
+<pre><code class="language-C">#define HZ		CONFIG_HZ
+</code></pre>
+<p>Where <code>CONFIG_HZ</code> can be one of the following values:</p>
+<p><img src="images/HZ.png" alt="HZ" /></p>
+<p>This means that in our case the timer interrupt frequency is <code>250 HZ</code> or occurs <code>250</code> times per second or one timer interrupt each <code>4ms</code>.</p>
+<p>The last field that we can see in the definition of the <code>clocksource_jiffies</code> structure is the - <code>max_cycles</code> that holds the maximum cycle value that can safely be multiplied without potentially causing an overflow.</p>
+<p>Ok, we just saw definition of the <code>clocksource_jiffies</code> structure, also we know a little about <code>jiffies</code> and <code>clocksource</code>, now it is time to get back to the implementation of the our function. In the beginning of this part we have stopped on the call of the:</p>
+<pre><code class="language-C">register_refined_jiffies(CLOCK_TICK_RATE);
+</code></pre>
+<p>function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/setup.c#L842">arch/x86/kernel/setup.c</a> source code file.</p>
+<p>As I already wrote, the main purpose of the <code>register_refined_jiffies</code> function is to register <code>refined_jiffies</code> clocksource. We already saw the <code>clocksource_jiffies</code> structure represents standard <code>jiffies</code> clock source. Now, if you look in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/jiffies.c">kernel/time/jiffies.c</a> source code file, you will find yet another clock source definition:</p>
+<pre><code class="language-C">struct clocksource refined_jiffies;
+</code></pre>
+<p>There is one difference between <code>refined_jiffies</code> and <code>clocksource_jiffies</code>: The standard <code>jiffies</code> based clock source is the lowest common denominator clock source which should function on all systems. As we already know, the <code>jiffies</code> global variable will be increased during each timer interrupt. This means the that standard <code>jiffies</code> based clock source has the same resolution as the timer interrupt frequency. From this we can understand that standard <code>jiffies</code> based clock source may suffer from inaccuracies. The <code>refined_jiffies</code> uses <code>CLOCK_TICK_RATE</code> as the base of <code>jiffies</code> shift.</p>
+<p>Let's look at the implementation of this function. First of all, we can see that the <code>refined_jiffies</code> clock source based on the <code>clocksource_jiffies</code> structure:</p>
+<pre><code class="language-C">int register_refined_jiffies(long cycles_per_second)
+{
+	u64 nsec_per_tick, shift_hz;
+	long cycles_per_tick;
+
+	refined_jiffies = clocksource_jiffies;
+	refined_jiffies.name = &quot;refined-jiffies&quot;;
+	refined_jiffies.rating++;
+	...
+	...
+	...
+</code></pre>
+<p>Here we can see that we update the name of the <code>refined_jiffies</code> to <code>refined-jiffies</code> and increase the rating of this structure. As you remember, the <code>clocksource_jiffies</code> has rating - <code>1</code>, so our <code>refined_jiffies</code> clocksource will have rating - <code>2</code>. This means that the <code>refined_jiffies</code> will be the best selection for clock source management code.</p>
+<p>In the next step we need to calculate number of cycles per one tick:</p>
+<pre><code class="language-C">cycles_per_tick = (cycles_per_second + HZ/2)/HZ;
+</code></pre>
+<p>Note that we have used <code>NSEC_PER_SEC</code> macro as the base of the standard <code>jiffies</code> multiplier. Here we are using the <code>cycles_per_second</code> which is the first parameter of the <code>register_refined_jiffies</code> function. We've passed the <code>CLOCK_TICK_RATE</code> macro to the <code>register_refined_jiffies</code> function. This macro is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/timex.h">arch/x86/include/asm/timex.h</a> header file and expands to the:</p>
+<pre><code class="language-C">#define CLOCK_TICK_RATE         PIT_TICK_RATE
+</code></pre>
+<p>where the <code>PIT_TICK_RATE</code> macro expands to the frequency of the [Intel 8253](Programmable interval timer):</p>
+<pre><code class="language-C">#define PIT_TICK_RATE 1193182ul
+</code></pre>
+<p>After this we calculate <code>shift_hz</code> for the <code>register_refined_jiffies</code> that will store <code>hz &lt;&lt; 8</code> or in other words frequency of the system timer. We shift left the <code>cycles_per_second</code> or frequency of the programmable interval timer on <code>8</code> in order to get extra accuracy:</p>
+<pre><code class="language-C">shift_hz = (u64)cycles_per_second &lt;&lt; 8;
+shift_hz += cycles_per_tick/2;
+do_div(shift_hz, cycles_per_tick);
+</code></pre>
+<p>In the next step we calculate the number of seconds per one tick by shifting left the <code>NSEC_PER_SEC</code> on <code>8</code> too as we did it with the <code>shift_hz</code> and do the same calculation as before:</p>
+<pre><code class="language-C">nsec_per_tick = (u64)NSEC_PER_SEC &lt;&lt; 8;
+nsec_per_tick += (u32)shift_hz/2;
+do_div(nsec_per_tick, (u32)shift_hz);
+</code></pre>
+<pre><code class="language-C">refined_jiffies.mult = ((u32)nsec_per_tick) &lt;&lt; JIFFIES_SHIFT;
+</code></pre>
+<p>In the end of the <code>register_refined_jiffies</code> function we register new clock source with the <code>__clocksource_register</code> function that is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/clocksource.h">include/linux/clocksource.h</a> header file and return:</p>
+<pre><code class="language-C">__clocksource_register(&amp;refined_jiffies);
+return 0;
+</code></pre>
+<p>The clock source management code provides the API for clock source registration and selection. As we can see, clock sources are registered by calling the  <code>__clocksource_register</code> function during kernel initialization or from a kernel module. During registration, the clock source management code will choose the best clock source available in the system using the <code>clocksource.rating</code> field which we already saw when we initialized <code>clocksource</code> structure for <code>jiffies</code>.</p>
+<h2 id="using-the-jiffies"><a class="header" href="#using-the-jiffies">Using the jiffies</a></h2>
+<p>We just saw initialization of two <code>jiffies</code> based clock sources in the previous paragraph:</p>
+<ul>
+<li>standard <code>jiffies</code> based clock source;</li>
+<li>refined  <code>jiffies</code> based clock source;</li>
+</ul>
+<p>Don't worry if you don't understand the calculations here. They look frightening at first. Soon, step by step we will learn these things. So, we just saw initialization of <code>jiffies</code> based clock sources and also we know that the Linux kernel has the global variable <code>jiffies</code> that holds the number of ticks that have occurred since the kernel started to work. Now, let's look how to use it. To use <code>jiffies</code> we just can use the <code>jiffies</code> global variable by its name or with the call of the <code>get_jiffies_64</code> function. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/time/jiffies.c">kernel/time/jiffies.c</a> source code file and just returns full <code>64-bit</code> value of the <code>jiffies</code>:</p>
+<pre><code class="language-C">u64 get_jiffies_64(void)
+{
+	unsigned long seq;
+	u64 ret;
+
+	do {
+		seq = read_seqbegin(&amp;jiffies_lock);
+		ret = jiffies_64;
+	} while (read_seqretry(&amp;jiffies_lock, seq));
+	return ret;
+}
+EXPORT_SYMBOL(get_jiffies_64);
+</code></pre>
+<p>Note that the <code>get_jiffies_64</code> function is not implemented as <code>jiffies_read</code> for example:</p>
+<pre><code class="language-C">static cycle_t jiffies_read(struct clocksource *cs)
+{
+	return (cycle_t) jiffies;
+}
+</code></pre>
+<p>We can see that implementation of the <code>get_jiffies_64</code> is more complex. The reading of the <code>jiffies_64</code> variable is implemented using <a href="https://en.wikipedia.org/wiki/Seqlock">seqlocks</a>. Actually this is done for machines that cannot atomically read the full 64-bit values.</p>
+<p>If we can access the <code>jiffies</code> or the <code>jiffies_64</code> variable we can convert it to <code>human</code> time units. To get one second we can use following expression:</p>
+<pre><code class="language-C">jiffies / HZ
+</code></pre>
+<p>So, if we know this, we can get any time units. For example:</p>
+<pre><code class="language-C">/* Thirty seconds from now */
+jiffies + 30*HZ
+
+/* Two minutes from now */
+jiffies + 120*HZ
+
+/* One millisecond from now */
+jiffies + HZ / 1000
+</code></pre>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This concludes the first part covering time and time management related concepts in the Linux kernel. We first met two concepts and their initialization: <code>jiffies</code> and <code>clocksource</code>. In the next part we will continue to dive into this interesting theme, and as I already wrote in this part, we will try to understand the insides of these and other time management concepts in the Linux kernel.</p>
+<p>If you have questions or suggestions, feel free to ping me in twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me <a href="mailto:anotherworldofworld@gmail.com">email</a> or just create <a href="https://github.com/0xAX/linux-insides/issues/new">issue</a>.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/System_call">system call</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol">TCP</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cgroups">cgroups</a></li>
+<li><a href="https://en.wikipedia.org/wiki/.bss">bss</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Initrd">initrd</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Mobile_Internet_device#Intel_MID_platforms">Intel MID</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter">TSC</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Void_type">void</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Simple_Firmware_Interface">Simple Firmware Interface</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Real-time_clock">real time clock</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Jiffy_%28time%29">Jiffy</a></li>
+<li><a href="https://en.wikipedia.org/wiki/High_Precision_Event_Timer">high precision event timer</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Nanosecond">nanoseconds</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Intel_8253">Intel 8253</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Seqlock">seqlocks</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/timers/timekeeping.txt">cloksource documentation</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/syscall">Previous chapter</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Timers/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Timers/linux-timers-2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Timers/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Timers/linux-timers-2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

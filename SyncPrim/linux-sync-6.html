@@ -1,0 +1,423 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>SeqLock - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html" class="active">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="synchronization-primitives-in-the-linux-kernel-part-6"><a class="header" href="#synchronization-primitives-in-the-linux-kernel-part-6">Synchronization primitives in the Linux kernel. Part 6.</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>This is the sixth part of the chapter which describes <a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)">synchronization primitives</a> in the Linux kernel and in the previous parts we finished to consider different <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">readers-writer lock</a> synchronization primitives. We will continue to learn synchronization primitives in this part and start to consider a similar synchronization primitive which can be used to avoid the <code>writer starvation</code> problem. The name of this synchronization primitive is - <code>seqlock</code> or <code>sequential locks</code>.</p>
+<p>We know from the previous <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-5">part</a> that <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">readers-writer lock</a> is a special lock mechanism which allows concurrent access for read-only operations, but an exclusive lock is needed for writing or modifying data. As we may guess, it may lead to a problem which is called <code>writer starvation</code>. In other words, a writer process can't acquire a lock as long as at least one reader process which acquired a lock holds it. So, in the situation when contention is high, it will lead to situation when a writer process which wants to acquire a lock will wait for it for a long time.</p>
+<p>The <code>seqlock</code> synchronization primitive can help solve this problem.</p>
+<p>As in all previous parts of this <a href="https://github.com/0xAX/linux-insides/blob/master/SUMMARY.md">book</a>, we will try to consider this synchronization primitive from the theoretical side and only than we will consider <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> provided by the Linux kernel to manipulate the <code>seqlocks</code>.</p>
+<p>So, let's start.</p>
+<h2 id="sequential-lock"><a class="header" href="#sequential-lock">Sequential lock</a></h2>
+<p>So, what is a <code>seqlock</code> synchronization primitive and how does it work? Let's try to answer these questions in this paragraph. Actually <code>sequential locks</code> were introduced in the Linux kernel 2.6.x. Main point of this synchronization primitive is to provide fast and lock-free access to shared resources. Since the heart of <code>sequential lock</code> synchronization primitive is <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">spinlock</a> synchronization primitive, <code>sequential locks</code> work in situations where the protected resources are small and simple. Additionally write access must be rare and also should be fast.</p>
+<p>Work of this synchronization primitive is based on the sequence of events counter. Actually a <code>sequential lock</code> allows free access to a resource for readers, but each reader must check existence of conflicts with a writer. This synchronization primitive introduces a special counter. The main algorithm of work of <code>sequential locks</code> is simple: Each writer which acquired a sequential lock increments this counter and additionally acquires a <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">spinlock</a>. When this writer finishes, it will release the acquired spinlock to give access to other writers and increment the counter of a sequential lock again.</p>
+<p>Read only access works on the following principle, it gets the value of a <code>sequential lock</code> counter before it will enter into <a href="https://en.wikipedia.org/wiki/Critical_section">critical section</a> and compares it with the value of the same <code>sequential lock</code> counter at the exit of critical section. If their values are equal, this means that there weren't writers for this period. If their values are not equal, this means that a writer has incremented the counter during the <a href="https://en.wikipedia.org/wiki/Critical_section">critical section</a>. This conflict means that reading of protected data must be repeated.</p>
+<p>That's all. As we may see principle of work of <code>sequential locks</code> is simple.</p>
+<pre><code class="language-C">unsigned int seq_counter_value;
+
+do {
+    seq_counter_value = get_seq_counter_val(&amp;the_lock);
+    //
+    // do as we want here
+    //
+} while (__retry__);
+</code></pre>
+<p>Actually the Linux kernel does not provide <code>get_seq_counter_val()</code> function. Here it is just a stub. Like a <code>__retry__</code> too. As I already wrote above, we will see actual the <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> for this in the next paragraph of this part.</p>
+<p>Ok, now we know what a <code>seqlock</code> synchronization primitive is and how it is represented in the Linux kernel. In this case, we may go ahead and start to look at the <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> which the Linux kernel provides for manipulation of synchronization primitives of this type.</p>
+<h2 id="sequential-lock-api"><a class="header" href="#sequential-lock-api">Sequential lock API</a></h2>
+<p>So, now we know a little about <code>sequential lock</code> synchronization primitive from theoretical side, let's look at its implementation in the Linux kernel. All <code>sequential locks</code> <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> are located in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/seqlock.h">include/linux/seqlock.h</a> header file.</p>
+<p>First of all we may see that the a <code>sequential lock</code> mechanism is represented by the following type:</p>
+<pre><code class="language-C">typedef struct {
+	struct seqcount seqcount;
+	spinlock_t lock;
+} seqlock_t;
+</code></pre>
+<p>As we may see the <code>seqlock_t</code> provides two fields. These fields represent a sequential lock counter, description of which we saw above and also a <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">spinlock</a> which will protect data from other writers. Note that the <code>seqcount</code> counter represented as <code>seqcount</code> type. The <code>seqcount</code> is structure:</p>
+<pre><code class="language-C">typedef struct seqcount {
+	unsigned sequence;
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+	struct lockdep_map dep_map;
+#endif
+} seqcount_t;
+</code></pre>
+<p>which holds counter of a sequential lock and <a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a> related field.</p>
+<p>As always in previous parts of this <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim">chapter</a>, before we will consider an <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> of <code>sequential lock</code> mechanism in the Linux kernel, we need to know how to initialize an instance of <code>seqlock_t</code>.</p>
+<p>We saw in the previous parts that often the Linux kernel provides two approaches to execute initialization of the given synchronization primitive. The same situation with the <code>seqlock_t</code> structure. These approaches allows to initialize a <code>seqlock_t</code> in two following:</p>
+<ul>
+<li><code>statically</code>;</li>
+<li><code>dynamically</code>.</li>
+</ul>
+<p>ways. Let's look at the first approach. We are able to initialize a <code>seqlock_t</code> statically with the <code>DEFINE_SEQLOCK</code> macro:</p>
+<pre><code class="language-C">#define DEFINE_SEQLOCK(x) \
+		seqlock_t x = __SEQLOCK_UNLOCKED(x)
+</code></pre>
+<p>which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/seqlock.h">include/linux/seqlock.h</a> header file. As we may see, the <code>DEFINE_SEQLOCK</code> macro takes one argument and expands to the definition and initialization of the <code>seqlock_t</code> structure. Initialization occurs with the help of the <code>__SEQLOCK_UNLOCKED</code> macro which is defined in the same source code file. Let's look at the implementation of this macro:</p>
+<pre><code class="language-C">#define __SEQLOCK_UNLOCKED(lockname)			\
+	{						\
+		.seqcount = SEQCNT_ZERO(lockname),	\
+		.lock =	__SPIN_LOCK_UNLOCKED(lockname)	\
+	}
+</code></pre>
+<p>As we may see the, <code>__SEQLOCK_UNLOCKED</code> macro executes initialization of fields of the given <code>seqlock_t</code> structure. The first field is <code>seqcount</code> initialized with the <code>SEQCNT_ZERO</code> macro which expands to the:</p>
+<pre><code class="language-C">#define SEQCNT_ZERO(lockname) { .sequence = 0, SEQCOUNT_DEP_MAP_INIT(lockname)}
+</code></pre>
+<p>So we just initialize counter of the given sequential lock to zero and additionally we can see <a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a> related initialization which depends on the state of the <code>CONFIG_DEBUG_LOCK_ALLOC</code> kernel configuration option:</p>
+<pre><code class="language-C">#ifdef CONFIG_DEBUG_LOCK_ALLOC
+# define SEQCOUNT_DEP_MAP_INIT(lockname) \
+    .dep_map = { .name = #lockname } \
+    ...
+    ...
+    ...
+#else
+# define SEQCOUNT_DEP_MAP_INIT(lockname)
+    ...
+    ...
+    ...
+#endif
+</code></pre>
+<p>As I already wrote in previous parts of this <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim">chapter</a> we will not consider <a href="https://en.wikipedia.org/wiki/Debugging">debugging</a> and <a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a> related stuff in this part. So for now we just skip the <code>SEQCOUNT_DEP_MAP_INIT</code> macro. The second field of the given <code>seqlock_t</code> is <code>lock</code> initialized with the <code>__SPIN_LOCK_UNLOCKED</code> macro which is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/spinlock_types.h">include/linux/spinlock_types.h</a> header file. We will not consider implementation of this macro here as it just initializes <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">rawspinlock</a> with architecture-specific methods (More about spinlocks you may read in first parts of this <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim">chapter</a>).</p>
+<p>We have considered the first way to initialize a sequential lock. Let's consider second way to do the same, but do it dynamically. We can initialize a sequential lock with the <code>seqlock_init</code> macro which is defined in the same  <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/seqlock.h">include/linux/seqlock.h</a> header file.</p>
+<p>Let's look at the implementation of this macro:</p>
+<pre><code class="language-C">#define seqlock_init(x)					\
+	do {						\
+		seqcount_init(&amp;(x)-&gt;seqcount);		\
+		spin_lock_init(&amp;(x)-&gt;lock);		\
+	} while (0)
+</code></pre>
+<p>As we may see, the <code>seqlock_init</code> expands into two macros. The first macro <code>seqcount_init</code> takes counter of the given sequential lock and expands to the call of the <code>__seqcount_init</code> function:</p>
+<pre><code class="language-C"># define seqcount_init(s)				\
+	do {						\
+		static struct lock_class_key __key;	\
+		__seqcount_init((s), #s, &amp;__key);	\
+	} while (0)
+</code></pre>
+<p>from the same header file. This function</p>
+<pre><code class="language-C">static inline void __seqcount_init(seqcount_t *s, const char *name,
+					  struct lock_class_key *key)
+{
+    lockdep_init_map(&amp;s-&gt;dep_map, name, key, 0);
+    s-&gt;sequence = 0;
+}
+</code></pre>
+<p>just initializes counter of the given <code>seqcount_t</code> with zero. The second call from the <code>seqlock_init</code> macro is the call of the <code>spin_lock_init</code> macro which we saw in the <a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">first part</a> of this chapter.</p>
+<p>So, now we know how to initialize a <code>sequential lock</code>, now let's look at how to use it. The Linux kernel provides following <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> to manipulate <code>sequential locks</code>:</p>
+<pre><code class="language-C">static inline unsigned read_seqbegin(const seqlock_t *sl);
+static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start);
+static inline void write_seqlock(seqlock_t *sl);
+static inline void write_sequnlock(seqlock_t *sl);
+static inline void write_seqlock_irq(seqlock_t *sl);
+static inline void write_sequnlock_irq(seqlock_t *sl);
+static inline void read_seqlock_excl(seqlock_t *sl)
+static inline void read_sequnlock_excl(seqlock_t *sl)
+</code></pre>
+<p>and others. Before we move on to considering the implementation of this <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a>, we must know that there actually are two types of readers. The first type of reader never blocks a writer process. In this case writer will not wait for readers. The second type of reader which can lock. In this case, the locking reader will block the writer as it will wait while reader will not release its lock.</p>
+<p>First of all let's consider the first type of readers. The <code>read_seqbegin</code> function begins a seq-read <a href="https://en.wikipedia.org/wiki/Critical_section">critical section</a>.</p>
+<p>As we may see this function just returns value of the <code>read_seqcount_begin</code> function:</p>
+<pre><code class="language-C">static inline unsigned read_seqbegin(const seqlock_t *sl)
+{
+	return read_seqcount_begin(&amp;sl-&gt;seqcount);
+}
+</code></pre>
+<p>In its turn the <code>read_seqcount_begin</code> function calls the <code>raw_read_seqcount_begin</code> function:</p>
+<pre><code class="language-C">static inline unsigned read_seqcount_begin(const seqcount_t *s)
+{
+	return raw_read_seqcount_begin(s);
+}
+</code></pre>
+<p>which just returns value of the <code>sequential lock</code> counter:</p>
+<pre><code class="language-C">static inline unsigned raw_read_seqcount(const seqcount_t *s)
+{
+	unsigned ret = READ_ONCE(s-&gt;sequence);
+	smp_rmb();
+	return ret;
+}
+</code></pre>
+<p>After we have the initial value of the given <code>sequential lock</code> counter and did some stuff, we know from the previous paragraph of this function, that we need to compare it with the current value of the counter the same <code>sequential lock</code> before we will exit from the critical section. We can achieve this by the call of the <code>read_seqretry</code> function. This function takes a <code>sequential lock</code>, start value of the counter and through a chain of functions:</p>
+<pre><code class="language-C">static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
+{
+	return read_seqcount_retry(&amp;sl-&gt;seqcount, start);
+}
+
+static inline int read_seqcount_retry(const seqcount_t *s, unsigned start)
+{
+	smp_rmb();
+	return __read_seqcount_retry(s, start);
+}
+</code></pre>
+<p>it calls the <code>__read_seqcount_retry</code> function:</p>
+<pre><code class="language-C">static inline int __read_seqcount_retry(const seqcount_t *s, unsigned start)
+{
+	return unlikely(s-&gt;sequence != start);
+}
+</code></pre>
+<p>which just compares value of the counter of the given <code>sequential lock</code> with the initial value of this counter. If the initial value of the counter which is obtained from <code>read_seqbegin()</code> function is odd, this means that a writer was in the middle of updating the data when our reader began to act. In this case the value of the data can be in inconsistent state, so we need to try to read it again.</p>
+<p>This is a common pattern in the Linux kernel. For example, you may remember the <code>jiffies</code> concept from the <a href="https://0xax.gitbook.io/linux-insides/summary/timers/linux-timers-1">first part</a> of the <a href="https://0xax.gitbook.io/linux-insides/summary/timers/">timers and time management in the Linux kernel</a> chapter. The sequential lock is used to obtain value of <code>jiffies</code> at <a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a> architecture:</p>
+<pre><code class="language-C">u64 get_jiffies_64(void)
+{
+	unsigned long seq;
+	u64 ret;
+
+	do {
+		seq = read_seqbegin(&amp;jiffies_lock);
+		ret = jiffies_64;
+	} while (read_seqretry(&amp;jiffies_lock, seq));
+	return ret;
+}
+</code></pre>
+<p>Here we just read the value of the counter of the <code>jiffies_lock</code> sequential lock and then we write value of the <code>jiffies_64</code> system variable to the <code>ret</code>. As here we may see <code>do/while</code> loop, the body of the loop will be executed at least one time. So, as the body of loop was executed, we read and compare the current value of the counter of the <code>jiffies_lock</code> with the initial value. If these values are not equal, execution of the loop will be repeated, else <code>get_jiffies_64</code> will return its value in <code>ret</code>.</p>
+<p>We just saw the first type of readers which do not block writer and other readers. Let's consider second type. It does not update value of a <code>sequential lock</code> counter, but just locks <code>spinlock</code>:</p>
+<pre><code class="language-C">static inline void read_seqlock_excl(seqlock_t *sl)
+{
+	spin_lock(&amp;sl-&gt;lock);
+}
+</code></pre>
+<p>So, no one reader or writer can't access protected data. When a reader finishes, the lock must be unlocked with the:</p>
+<pre><code class="language-C">static inline void read_sequnlock_excl(seqlock_t *sl)
+{
+	spin_unlock(&amp;sl-&gt;lock);
+}
+</code></pre>
+<p>function.</p>
+<p>Now we know how <code>sequential lock</code> work for readers. Let's consider how does writer act when it wants to acquire a <code>sequential lock</code> to modify data. To acquire a <code>sequential lock</code>, writer should use <code>write_seqlock</code> function. If we look at the implementation of this function:</p>
+<pre><code class="language-C">static inline void write_seqlock(seqlock_t *sl)
+{
+	spin_lock(&amp;sl-&gt;lock);
+	write_seqcount_begin(&amp;sl-&gt;seqcount);
+}
+</code></pre>
+<p>We will see that it acquires <code>spinlock</code> to prevent access from other writers and calls the <code>write_seqcount_begin</code> function. This function just increments value of the <code>sequential lock</code> counter:</p>
+<pre><code class="language-C">static inline void raw_write_seqcount_begin(seqcount_t *s)
+{
+	s-&gt;sequence++;
+	smp_wmb();
+}
+</code></pre>
+<p>When a writer process will finish to modify data, the <code>write_sequnlock</code> function must be called to release a lock and give access to other writers or readers. Let's consider the implementation of the <code>write_sequnlock</code> function. It looks pretty simple:</p>
+<pre><code class="language-C">static inline void write_sequnlock(seqlock_t *sl)
+{
+	write_seqcount_end(&amp;sl-&gt;seqcount);
+	spin_unlock(&amp;sl-&gt;lock);
+}
+</code></pre>
+<p>First of all it just calls <code>write_seqcount_end</code> function to increase value of the counter of the <code>sequential</code> lock again:</p>
+<pre><code class="language-C">static inline void raw_write_seqcount_end(seqcount_t *s)
+{
+	smp_wmb();
+	s-&gt;sequence++;
+}
+</code></pre>
+<p>and in the end we just call the <code>spin_unlock</code> macro to give access for other readers or writers.</p>
+<p>That's all about <code>sequential lock</code> mechanism in the Linux kernel. Of course we did not consider full <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> of this mechanism in this part. But all other functions are based on these which we described here. For example, Linux kernel also provides some safe macros/functions to use <code>sequential lock</code> mechanism in <a href="https://en.wikipedia.org/wiki/Interrupt_handler">interrupt handlers</a> of <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-9">softirq</a>: <code>write_seqclock_irq</code> and <code>write_sequnlock_irq</code>:</p>
+<pre><code class="language-C">static inline void write_seqlock_irq(seqlock_t *sl)
+{
+	spin_lock_irq(&amp;sl-&gt;lock);
+	write_seqcount_begin(&amp;sl-&gt;seqcount);
+}
+
+static inline void write_sequnlock_irq(seqlock_t *sl)
+{
+	write_seqcount_end(&amp;sl-&gt;seqcount);
+	spin_unlock_irq(&amp;sl-&gt;lock);
+}
+</code></pre>
+<p>As we may see, these functions differ only in the initialization of spinlock. They call <code>spin_lock_irq</code> and <code>spin_unlock_irq</code> instead of <code>spin_lock</code> and <code>spin_unlock</code>.</p>
+<p>Or for example <code>write_seqlock_irqsave</code> and <code>write_sequnlock_irqrestore</code> functions which are the same but used <code>spin_lock_irqsave</code> and <code>spin_unlock_irqsave</code> macro to use in <a href="https://en.wikipedia.org/wiki/Interrupt_request_(PC_architecture)">IRQ</a> handlers.</p>
+<p>That's all.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>This is the end of the sixth part of the <a href="https://en.wikipedia.org/wiki/Synchronization_%28computer_science%29">synchronization primitives</a> chapter in the Linux kernel. In this part we met with new synchronization primitive which is called - <code>sequential lock</code>. From the theoretical side, this synchronization primitive very similar on a <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">readers-writer lock</a> synchronization primitive, but allows to avoid <code>writer-starving</code> issue.</p>
+<p>If you have questions or suggestions, feel free to ping me in twitter <a href="https://twitter.com/0xAX">0xAX</a>, drop me <a href="mailto:anotherworldofworld@gmail.com">email</a> or just create <a href="https://github.com/0xAX/linux-insides/issues/new">issue</a>.</p>
+<p><strong>Please note that English is not my first language and I am really sorry for any inconvenience. If you found any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)">synchronization primitives</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock">readers-writer lock</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-1">spinlock</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Critical_section">critical section</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/locking/lockdep-design.txt">lock validator</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Debugging">debugging</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86-64">x86_64</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/timers/">Timers and time management in the Linux kernel</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_handler">interrupt handlers</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-9">softirq</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Interrupt_request_(PC_architecture)">IRQ</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/syncprim/linux-sync-5">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../SyncPrim/linux-sync-5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../MM/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../SyncPrim/linux-sync-5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../MM/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

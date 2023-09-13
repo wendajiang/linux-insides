@@ -1,0 +1,561 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Start to dive into interrupts - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html" class="active">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="interrupts-and-interrupt-handling-part-2"><a class="header" href="#interrupts-and-interrupt-handling-part-2">Interrupts and Interrupt Handling. Part 2.</a></h1>
+<h2 id="start-to-dive-into-interrupt-and-exceptions-handling-in-the-linux-kernel"><a class="header" href="#start-to-dive-into-interrupt-and-exceptions-handling-in-the-linux-kernel">Start to dive into interrupt and exceptions handling in the Linux kernel</a></h2>
+<p>We saw some theory about interrupts and exception handling in the <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-1">introduction</a> and as I mentioned in that part, we will now start to dive into interrupts and exceptions within the Linux kernel source code. We'll commence by initializing the basic components as we did in the other chapters. But, we will not see the Linux kernel source code from the very early <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/header.S#L292">code lines</a>, as this was presented in the example within the <a href="https://0xax.gitbook.io/linux-insides/summary/booting">Linux kernel booting process</a> chapter. In the beginning we will deal with the first sections of the Linux kernel source code, which are related to interrupts and exceptions.</p>
+<p>If you've read the previous parts, you can remember that the earliest place in the Linux kernel <code>x86_64</code> architecture-specific source code, which is related to the interrupt is located in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/pm.c">arch/x86/boot/pm.c</a> source code file and represents the first setup of the <a href="http://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt Descriptor Table</a>. It occurs right before the transition into the <a href="http://en.wikipedia.org/wiki/Protected_mode">protected mode</a> in the <code>go_to_protected_mode</code> function by calling <code>setup_idt</code>:</p>
+<pre><code class="language-C">void go_to_protected_mode(void)
+{
+	...
+	setup_idt();
+	...
+}
+</code></pre>
+<p>The <code>setup_idt</code> function is defined in the same source code file as the <code>go_to_protected_mode</code> function and just loads the address of the <code>NULL</code> interrupt descriptor table:</p>
+<pre><code class="language-C">static void setup_idt(void)
+{
+	static const struct gdt_ptr null_idt = {0, 0};
+	asm volatile(&quot;lidtl %0&quot; : : &quot;m&quot; (null_idt));
+}
+</code></pre>
+<p>where <code>gdt_ptr</code> represents a special 48-bit <code>GDTR</code> register, which must contain the base address of the <code>Global Descriptor Table</code>:</p>
+<pre><code class="language-C">struct gdt_ptr {
+	u16 len;
+	u32 ptr;
+} __attribute__((packed));
+</code></pre>
+<p>Of course in our case the <code>gdt_ptr</code> does not represent the <code>GDTR</code> register, but <code>IDTR</code> since we set the <code>Interrupt Descriptor Table</code>. You will not find an <code>idt_ptr</code> structure, because if it had been in the Linux kernel source code, it would have been the same as a <code>gdt_ptr</code> but with a different name. It would make no sense to create two structures that only differ in their names. Note here that we do not fill the <code>Interrupt Descriptor Table</code> with entries, because it is too early to handle any interrupts or exceptions at this point. That's why we just fill the <code>IDT</code> with <code>NULL</code>.</p>
+<p>After the setup of the <a href="http://en.wikipedia.org/wiki/Interrupt_descriptor_table">Interrupt descriptor table</a>, <a href="http://en.wikipedia.org/wiki/GDT">Global Descriptor Table</a> and other stuff we jump into <a href="http://en.wikipedia.org/wiki/Protected_mode">protected mode</a> in the - <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/pmjump.S">arch/x86/boot/pmjump.S</a> file. You can read more about it in the <a href="https://0xax.gitbook.io/linux-insides/summary/booting/linux-bootstrap-3">part</a>, which describes the transition to protected mode.</p>
+<p>The entry to protected mode is located in the <code>boot_params.hdr.code32_start</code> and passed together with the <code>boot_params</code> to the <code>protected_mode_jump</code> function at the end of <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/pm.c">arch/x86/boot/pm.c</a>:</p>
+<pre><code class="language-C">protected_mode_jump(boot_params.hdr.code32_start,
+			    (u32)&amp;boot_params + (ds() &lt;&lt; 4));
+</code></pre>
+<p>The <code>protected_mode_jump</code> function is defined at <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/pmjump.S">arch/x86/boot/pmjump.S</a> and receives these two parameters within the <code>ax</code> and <code>dx</code> registers, using one of the <a href="http://en.wikipedia.org/wiki/Intel_8086">8086</a> calling  <a href="http://en.wikipedia.org/wiki/X86_calling_conventions#List_of_x86_calling_conventions">conventions</a>:</p>
+<pre><code class="language-assembly">SYM_FUNC_START_NOALIGN(protected_mode_jump)
+	...
+	...
+	...
+	.byte	0x66, 0xea		# ljmpl opcode
+2:	.long	.Lin_pm32		# offset
+	.word	__BOOT_CS		# segment
+SYM_FUNC_END(protected_mode_jump)
+</code></pre>
+<p>where <code>in_pm32</code> contains a jump to the 32-bit entry point:</p>
+<pre><code class="language-assembly">SYM_FUNC_START_LOCAL_NOALIGN(.Lin_pm32)
+	...
+	...
+	jmpl	*%eax			# Jump to the 32-bit entrypoint
+SYM_FUNC_END(.Lin_pm32)
+</code></pre>
+<p>As you can remember the 32-bit entry point is in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a> assembly file, although it contains <code>_64</code> in its name. We can see the two similar files in the <code>arch/x86/boot/compressed</code> directory:</p>
+<ul>
+<li><code>arch/x86/boot/compressed/head_32.S</code>.</li>
+<li><code>arch/x86/boot/compressed/head_64.S</code>;</li>
+</ul>
+<p>But the 32-bit mode entry point is the second file in our case. The first file is not even compiled for <code>x86_64</code>. Let's look at the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/compressed/Makefile">arch/x86/boot/compressed/Makefile</a>:</p>
+<pre><code>vmlinux-objs-y := $(obj)/vmlinux.lds $(obj)/kernel_info.o $(obj)/head_$(BITS).o \
+...
+...
+</code></pre>
+<p>We can see here that <code>head_*</code> depends on the <code>$(BITS)</code> variable, which is based on the architecture. The variable is defined within <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/Makefile">arch/x86/Makefile</a>:</p>
+<pre><code>ifeq ($(CONFIG_X86_32),y)
+...
+	BITS := 32
+else
+	BITS := 64
+	...
+endif
+</code></pre>
+<p>Now as we jumped into <code>startup_32</code> from <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/compressed/head_64.S">arch/x86/boot/compressed/head_64.S</a>, we will not encounter anything related to interrupt handling here. The code inside of <code>startup_32</code> makes necessary preparations, before transitioning into the <a href="http://en.wikipedia.org/wiki/Long_mode">long mode</a> with a direct jump. The <code>long mode</code> entry is located in <code>startup_64</code> and it makes arrangements for the <a href="https://0xax.gitbooks.io/linux-insides/content/Booting/linux-bootstrap-5.html">kernel decompression</a> that occurs in the <code>decompress_kernel</code> function inside of <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/boot/compressed/misc.c">arch/x86/boot/compressed/misc.c</a>. After the kernel is decompressed, we jump into <code>startup_64</code> defined at <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a>. In <code>startup_64</code> we start to build identity-mapped pages, check the <a href="http://en.wikipedia.org/wiki/NX_bit">NX</a> bit, setup the <code>Extended Feature Enable Register</code> (see in links) and update the early <code>Global Descriptor Table</code> with the <code>lgdt</code> instruction. And proceed to setup <code>gs</code> register with the following code:</p>
+<pre><code class="language-assembly">movl	$MSR_GS_BASE,%ecx
+movl	initial_gs(%rip),%eax
+movl	initial_gs+4(%rip),%edx
+wrmsr
+</code></pre>
+<p>We already saw this code in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-1">part</a>. First of all pay attention on the last <code>wrmsr</code> instruction. This instruction writes data from the <code>edx:eax</code> registers to the <a href="http://en.wikipedia.org/wiki/Model-specific_register">model specific register</a> specified by the <code>ecx</code> register. We can see that <code>ecx</code> contains <code>$MSR_GS_BASE</code> which is declared in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/include/asm/msr-index.h">arch/x86/include/asm/msr-index.h</a> and looks like:</p>
+<pre><code class="language-C">#define MSR_GS_BASE             0xc0000101
+</code></pre>
+<p>From this we can understand that <code>MSR_GS_BASE</code> defines the number of the <code>model specific register</code>. Since registers <code>cs</code>, <code>ds</code>, <code>es</code>, and <code>ss</code> are not used in the 64-bit mode, their fields are ignored. But we can access memory over <code>fs</code> and <code>gs</code> registers. The model specific register provides a <code>back door</code> to the hidden parts of these segment registers and allows to use 64-bit base address for segment register addressed by the <code>fs</code> and <code>gs</code>. So the <code>MSR_GS_BASE</code> is the hidden part and this part is mapped on the <code>GS.base</code> field. Let's look on the <code>initial_gs</code>:</p>
+<pre><code class="language-assembly">GLOBAL(initial_gs)
+	.quad	INIT_PER_CPU_VAR(irq_stack_union)
+</code></pre>
+<p>We pass <code>irq_stack_union</code> symbol to the <code>INIT_PER_CPU_VAR</code> macro which just concatenates the <code>init_per_cpu__</code> prefix with the given symbol. In our case we will get the <code>init_per_cpu__irq_stack_union</code> symbol. Let's look at the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/vmlinux.lds.S">linker</a> script. There we can see following definition:</p>
+<pre><code>#define INIT_PER_CPU(x) init_per_cpu__##x = x + __per_cpu_load
+INIT_PER_CPU(irq_stack_union);
+</code></pre>
+<p>It tells us that the address of the <code>init_per_cpu__irq_stack_union</code> will be <code>irq_stack_union + __per_cpu_load</code>. Now we need to understand where <code>init_per_cpu__irq_stack_union</code> and <code>__per_cpu_load</code> are what they mean. The first <code>irq_stack_union</code> is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/processor.h">arch/x86/include/asm/processor.h</a> with the <code>DECLARE_INIT_PER_CPU</code> macro which expands to call the <code>init_per_cpu_var</code> macro:</p>
+<pre><code class="language-C">DECLARE_INIT_PER_CPU(irq_stack_union);
+
+#define DECLARE_INIT_PER_CPU(var) \
+       extern typeof(per_cpu_var(var)) init_per_cpu_var(var)
+
+#define init_per_cpu_var(var)  init_per_cpu__##var
+</code></pre>
+<p>If we expand all macros we will get the same <code>init_per_cpu__irq_stack_union</code> as we got after expanding the <code>INIT_PER_CPU</code> macro, but you can note that it is not just a symbol, but a variable. Let's look at the <code>typeof(per_cpu_var(var))</code> expression. Our <code>var</code> is <code>irq_stack_union</code> and the <code>per_cpu_var</code> macro is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/percpu.h">arch/x86/include/asm/percpu.h</a>:</p>
+<pre><code class="language-C">#define PER_CPU_VAR(var)        %__percpu_seg:var
+</code></pre>
+<p>where:</p>
+<pre><code class="language-C">#ifdef CONFIG_X86_64
+    #define __percpu_seg gs
+endif
+</code></pre>
+<p>So, we are accessing <code>gs:irq_stack_union</code> and getting its type which is <code>irq_union</code>. Ok, we defined the first variable and know its address, now let's look at the second <code>__per_cpu_load</code> symbol. There are a couple of <code>per-cpu</code> variables which are located after this symbol. The <code>__per_cpu_load</code> is defined in the <a href="https://github.com/torvalds/linux/blob/master/include/asm-generic/sections.h">include/asm-generic/sections.h</a>:</p>
+<pre><code class="language-C">extern char __per_cpu_load[], __per_cpu_start[], __per_cpu_end[];
+</code></pre>
+<p>and presented base address of the <code>per-cpu</code> variables from the data area. So, we know the address of the <code>irq_stack_union</code>, <code>__per_cpu_load</code> and we know that <code>init_per_cpu__irq_stack_union</code> must be placed right after <code>__per_cpu_load</code>. And we can see it in the <a href="http://en.wikipedia.org/wiki/System.map">System.map</a>:</p>
+<pre><code>...
+...
+...
+ffffffff819ed000 D __init_begin
+ffffffff819ed000 D __per_cpu_load
+ffffffff819ed000 A init_per_cpu__irq_stack_union
+...
+...
+...
+</code></pre>
+<p>Now we know about <code>initial_gs</code>, so let's look at the code:</p>
+<pre><code class="language-assembly">movl	$MSR_GS_BASE,%ecx
+movl	initial_gs(%rip),%eax
+movl	initial_gs+4(%rip),%edx
+wrmsr
+</code></pre>
+<p>Here we specified a model specific register with <code>MSR_GS_BASE</code>, put the content of the <code>initial_gs</code> to the <code>edx:eax</code> pair and execute the <code>wrmsr</code> instruction for filling the <code>gs</code> register with the base address of the <code>init_per_cpu__irq_stack_union</code> which will be at the bottom of the interrupt stack. After this we will jump to the C code on the <code>x86_64_start_kernel</code> from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head64.c">arch/x86/kernel/head64.c</a>. In the <code>x86_64_start_kernel</code> function we do the last preparations before we jump into the generic and architecture-independent kernel code and one of these preparations is filling the early <code>Interrupt Descriptor Table</code> with the interrupts handlers entries or <code>early_idt_handlers</code>. You can remember it, if you have read the part about the <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-2">Early interrupt and exception handling</a> and can remember following code:</p>
+<pre><code class="language-C">for (i = 0; i &lt; NUM_EXCEPTION_VECTORS; i++)
+	set_intr_gate(i, early_idt_handlers[i]);
+
+load_idt((const struct desc_ptr *)&amp;idt_descr);
+</code></pre>
+<p>but I wrote <code>Early interrupt and exception handling</code> part when Linux kernel version was - <code>3.18</code>. For this day actual version of the Linux kernel is <code>4.1.0-rc6+</code> and <code> Andy Lutomirski</code> sent the <a href="https://lkml.org/lkml/2015/6/2/106">patch</a> and soon it will be in the mainline kernel that changes behaviour for the <code>early_idt_handlers</code>. <strong>NOTE</strong> While I wrote this part the <a href="https://github.com/torvalds/linux/commit/425be5679fd292a3c36cb1fe423086708a99f11a">patch</a> already turned in the Linux kernel source code. Let's look on it. Now the same part looks like:</p>
+<pre><code class="language-C">for (i = 0; i &lt; NUM_EXCEPTION_VECTORS; i++)
+	set_intr_gate(i, early_idt_handler_array[i]);
+
+load_idt((const struct desc_ptr *)&amp;idt_descr);
+</code></pre>
+<p>As you can see it has only one difference in the name of the array of the interrupts handlers entry points. Now it is <code>early_idt_handler_array</code>:</p>
+<pre><code class="language-C">extern const char early_idt_handler_array[NUM_EXCEPTION_VECTORS][EARLY_IDT_HANDLER_SIZE];
+</code></pre>
+<p>where <code>NUM_EXCEPTION_VECTORS</code> and <code>EARLY_IDT_HANDLER_SIZE</code> are defined as:</p>
+<pre><code class="language-C">#define NUM_EXCEPTION_VECTORS 32
+#define EARLY_IDT_HANDLER_SIZE 9
+</code></pre>
+<p>So, the <code>early_idt_handler_array</code> is an array of the interrupts handlers entry points and contains one entry point on every nine bytes. You can remember that previous <code>early_idt_handlers</code> was defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a>. The <code>early_idt_handler_array</code> is defined in the same source code file too:</p>
+<pre><code class="language-assembly">ENTRY(early_idt_handler_array)
+...
+...
+...
+ENDPROC(early_idt_handler_array)
+</code></pre>
+<p>It fills <code>early_idt_handler_array</code> with the <code>.rept NUM_EXCEPTION_VECTORS</code> and contains entry of the <code>early_make_pgtable</code> interrupt handler (you can read more about its implementation in the part about <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-2">Early interrupt and exception handling</a>). For now, we have reached the end of the x86_64 architecture-specific code and the next part is the generic kernel code. You probably already know, that we will return to the architecture-specific code in the <code>setup_arch</code> function and other places, but this is the end of the <code>x86_64</code> early code.</p>
+<h2 id="setting-stack-canary-for-the-interrupt-stack"><a class="header" href="#setting-stack-canary-for-the-interrupt-stack">Setting stack canary for the interrupt stack</a></h2>
+<p>The next stop after the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/head_64.S">arch/x86/kernel/head_64.S</a> is the biggest <code>start_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>. If you've read the previous <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">chapter</a> about the Linux kernel initialization process, you must remember it. This function does all initialization stuff before kernel will launch first <code>init</code> process with the <a href="https://en.wikipedia.org/wiki/Process_identifier">pid</a> - <code>1</code>. The first thing that is related to the interrupts and exceptions handling is the call of the <code>boot_init_stack_canary</code> function.</p>
+<p>This function sets the <a href="http://en.wikipedia.org/wiki/Stack_buffer_overflow#Stack_canaries">canary</a> value to protect interrupt stack overflow. We already saw a little some details about implementation of the <code>boot_init_stack_canary</code> in the previous part and now let's take a closer look on it. You can find implementation of this function in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/stackprotector.h">arch/x86/include/asm/stackprotector.h</a> and its depends on the <code>CONFIG_CC_STACKPROTECTOR</code> kernel configuration option. If this option is not set this function will not do anything:</p>
+<pre><code class="language-C">#ifdef CONFIG_CC_STACKPROTECTOR
+...
+...
+...
+#else
+static inline void boot_init_stack_canary(void)
+{
+}
+#endif
+</code></pre>
+<p>If the <code>CONFIG_CC_STACKPROTECTOR</code> kernel configuration option is set, the <code>boot_init_stack_canary</code> function starts from the check stat <code>irq_stack_union</code> that represents <a href="https://0xax.gitbook.io/linux-insides/summary/concepts/linux-cpu-1">per-cpu</a> interrupt stack has offset equal to forty bytes from the <code>stack_canary</code> value:</p>
+<pre><code class="language-C">#ifdef CONFIG_X86_64
+        BUILD_BUG_ON(offsetof(union irq_stack_union, stack_canary) != 40);
+#endif
+</code></pre>
+<p>As we can read in the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-1">part</a> the <code>irq_stack_union</code> represented by the following union:</p>
+<pre><code class="language-C">union irq_stack_union {
+	char irq_stack[IRQ_STACK_SIZE];
+
+    struct {
+		char gs_base[40];
+		unsigned long stack_canary;
+	};
+};
+</code></pre>
+<p>which defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/processor.h">arch/x86/include/asm/processor.h</a>. We know that <a href="http://en.wikipedia.org/wiki/Union_type">union</a> in the <a href="http://en.wikipedia.org/wiki/C_%28programming_language%29">C</a> programming language is a data structure which stores only one field in a memory. We can see here that structure has first field - <code>gs_base</code> which is 40 bytes size and represents bottom of the <code>irq_stack</code>. So, after this our check with the <code>BUILD_BUG_ON</code> macro should end successfully. (you can read the first part about Linux kernel initialization <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-1">process</a> if you're interesting about the <code>BUILD_BUG_ON</code> macro).</p>
+<p>After this we calculate new <code>canary</code> value based on the random number and <a href="http://en.wikipedia.org/wiki/Time_Stamp_Counter">Time Stamp Counter</a>:</p>
+<pre><code class="language-C">get_random_bytes(&amp;canary, sizeof(canary));
+tsc = __native_read_tsc();
+canary += tsc + (tsc &lt;&lt; 32UL);
+</code></pre>
+<p>and write <code>canary</code> value to the <code>irq_stack_union</code> with the <code>this_cpu_write</code> macro:</p>
+<pre><code class="language-C">this_cpu_write(irq_stack_union.stack_canary, canary);
+</code></pre>
+<p>more about <code>this_cpu_*</code> operation you can read in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/this_cpu_ops.txt">Linux kernel documentation</a>.</p>
+<h2 id="disablingenabling-local-interrupts"><a class="header" href="#disablingenabling-local-interrupts">Disabling/Enabling local interrupts</a></h2>
+<p>The next step in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> which is related to the interrupts and interrupts handling after we have set the <code>canary</code> value to the interrupt stack - is the call of the <code>local_irq_disable</code> macro.</p>
+<p>This macro defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/irqflags.h">include/linux/irqflags.h</a> header file and as you can understand, we can disable interrupts for the CPU with the call of this macro. Let's look on its implementation. First of all note that it depends on the <code>CONFIG_TRACE_IRQFLAGS_SUPPORT</code> kernel configuration option:</p>
+<pre><code class="language-C">#ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
+...
+#define local_irq_disable() \
+         do { raw_local_irq_disable(); trace_hardirqs_off(); } while (0)
+...
+#else
+...
+#define local_irq_disable()     do { raw_local_irq_disable(); } while (0)
+...
+#endif
+</code></pre>
+<p>They are both similar and as you can see have only one difference: the <code>local_irq_disable</code> macro contains call of the <code>trace_hardirqs_off</code> when <code>CONFIG_TRACE_IRQFLAGS_SUPPORT</code> is enabled. There is special feature in the <a href="http://lwn.net/Articles/321663/">lockdep</a> subsystem - <code>irq-flags tracing</code> for tracing <code>hardirq</code> and <code>softirq</code> state. In our case <code>lockdep</code> subsystem can give us interesting information about hard/soft irqs on/off events which are occurs in the system. The <code>trace_hardirqs_off</code> function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/locking/lockdep.c">kernel/locking/lockdep.c</a>:</p>
+<pre><code class="language-C">void trace_hardirqs_off(void)
+{
+         trace_hardirqs_off_caller(CALLER_ADDR0);
+}
+EXPORT_SYMBOL(trace_hardirqs_off);
+</code></pre>
+<p>and just calls <code>trace_hardirqs_off_caller</code> function. The <code>trace_hardirqs_off_caller</code> checks the <code>hardirqs_enabled</code> field of the current process and increases the <code>redundant_hardirqs_off</code> if call of the <code>local_irq_disable</code> was redundant or the <code>hardirqs_off_events</code> if it was not. These two fields and other <code>lockdep</code> statistic related fields are defined in the <a href="https://github.com/torvalds/linux/blob/master/kernel/locking/lockdep_internals.h">kernel/locking/lockdep_internals.h</a> and located in the <code>lockdep_stats</code> structure:</p>
+<pre><code class="language-C">struct lockdep_stats {
+...
+...
+...
+int     softirqs_off_events;
+int     redundant_softirqs_off;
+...
+...
+...
+}
+</code></pre>
+<p>If you will set <code>CONFIG_DEBUG_LOCKDEP</code> kernel configuration option, the <code>lockdep_stats_debug_show</code> function will write all tracing information to the <code>/proc/lockdep</code>:</p>
+<pre><code class="language-C">static void lockdep_stats_debug_show(struct seq_file *m)
+{
+#ifdef CONFIG_DEBUG_LOCKDEP
+	unsigned long long hi1 = debug_atomic_read(hardirqs_on_events),
+	                         hi2 = debug_atomic_read(hardirqs_off_events),
+							 hr1 = debug_atomic_read(redundant_hardirqs_on),
+    ...
+	...
+	...
+    seq_printf(m, &quot; hardirq on events:             %11llu\n&quot;, hi1);
+    seq_printf(m, &quot; hardirq off events:            %11llu\n&quot;, hi2);
+    seq_printf(m, &quot; redundant hardirq ons:         %11llu\n&quot;, hr1);
+#endif
+}
+</code></pre>
+<p>and you can see its result with the:</p>
+<pre><code>$ sudo cat /proc/lockdep
+ hardirq on events:             12838248974
+ hardirq off events:            12838248979
+ redundant hardirq ons:               67792
+ redundant hardirq offs:         3836339146
+ softirq on events:                38002159
+ softirq off events:               38002187
+ redundant softirq ons:                   0
+ redundant softirq offs:                  0
+</code></pre>
+<p>Ok, now we know a little about tracing, but more info will be in the separate part about <code>lockdep</code> and <code>tracing</code>. You can see that the both <code>local_irq_disable</code> macros have the same part - <code>raw_local_irq_disable</code>. This macro defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/irqflags.h">arch/x86/include/asm/irqflags.h</a> and expands to the call of the:</p>
+<pre><code class="language-C">static inline void native_irq_disable(void)
+{
+        asm volatile(&quot;cli&quot;: : :&quot;memory&quot;);
+}
+</code></pre>
+<p>And you already must remember that <code>cli</code> instruction clears the <a href="http://en.wikipedia.org/wiki/Interrupt_flag">IF</a> flag which determines ability of a processor to handle an interrupt or an exception. Besides the <code>local_irq_disable</code>, as you already can know there is an inverse macro - <code>local_irq_enable</code>. This macro has the same tracing mechanism and very similar on the <code>local_irq_enable</code>, but as you can understand from its name, it enables interrupts with the <code>sti</code> instruction:</p>
+<pre><code class="language-C">static inline void native_irq_enable(void)
+{
+        asm volatile(&quot;sti&quot;: : :&quot;memory&quot;);
+}
+</code></pre>
+<p>Now we know how <code>local_irq_disable</code> and <code>local_irq_enable</code> work. It was the first call of the <code>local_irq_disable</code> macro, but we will meet these macros many times in the Linux kernel source code. But for now we are in the <code>start_kernel</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a> and we just disabled <code>local</code> interrupts. Why local and why we did it? Previously kernel provided a method to disable interrupts on all processors and it was called <code>cli</code>. This function was <a href="https://lwn.net/Articles/291956/">removed</a> and now we have <code>local_irq_{enabled,disable}</code> to disable or enable interrupts on the current processor. After we've disabled the interrupts with the <code>local_irq_disable</code> macro, we set the:</p>
+<pre><code class="language-C">early_boot_irqs_disabled = true;
+</code></pre>
+<p>The <code>early_boot_irqs_disabled</code> variable defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/kernel.h">include/linux/kernel.h</a>:</p>
+<pre><code class="language-C">extern bool early_boot_irqs_disabled;
+</code></pre>
+<p>and used in the different places. For example it used in the <code>smp_call_function_many</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/smp.c">kernel/smp.c</a> for the checking possible deadlock when interrupts are disabled:</p>
+<pre><code class="language-C">WARN_ON_ONCE(cpu_online(this_cpu) &amp;&amp; irqs_disabled()
+                     &amp;&amp; !oops_in_progress &amp;&amp; !early_boot_irqs_disabled);
+</code></pre>
+<h2 id="early-trap-initialization-during-kernel-initialization"><a class="header" href="#early-trap-initialization-during-kernel-initialization">Early trap initialization during kernel initialization</a></h2>
+<p>The next functions after the <code>local_disable_irq</code> are <code>boot_cpu_init</code> and <code>page_address_init</code>, but they are not related to the interrupts and exceptions (more about this functions you can read in the chapter about Linux kernel <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">initialization process</a>). The next is the <code>setup_arch</code> function. As you can remember this function located in the <a href="https://github.com/torvalds/linux/blob/master/arch/x86/kernel/setup.c">arch/x86/kernel/setup.c</a> source code file and makes initialization of many different architecture-dependent <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-4">stuff</a>. The first interrupts related function which we can see in the <code>setup_arch</code> is the - <code>early_trap_init</code> function. This function defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/traps.c">arch/x86/kernel/traps.c</a> and fills <code>Interrupt Descriptor Table</code> with the couple of entries:</p>
+<pre><code class="language-C">void __init early_trap_init(void)
+{
+        set_intr_gate_ist(X86_TRAP_DB, &amp;debug, DEBUG_STACK);
+        set_system_intr_gate_ist(X86_TRAP_BP, &amp;int3, DEBUG_STACK);
+#ifdef CONFIG_X86_32
+        set_intr_gate(X86_TRAP_PF, page_fault);
+#endif
+        load_idt(&amp;idt_descr);
+}
+</code></pre>
+<p>Here we can see calls of three different functions:</p>
+<ul>
+<li><code>set_intr_gate_ist</code></li>
+<li><code>set_system_intr_gate_ist</code></li>
+<li><code>set_intr_gate</code></li>
+</ul>
+<p>All of these functions defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/include/asm/desc.h">arch/x86/include/asm/desc.h</a> and do the similar thing but not the same. The first <code>set_intr_gate_ist</code> function inserts a new interrupt gate in the <code>IDT</code>. Let's look on its implementation:</p>
+<pre><code class="language-C">static inline void set_intr_gate_ist(int n, void *addr, unsigned ist)
+{
+        BUG_ON((unsigned)n &gt; 0xFF);
+        _set_gate(n, GATE_INTERRUPT, addr, 0, ist, __KERNEL_CS);
+}
+</code></pre>
+<p>First of all we can see the check that <code>n</code> which is <a href="http://en.wikipedia.org/wiki/Interrupt_vector_table">vector number</a> of the interrupt is not greater than <code>0xff</code> or 255. We need to check it because we remember from the previous <a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-1">part</a> that vector number of an interrupt must be between <code>0</code> and <code>255</code>. In the next step we can see the call of the <code>_set_gate</code> function that sets a given interrupt gate to the <code>IDT</code> table:</p>
+<pre><code class="language-C">static inline void _set_gate(int gate, unsigned type, void *addr,
+                             unsigned dpl, unsigned ist, unsigned seg)
+{
+        gate_desc s;
+
+        pack_gate(&amp;s, type, (unsigned long)addr, dpl, ist, seg);
+        write_idt_entry(idt_table, gate, &amp;s);
+        write_trace_idt_entry(gate, &amp;s);
+}
+</code></pre>
+<p>Here we start from the <code>pack_gate</code> function which takes clean <code>IDT</code> entry represented by the <code>gate_desc</code> structure and fills it with the base address and limit, <a href="https://www.kernel.org/doc/Documentation/x86/x86_64/kernel-stacks">Interrupt Stack Table</a>, <a href="http://en.wikipedia.org/wiki/Privilege_level">Privilege level</a>, type of an interrupt which can be one of the following values:</p>
+<ul>
+<li><code>GATE_INTERRUPT</code></li>
+<li><code>GATE_TRAP</code></li>
+<li><code>GATE_CALL</code></li>
+<li><code>GATE_TASK</code></li>
+</ul>
+<p>and set the present bit for the given <code>IDT</code> entry:</p>
+<pre><code class="language-C">static inline void pack_gate(gate_desc *gate, unsigned type, unsigned long func,
+                             unsigned dpl, unsigned ist, unsigned seg)
+{
+        gate-&gt;offset_low        = PTR_LOW(func);
+        gate-&gt;segment           = __KERNEL_CS;
+        gate-&gt;ist               = ist;
+        gate-&gt;p                 = 1;
+        gate-&gt;dpl               = dpl;
+        gate-&gt;zero0             = 0;
+        gate-&gt;zero1             = 0;
+        gate-&gt;type              = type;
+        gate-&gt;offset_middle     = PTR_MIDDLE(func);
+        gate-&gt;offset_high       = PTR_HIGH(func);
+}
+</code></pre>
+<p>After this we write just filled interrupt gate to the <code>IDT</code> with the <code>write_idt_entry</code> macro which expands to the <code>native_write_idt_entry</code> and just copy the interrupt gate to the <code>idt_table</code> table by the given index:</p>
+<pre><code class="language-C">#define write_idt_entry(dt, entry, g)           native_write_idt_entry(dt, entry, g)
+
+static inline void native_write_idt_entry(gate_desc *idt, int entry, const gate_desc *gate)
+{
+        memcpy(&amp;idt[entry], gate, sizeof(*gate));
+}
+</code></pre>
+<p>where <code>idt_table</code> is just array of <code>gate_desc</code>:</p>
+<pre><code class="language-C">extern gate_desc idt_table[];
+</code></pre>
+<p>That's all. The second <code>set_system_intr_gate_ist</code> function has only one difference from the <code>set_intr_gate_ist</code>:</p>
+<pre><code class="language-C">static inline void set_system_intr_gate_ist(int n, void *addr, unsigned ist)
+{
+        BUG_ON((unsigned)n &gt; 0xFF);
+        _set_gate(n, GATE_INTERRUPT, addr, 0x3, ist, __KERNEL_CS);
+}
+</code></pre>
+<p>Do you see it? Look on the fourth parameter of the <code>_set_gate</code>. It is <code>0x3</code>. In the <code>set_intr_gate</code> it was <code>0x0</code>. We know that this parameter represent <code>DPL</code> or privilege level. We also know that <code>0</code> is the highest privilege level and <code>3</code> is the lowest. Now we know how <code>set_system_intr_gate_ist</code>, <code>set_intr_gate_ist</code>, <code>set_intr_gate</code> work and we can return to the <code>early_trap_init</code> function. Let's look on it again:</p>
+<pre><code class="language-C">set_intr_gate_ist(X86_TRAP_DB, &amp;debug, DEBUG_STACK);
+set_system_intr_gate_ist(X86_TRAP_BP, &amp;int3, DEBUG_STACK);
+</code></pre>
+<p>We set two <code>IDT</code> entries for the <code>#DB</code> interrupt and <code>int3</code>. These functions takes the same set of parameters:</p>
+<ul>
+<li>vector number of an interrupt;</li>
+<li>address of an interrupt handler;</li>
+<li>interrupt stack table index.</li>
+</ul>
+<p>That's all. More about interrupts and handlers you will know in the next parts.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the second part about interrupts and interrupt handling in the Linux kernel. We saw the some theory in the previous part and started to dive into interrupts and exceptions handling in the current part. We have started from the earliest parts in the Linux kernel source code which are related to the interrupts. In the next part we will continue to dive into this interesting theme and will know more about interrupt handling process.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Interrupt_descriptor_table">IDT</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Protected_mode">Protected mode</a></li>
+<li><a href="http://en.wikipedia.org/wiki/X86_calling_conventions#List_of_x86_calling_conventions">List of x86 calling conventions</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Intel_8086">8086</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Long_mode">Long mode</a></li>
+<li><a href="http://en.wikipedia.org/wiki/NX_bit">NX</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Control_register#Additional_Control_registers_in_x86-64_series">Extended Feature Enable Register</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Model-specific_register">Model-specific register</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Process_identifier">Process identifier</a></li>
+<li><a href="http://lwn.net/Articles/321663/">lockdep</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/irqflags-tracing.txt">irqflags tracing</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Interrupt_flag">IF</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Stack_buffer_overflow#Stack_canaries">Stack canary</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Union_type">Union type</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/this_cpu_ops.txt">this_cpu_* operations</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Interrupt_vector_table">vector number</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/x86/x86_64/kernel-stacks">Interrupt Stack Table</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Privilege_level">Privilege level</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/interrupts/linux-interrupts-1">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Interrupts/linux-interrupts-1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Interrupts/linux-interrupts-3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Interrupts/linux-interrupts-1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Interrupts/linux-interrupts-3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>

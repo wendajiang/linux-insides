@@ -1,0 +1,497 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>End of initialization - Linux Insides</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../Booting/index.html">Booting</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-1.html">From bootloader to kernel</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-2.html">First steps in the kernel setup code</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-3.html">Video mode initialization and transition to protected mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-4.html">Transition to 64-bit mode</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-5.html">Kernel decompression</a></li><li class="chapter-item expanded "><a href="../Booting/linux-bootstrap-6.html">Kernel load address randomization</a></li></ol></li><li class="chapter-item expanded "><a href="../Initialization/index.html">Initialization</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-1.html">First steps in the kernel</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-2.html">Early interrupts handler</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-3.html">Last preparations before the kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-4.html">Kernel entry point</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-5.html">Continue architecture-specific boot-time initializations</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-6.html">Architecture-specific initializations, again...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-7.html">End of the architecture-specific initializations, almost...</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-8.html">Scheduler initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-9.html">RCU initialization</a></li><li class="chapter-item expanded "><a href="../Initialization/linux-initialization-10.html" class="active">End of initialization</a></li></ol></li><li class="chapter-item expanded "><a href="../Interrupts/index.html">Interrupts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-2.html">Start to dive into interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-3.html">Interrupt handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-4.html">Initialization of non-early interrupt gates</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-5.html">Implementation of some exception handlers</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-6.html">Handling Non-Maskable interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-7.html">Dive into external hardware interrupts</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-8.html">Initialization of external hardware interrupts structures</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-9.html">Softirq, Tasklets and Workqueues</a></li><li class="chapter-item expanded "><a href="../Interrupts/linux-interrupts-10.html">Last part</a></li></ol></li><li class="chapter-item expanded "><a href="../SysCall/index.html">System calls</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-1.html">Introduction to system calls</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-2.html">How the Linux kernel handles a system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-3.html">vsyscall and vDSO</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-4.html">How the Linux kernel runs a program</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-5.html">Implementation of the open system call</a></li><li class="chapter-item expanded "><a href="../SysCall/linux-syscall-6.html">Limits on resources in Linux</a></li></ol></li><li class="chapter-item expanded "><a href="../Timers/index.html">Timers and time management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Timers/linux-timers-1.html">Introduction</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-2.html">Clocksource framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-3.html">The tick broadcast framework and dyntick</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-4.html">Introduction to timers</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-5.html">Clockevents framework</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-6.html">x86 related clock sources</a></li><li class="chapter-item expanded "><a href="../Timers/linux-timers-7.html">Time related system calls</a></li></ol></li><li class="chapter-item expanded "><a href="../SyncPrim/index.html">Synchronization primitives</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-1.html">Introduction to spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-2.html">Queued spinlocks</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-3.html">Semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-4.html">Mutex</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-5.html">Reader/Writer semaphores</a></li><li class="chapter-item expanded "><a href="../SyncPrim/linux-sync-6.html">SeqLock</a></li><li class="chapter-item expanded "><div>RCU</div></li><li class="chapter-item expanded "><div>Lockdep</div></li></ol></li><li class="chapter-item expanded "><a href="../MM/index.html">Memory management</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../MM/linux-mm-1.html">Memblock</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-2.html">Fixmaps and ioremap</a></li><li class="chapter-item expanded "><a href="../MM/linux-mm-3.html">kmemcheck</a></li></ol></li><li class="chapter-item expanded "><a href="../Cgroups/index.html">Cgroups</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Cgroups/linux-cgroups-1.html">Introduction to Control Groups</a></li></ol></li><li class="chapter-item expanded "><div>SMP</div></li><li class="chapter-item expanded "><a href="../Concepts/index.html">Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-1.html">Per-CPU variables</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-2.html">Cpumasks</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-3.html">The initcall mechanism</a></li><li class="chapter-item expanded "><a href="../Concepts/linux-cpu-4.html">Notification Chains</a></li></ol></li><li class="chapter-item expanded "><a href="../DataStructures/index.html">Data Structures in the Linux Kernel</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-1.html">Doubly linked list</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-2.html">Radix tree</a></li><li class="chapter-item expanded "><a href="../DataStructures/linux-datastructures-3.html">Bit arrays</a></li></ol></li><li class="chapter-item expanded "><a href="../Theory/index.html">Theory</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Theory/linux-theory-1.html">Paging</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-2.html">Elf64</a></li><li class="chapter-item expanded "><a href="../Theory/linux-theory-3.html">Inline assembly</a></li><li class="chapter-item expanded "><div>CPUID</div></li><li class="chapter-item expanded "><div>MSR</div></li></ol></li><li class="chapter-item expanded "><div>Initial ram disk</div></li><li><ol class="section"><li class="chapter-item expanded "><div>initrd</div></li></ol></li><li class="chapter-item expanded "><a href="../Misc/index.html">Misc</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../Misc/linux-misc-1.html">Linux kernel development</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-2.html">How the kernel is compiled</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-3.html">Linkers</a></li><li class="chapter-item expanded "><a href="../Misc/linux-misc-4.html">Program startup process in userspace</a></li><li class="chapter-item expanded "><div>Write and Submit your first Linux kernel Patch</div></li><li class="chapter-item expanded "><div>Data types in the kernel</div></li></ol></li><li class="chapter-item expanded "><a href="../KernelStructures/index.html">KernelStructures</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../KernelStructures/linux-kernelstructure-1.html">IDT</a></li></ol></li><li class="chapter-item expanded "><a href="../LINKS.html">Useful links</a></li><li class="chapter-item expanded "><a href="../contributors.html">Contributors</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Linux Insides</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/0xAX/linux-insides/" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="kernel-initialization-part-10"><a class="header" href="#kernel-initialization-part-10">Kernel initialization. Part 10.</a></h1>
+<h1 id="end-of-the-linux-kernel-initialization-process"><a class="header" href="#end-of-the-linux-kernel-initialization-process">End of the Linux kernel initialization process</a></h1>
+<p>This is tenth part of the chapter about Linux kernel <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">initialization process</a> and in the <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-9">previous part</a> we saw the initialization of the <a href="http://en.wikipedia.org/wiki/Read-copy-update">RCU</a> and stopped on the call of the <code>acpi_early_init</code> function. This part will be the last part of the <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">Kernel initialization process</a> chapter, so let's finish it.</p>
+<p>After the call of the <code>acpi_early_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>, we can see the following code:</p>
+<pre><code class="language-C">#ifdef CONFIG_X86_ESPFIX64
+	init_espfix_bsp();
+#endif
+</code></pre>
+<p>Here we can see the call of the <code>init_espfix_bsp</code> function which depends on the <code>CONFIG_X86_ESPFIX64</code> kernel configuration option. As we can understand from the function name, it does something with the stack. This function is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/arch/x86/kernel/espfix_64.c">arch/x86/kernel/espfix_64.c</a> and prevents leaking of <code>31:16</code> bits of the <code>esp</code> register during returning to 16-bit stack. First of all we install <code>espfix</code> page upper directory into the kernel page directory in the <code>init_espfix_bs</code>:</p>
+<pre><code class="language-C">pgd_p = &amp;init_level4_pgt[pgd_index(ESPFIX_BASE_ADDR)];
+pgd_populate(&amp;init_mm, pgd_p, (pud_t *)espfix_pud_page);
+</code></pre>
+<p>Where <code>ESPFIX_BASE_ADDR</code> is:</p>
+<pre><code class="language-C">#define PGDIR_SHIFT     39
+#define ESPFIX_PGD_ENTRY _AC(-2, UL)
+#define ESPFIX_BASE_ADDR (ESPFIX_PGD_ENTRY &lt;&lt; PGDIR_SHIFT)
+</code></pre>
+<p>Also we can find it in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/x86/x86_64/mm.txt">Documentation/x86/x86_64/mm</a>:</p>
+<pre><code>... unused hole ...
+ffffff0000000000 - ffffff7fffffffff (=39 bits) %esp fixup stacks
+... unused hole ...
+</code></pre>
+<p>After we've filled page global directory with the <code>espfix</code> pud, the next step is call of the <code>init_espfix_random</code> and <code>init_espfix_ap</code> functions. The first function returns random locations for the <code>espfix</code> page and the second enables the <code>espfix</code> for the current CPU. After the <code>init_espfix_bsp</code> finished the work, we can see the call of the <code>thread_info_cache_init</code> function which defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/fork.c">kernel/fork.c</a> and allocates cache for the <code>thread_info</code> if <code>THREAD_SIZE</code> is less than <code>PAGE_SIZE</code>:</p>
+<pre><code class="language-C"># if THREAD_SIZE &gt;= PAGE_SIZE
+...
+...
+...
+void thread_info_cache_init(void)
+{
+        thread_info_cache = kmem_cache_create(&quot;thread_info&quot;, THREAD_SIZE,
+                                              THREAD_SIZE, 0, NULL);
+        BUG_ON(thread_info_cache == NULL);
+}
+...
+...
+...
+#endif
+</code></pre>
+<p>As we already know the <code>PAGE_SIZE</code> is <code>(_AC(1,UL) &lt;&lt; PAGE_SHIFT)</code> or <code>4096</code> bytes and <code>THREAD_SIZE</code> is <code>(PAGE_SIZE &lt;&lt; THREAD_SIZE_ORDER)</code> or <code>16384</code> bytes for the <code>x86_64</code>. The next function after the <code>thread_info_cache_init</code> is the <code>cred_init</code> from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/cred.c">kernel/cred.c</a>. This function just allocates cache for the credentials (like <code>uid</code>, <code>gid</code>, etc.):</p>
+<pre><code class="language-C">void __init cred_init(void)
+{
+         cred_jar = kmem_cache_create(&quot;cred_jar&quot;, sizeof(struct cred),
+                                     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+}
+</code></pre>
+<p>more about credentials you can read in the <a href="https://github.com/torvalds/linux/blob/master/Documentation/security/credentials.rst">Documentation/security/credentials.txt</a>. Next step is the <code>fork_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/fork.c">kernel/fork.c</a>. The <code>fork_init</code> function allocates cache for the <code>task_struct</code>. Let's look on the implementation of the <code>fork_init</code>. First of all we can see definitions of the <code>ARCH_MIN_TASKALIGN</code> macro and creation of a slab where task_structs will be allocated:</p>
+<pre><code class="language-C">#ifndef CONFIG_ARCH_TASK_STRUCT_ALLOCATOR
+#ifndef ARCH_MIN_TASKALIGN
+#define ARCH_MIN_TASKALIGN      L1_CACHE_BYTES
+#endif
+        task_struct_cachep =
+                kmem_cache_create(&quot;task_struct&quot;, sizeof(struct task_struct),
+                        ARCH_MIN_TASKALIGN, SLAB_PANIC | SLAB_NOTRACK, NULL);
+#endif
+</code></pre>
+<p>As we can see this code depends on the <code>CONFIG_ARCH_TASK_STRUCT_ACLLOCATOR</code> kernel configuration option. This configuration option shows the presence of the <code>alloc_task_struct</code> for the given architecture. As <code>x86_64</code> has no <code>alloc_task_struct</code> function, this code will not work and even will not be compiled on the <code>x86_64</code>.</p>
+<h2 id="allocating-cache-for-init-task"><a class="header" href="#allocating-cache-for-init-task">Allocating cache for init task</a></h2>
+<p>After this we can see the call of the <code>arch_task_cache_init</code> function in the <code>fork_init</code>:</p>
+<pre><code class="language-C">void arch_task_cache_init(void)
+{
+        task_xstate_cachep =
+                kmem_cache_create(&quot;task_xstate&quot;, xstate_size,
+                                  __alignof__(union thread_xstate),
+                                  SLAB_PANIC | SLAB_NOTRACK, NULL);
+        setup_xstate_comp();
+}
+</code></pre>
+<p>The <code>arch_task_cache_init</code> does initialization of the architecture-specific caches. In our case it is <code>x86_64</code>, so as we can see, the <code>arch_task_cache_init</code> allocates cache for the <code>task_xstate</code> which represents <a href="http://en.wikipedia.org/wiki/Floating-point_unit">FPU</a> state and sets up offsets and sizes of all extended states in <a href="http://www.felixcloutier.com/x86/XSAVES.html">xsave</a> area with the call of the <code>setup_xstate_comp</code> function. After the <code>arch_task_cache_init</code> we calculate default maximum number of threads with the:</p>
+<pre><code class="language-C">set_max_threads(MAX_THREADS);
+</code></pre>
+<p>where default maximum number of threads is:</p>
+<pre><code class="language-C">#define FUTEX_TID_MASK  0x3fffffff
+#define MAX_THREADS     FUTEX_TID_MASK
+</code></pre>
+<p>In the end of the <code>fork_init</code> function we initialize <a href="http://www.win.tue.nl/%7Eaeb/linux/lk/lk-5.html">signal</a> handler:</p>
+<pre><code class="language-C">init_task.signal-&gt;rlim[RLIMIT_NPROC].rlim_cur = max_threads/2;
+init_task.signal-&gt;rlim[RLIMIT_NPROC].rlim_max = max_threads/2;
+init_task.signal-&gt;rlim[RLIMIT_SIGPENDING] =
+		init_task.signal-&gt;rlim[RLIMIT_NPROC];
+</code></pre>
+<p>As we know the <code>init_task</code> is an instance of the <code>task_struct</code> structure, so it contains <code>signal</code> field which represents signal handler. It has following type <code>struct signal_struct</code>. On the first two lines we can see setting of the current and maximum limit of the <code>resource limits</code>. Every process has an associated set of resource limits. These limits specify amount of resources which current process can use. Here <code>rlim</code> is resource control limit and presented by the:</p>
+<pre><code class="language-C">struct rlimit {
+        __kernel_ulong_t        rlim_cur;
+        __kernel_ulong_t        rlim_max;
+};
+</code></pre>
+<p>structure from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/uapi/linux/resource.h">include/uapi/linux/resource.h</a>. In our case the resource is the <code>RLIMIT_NPROC</code> which is the maximum number of processes that user can own and <code>RLIMIT_SIGPENDING</code> - the maximum number of pending signals. We can see it in the:</p>
+<pre><code class="language-C">cat /proc/self/limits
+Limit                     Soft Limit           Hard Limit           Units
+...
+...
+...
+Max processes             63815                63815                processes
+Max pending signals       63815                63815                signals
+...
+...
+...
+</code></pre>
+<h2 id="initialization-of-the-caches"><a class="header" href="#initialization-of-the-caches">Initialization of the caches</a></h2>
+<p>The next function after the <code>fork_init</code> is the <code>proc_caches_init</code> from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/fork.c">kernel/fork.c</a>. This function allocates caches for the memory descriptors (or <code>mm_struct</code> structure). At the beginning of the <code>proc_caches_init</code> we can see allocation of the different <a href="http://en.wikipedia.org/wiki/Slab_allocation">SLAB</a> caches with the call of the <code>kmem_cache_create</code>:</p>
+<ul>
+<li><code>sighand_cachep</code> - manage information about installed signal handlers;</li>
+<li><code>signal_cachep</code> - manage information about process signal descriptor;</li>
+<li><code>files_cachep</code> - manage information about opened files;</li>
+<li><code>fs_cachep</code> - manage filesystem information.</li>
+</ul>
+<p>After this we allocate <code>SLAB</code> cache for the <code>mm_struct</code> structures:</p>
+<pre><code class="language-C">mm_cachep = kmem_cache_create(&quot;mm_struct&quot;,
+                         sizeof(struct mm_struct), ARCH_MIN_MMSTRUCT_ALIGN,
+                         SLAB_HWCACHE_ALIGN|SLAB_PANIC|SLAB_NOTRACK, NULL);
+</code></pre>
+<p>After this we allocate <code>SLAB</code> cache for the important <code>vm_area_struct</code> which used by the kernel to manage virtual memory space:</p>
+<pre><code class="language-C">vm_area_cachep = KMEM_CACHE(vm_area_struct, SLAB_PANIC);
+</code></pre>
+<p>Note, that we use <code>KMEM_CACHE</code> macro here instead of the <code>kmem_cache_create</code>. This macro is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/slab.h">include/linux/slab.h</a> and just expands to the <code>kmem_cache_create</code> call:</p>
+<pre><code class="language-C">#define KMEM_CACHE(__struct, __flags) kmem_cache_create(#__struct,\
+                sizeof(struct __struct), __alignof__(struct __struct),\
+                (__flags), NULL)
+</code></pre>
+<p>The <code>KMEM_CACHE</code> has one difference from <code>kmem_cache_create</code>. Take a look on <code>__alignof__</code> operator. The <code>KMEM_CACHE</code> macro aligns <code>SLAB</code> to the size of the given structure, but <code>kmem_cache_create</code> uses given value to align space. After this we can see the call of the <code>mmap_init</code> and <code>nsproxy_cache_init</code> functions. The first function initializes virtual memory area <code>SLAB</code> and the second function initializes <code>SLAB</code> for namespaces.</p>
+<p>The next function after the <code>proc_caches_init</code> is <code>buffer_init</code>. This function is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/fs/buffer.c">fs/buffer.c</a> source code file and allocate cache for the <code>buffer_head</code>. The <code>buffer_head</code> is a special structure which defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/buffer_head.h">include/linux/buffer_head.h</a> and used for managing buffers. In the start of the <code>buffer_init</code> function we allocate cache for the <code>struct buffer_head</code> structures with the call of the <code>kmem_cache_create</code> function as we did in the previous functions. And calculate the maximum size of the buffers in memory with:</p>
+<pre><code class="language-C">nrpages = (nr_free_buffer_pages() * 10) / 100;
+max_buffer_heads = nrpages * (PAGE_SIZE / sizeof(struct buffer_head));
+</code></pre>
+<p>which will be equal to the <code>10%</code> of the <code>ZONE_NORMAL</code> (all RAM from the 4GB on the <code>x86_64</code>). The next function after the <code>buffer_init</code> is - <code>vfs_caches_init</code>. This function allocates <code>SLAB</code> caches and hashtable for different <a href="http://en.wikipedia.org/wiki/Virtual_file_system">VFS</a> caches. We already saw the <code>vfs_caches_init_early</code> function in the eighth part of the Linux kernel <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-8">initialization process</a> which initialized caches for <code>dcache</code> (or directory-cache) and <a href="http://en.wikipedia.org/wiki/Inode">inode</a> cache. The <code>vfs_caches_init</code> function makes post-early initialization of the <code>dcache</code> and <code>inode</code> caches, private data cache, hash tables for the mount points, etc. More details about <a href="http://en.wikipedia.org/wiki/Virtual_file_system">VFS</a> will be described in the separate part. After this we can see <code>signals_init</code> function. This function is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/signal.c">kernel/signal.c</a> and allocates a cache for the <code>sigqueue</code> structures which represents queue of the real time signals. The next function is <code>page_writeback_init</code>. This function initializes the ratio for the dirty pages. Every low-level page entry contains the <code>dirty</code> bit which indicates whether a page has been written to after been loaded into memory.</p>
+<h2 id="creation-of-the-root-for-the-procfs"><a class="header" href="#creation-of-the-root-for-the-procfs">Creation of the root for the procfs</a></h2>
+<p>After all of this preparations we need to create the root for the <a href="http://en.wikipedia.org/wiki/Procfs">proc</a> filesystem. We will do it with the call of the <code>proc_root_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/fs/proc/root.c">fs/proc/root.c</a>. At the start of the <code>proc_root_init</code> function we allocate the cache for the inodes and register a new filesystem in the system with the:</p>
+<pre><code class="language-C">err = register_filesystem(&amp;proc_fs_type);
+      if (err)
+                return;
+</code></pre>
+<p>As I wrote above we will not dive into details about <a href="http://en.wikipedia.org/wiki/Virtual_file_system">VFS</a> and different filesystems in this chapter, but will see it in the chapter about the <code>VFS</code>. After we've registered a new filesystem in our system, we call the <code>proc_self_init</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/fs/proc/self.c">fs/proc/self.c</a> and this function allocates <code>inode</code> number for the <code>self</code> (<code>/proc/self</code> directory refers to the process accessing the <code>/proc</code> filesystem). The next step after the <code>proc_self_init</code> is <code>proc_setup_thread_self</code> which setups the <code>/proc/thread-self</code> directory which contains information about current thread. After this we create <code>/proc/self/mounts</code> symlink which will contains mount points with the call of the</p>
+<pre><code class="language-C">proc_symlink(&quot;mounts&quot;, NULL, &quot;self/mounts&quot;);
+</code></pre>
+<p>and a couple of directories depends on the different configuration options:</p>
+<pre><code class="language-C">#ifdef CONFIG_SYSVIPC
+        proc_mkdir(&quot;sysvipc&quot;, NULL);
+#endif
+        proc_mkdir(&quot;fs&quot;, NULL);
+        proc_mkdir(&quot;driver&quot;, NULL);
+        proc_mkdir(&quot;fs/nfsd&quot;, NULL);
+#if defined(CONFIG_SUN_OPENPROMFS) || defined(CONFIG_SUN_OPENPROMFS_MODULE)
+        proc_mkdir(&quot;openprom&quot;, NULL);
+#endif
+        proc_mkdir(&quot;bus&quot;, NULL);
+        ...
+        ...
+        ...
+        if (!proc_mkdir(&quot;tty&quot;, NULL))
+                 return;
+        proc_mkdir(&quot;tty/ldisc&quot;, NULL);
+        ...
+        ...
+        ...
+</code></pre>
+<p>In the end of the <code>proc_root_init</code> we call the <code>proc_sys_init</code> function which creates <code>/proc/sys</code> directory and initializes the <a href="http://en.wikipedia.org/wiki/Sysctl">Sysctl</a>.</p>
+<p>It is the end of <code>start_kernel</code> function. I did not describe all functions which are called in the <code>start_kernel</code>. I skipped them, because they are not important for the generic kernel initialization stuff and depend on only different kernel configurations. They are <code>taskstats_init_early</code> which exports per-task statistic to the user-space, <code>delayacct_init</code> - initializes per-task delay accounting, <code>key_init</code> and <code>security_init</code> initialize different security stuff, <code>check_bugs</code> - fix some architecture-dependent bugs, <code>ftrace_init</code> function executes initialization of the <a href="https://www.kernel.org/doc/Documentation/trace/ftrace.txt">ftrace</a>, <code>cgroup_init</code> makes initialization of the rest of the <a href="http://en.wikipedia.org/wiki/Cgroups">cgroup</a> subsystem, etc. Many of these parts and subsystems will be described in the other chapters.</p>
+<p>That's all. Finally we have passed through the long-long <code>start_kernel</code> function. But it is not the end of the Linux kernel initialization process. We haven't run the first process yet. In the end of the <code>start_kernel</code> we can see the last call of the - <code>rest_init</code> function. Let's go ahead.</p>
+<h2 id="first-steps-after-the-start_kernel"><a class="header" href="#first-steps-after-the-start_kernel">First steps after the start_kernel</a></h2>
+<p>The <code>rest_init</code> function is defined in the same source code file as <code>start_kernel</code> function, and this file is <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/main.c">init/main.c</a>. In the beginning of the <code>rest_init</code> we can see call of the two following functions:</p>
+<pre><code class="language-C">	rcu_scheduler_starting();
+	smpboot_thread_init();
+</code></pre>
+<p>The first <code>rcu_scheduler_starting</code> makes <a href="http://en.wikipedia.org/wiki/Read-copy-update">RCU</a> scheduler active and the second <code>smpboot_thread_init</code> registers the <code>smpboot_thread_notifier</code> CPU notifier (more about it you can read in the <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">CPU hotplug documentation</a>. After this we can see the following calls:</p>
+<pre><code class="language-C">kernel_thread(kernel_init, NULL, CLONE_FS);
+pid = kernel_thread(kthreadd, NULL, CLONE_FS | CLONE_FILES);
+</code></pre>
+<p>Here the <code>kernel_thread</code> function (defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/fork.c">kernel/fork.c</a>) creates new kernel thread. As we can see the <code>kernel_thread</code> function takes three arguments:</p>
+<ul>
+<li>Function which will be executed in a new thread;</li>
+<li>Parameter for the <code>kernel_init</code> function;</li>
+<li>Flags.</li>
+</ul>
+<p>We will not dive into details about <code>kernel_thread</code> implementation (we will see it in the chapter which describe scheduler, just need to say that <code>kernel_thread</code> invokes <a href="http://www.tutorialspoint.com/unix_system_calls/clone.htm">clone</a>). Now we only need to know that we create new kernel thread with <code>kernel_thread</code> function, parent and child of the thread will use shared information about filesystem and it will start to execute <code>kernel_init</code> function. A kernel thread differs from a user thread that it runs in kernel mode. So with these two <code>kernel_thread</code> calls we create two new kernel threads with the <code>PID = 1</code> for <code>init</code> process and <code>PID = 2</code> for <code>kthreadd</code>. We already know what is <code>init</code> process. Let's look on the <code>kthreadd</code>. It is a special kernel thread which manages and helps different parts of the kernel to create another kernel thread. We can see it in the output of the <code>ps</code> util:</p>
+<pre><code class="language-C">$ ps -ef | grep kthreadd
+root         2     0  0 Jan11 ?        00:00:00 [kthreadd]
+</code></pre>
+<p>Let's postpone <code>kernel_init</code> and <code>kthreadd</code> for now and go ahead in the <code>rest_init</code>. In the next step after we have created two new kernel threads we can see the following code:</p>
+<pre><code class="language-C">	rcu_read_lock();
+	kthreadd_task = find_task_by_pid_ns(pid, &amp;init_pid_ns);
+	rcu_read_unlock();
+</code></pre>
+<p>The first <code>rcu_read_lock</code> function marks the beginning of an <a href="http://en.wikipedia.org/wiki/Read-copy-update">RCU</a> read-side critical section and the <code>rcu_read_unlock</code> marks the end of an RCU read-side critical section. We call these functions because we need to protect the <code>find_task_by_pid_ns</code>. The <code>find_task_by_pid_ns</code> returns pointer to the <code>task_struct</code> by the given pid. So, here we are getting the pointer to the <code>task_struct</code> for <code>PID = 2</code> (we got it after <code>kthreadd</code> creation with the <code>kernel_thread</code>). In the next step we call <code>complete</code> function</p>
+<pre><code class="language-C">complete(&amp;kthreadd_done);
+</code></pre>
+<p>and pass address of the <code>kthreadd_done</code>. The <code>kthreadd_done</code> defined as</p>
+<pre><code class="language-C">static __initdata DECLARE_COMPLETION(kthreadd_done);
+</code></pre>
+<p>where <code>DECLARE_COMPLETION</code> macro defined as:</p>
+<pre><code class="language-C">#define DECLARE_COMPLETION(work) \
+         struct completion work = COMPLETION_INITIALIZER(work)
+</code></pre>
+<p>and expands to the definition of the <code>completion</code> structure. This structure is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/completion.h">include/linux/completion.h</a> and presents <code>completions</code> concept. Completions is a code synchronization mechanism which provides race-free solution for the threads that must wait for some process to have reached a point or a specific state. Using completions consists of three parts: The first is definition of the <code>complete</code> structure and we did it with the <code>DECLARE_COMPLETION</code>. The second is call of the <code>wait_for_completion</code>. After the call of this function, a thread which called it will not continue to execute and will wait while other thread did not call <code>complete</code> function. Note that we call <code>wait_for_completion</code> with the <code>kthreadd_done</code> in the beginning of the <code>kernel_init_freeable</code>:</p>
+<pre><code class="language-C">wait_for_completion(&amp;kthreadd_done);
+</code></pre>
+<p>And the last step is to call <code>complete</code> function as we saw it above. After this the <code>kernel_init_freeable</code> function will not be executed while <code>kthreadd</code> thread will not be set. After the <code>kthreadd</code> was set, we can see three following functions in the <code>rest_init</code>:</p>
+<pre><code class="language-C">	init_idle_bootup_task(current);
+	schedule_preempt_disabled();
+    cpu_startup_entry(CPUHP_ONLINE);
+</code></pre>
+<p>The first <code>init_idle_bootup_task</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/kernel/sched/core.c">kernel/sched/core.c</a> sets the Scheduling class for the current process (<code>idle</code> class in our case):</p>
+<pre><code class="language-C">void init_idle_bootup_task(struct task_struct *idle)
+{
+         idle-&gt;sched_class = &amp;idle_sched_class;
+}
+</code></pre>
+<p>where <code>idle</code> class is a low task priority and tasks can be run only when the processor doesn't have anything to run besides this tasks. The second function <code>schedule_preempt_disabled</code> disables preempt in <code>idle</code> tasks. And the third function <code>cpu_startup_entry</code> is defined in the <a href="https://github.com/torvalds/linux/blob/master/kernel/sched/idle.c">kernel/sched/idle.c</a> and calls <code>cpu_idle_loop</code> from the <a href="https://github.com/torvalds/linux/blob/master/kernel/sched/idle.c">kernel/sched/idle.c</a>. The <code>cpu_idle_loop</code> function works as process with <code>PID = 0</code> and works in the background. Main purpose of the <code>cpu_idle_loop</code> is to consume the idle CPU cycles. When there is no process to run, this process starts to work. We have one process with <code>idle</code> scheduling class (we just set the <code>current</code> task to the <code>idle</code> with the call of the <code>init_idle_bootup_task</code> function), so the <code>idle</code> thread does not do useful work but just checks if there is an active task to switch to:</p>
+<pre><code class="language-C">static void cpu_idle_loop(void)
+{
+        ...
+        ...
+        ...
+        while (1) {
+                while (!need_resched()) {
+                ...
+                ...
+                ...
+                }
+        ...
+        }
+</code></pre>
+<p>More about it will be in the chapter about scheduler. So for this moment the <code>start_kernel</code> calls the <code>rest_init</code> function which spawns an <code>init</code> (<code>kernel_init</code> function) process and become <code>idle</code> process itself. Now is time to look on the <code>kernel_init</code>. Execution of the <code>kernel_init</code> function starts from the call of the <code>kernel_init_freeable</code> function. The <code>kernel_init_freeable</code> function first of all waits for the completion of the <code>kthreadd</code> setup. I already wrote about it above:</p>
+<pre><code class="language-C">wait_for_completion(&amp;kthreadd_done);
+</code></pre>
+<p>After this we set <code>gfp_allowed_mask</code> to <code>__GFP_BITS_MASK</code> which means that system is already running, set allowed <a href="https://www.kernel.org/doc/Documentation/cgroups/cpusets.txt">cpus/mems</a> to all CPUs and <a href="http://en.wikipedia.org/wiki/Non-uniform_memory_access">NUMA</a> nodes with the <code>set_mems_allowed</code> function, allow <code>init</code> process to run on any CPU with the <code>set_cpus_allowed_ptr</code>, set pid for the <code>cad</code> or <code>Ctrl-Alt-Delete</code>, do preparation for booting of the other CPUs with the call of the <code>smp_prepare_cpus</code>, call early <a href="http://kernelnewbies.org/Documents/InitcallMechanism">initcalls</a> with the <code>do_pre_smp_initcalls</code>, initialize <code>SMP</code> with the <code>smp_init</code> and initialize <a href="https://www.kernel.org/doc/Documentation/lockup-watchdogs.txt">lockup_detector</a> with the call of the <code>lockup_detector_init</code> and initialize scheduler with the <code>sched_init_smp</code>.</p>
+<p>After this we can see the call of the following functions - <code>do_basic_setup</code>. Before we will call the <code>do_basic_setup</code> function, our kernel already initialized for this moment. As comment says:</p>
+<pre><code>Now we can finally start doing some real work..
+</code></pre>
+<p>The <code>do_basic_setup</code> will reinitialize <a href="https://www.kernel.org/doc/Documentation/cgroups/cpusets.txt">cpuset</a> to the active CPUs, initialize the <code>khelper</code> - which is a kernel thread which used for making calls out to userspace from within the kernel, initialize <a href="http://en.wikipedia.org/wiki/Tmpfs">tmpfs</a>, initialize <code>drivers</code> subsystem, enable the user-mode helper <code>workqueue</code>  and make post-early call of the <code>initcalls</code>. We can see opening of the <code>dev/console</code> and dup twice file descriptors from <code>0</code> to <code>2</code> after the <code>do_basic_setup</code>:</p>
+<pre><code class="language-C">if (sys_open((const char __user *) &quot;/dev/console&quot;, O_RDWR, 0) &lt; 0)
+	pr_err(&quot;Warning: unable to open an initial console.\n&quot;);
+
+(void) sys_dup(0);
+(void) sys_dup(0);
+</code></pre>
+<p>We are using two system calls here <code>sys_open</code> and <code>sys_dup</code>. In the next chapters we will see explanation and implementation of the different system calls. After we opened initial console, we check that <code>rdinit=</code> option was passed to the kernel command line or set default path of the ramdisk:</p>
+<pre><code class="language-C">if (!ramdisk_execute_command)
+	ramdisk_execute_command = &quot;/init&quot;;
+</code></pre>
+<p>Check user's permissions for the <code>ramdisk</code> and call the <code>prepare_namespace</code> function from the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/init/do_mounts.c">init/do_mounts.c</a> which checks and mounts the <a href="http://en.wikipedia.org/wiki/Initrd">initrd</a>:</p>
+<pre><code class="language-C">if (sys_access((const char __user *) ramdisk_execute_command, 0) != 0) {
+	ramdisk_execute_command = NULL;
+	prepare_namespace();
+}
+</code></pre>
+<p>This is the end of the <code>kernel_init_freeable</code> function and we need return to the <code>kernel_init</code>. The next step after the <code>kernel_init_freeable</code> finished its execution is the <code>async_synchronize_full</code>. This function waits until all asynchronous function calls have been done and after it we will call the <code>free_initmem</code> which will release all memory occupied by the initialization stuff which located between <code>__init_begin</code> and <code>__init_end</code>. After this we protect <code>.rodata</code> with the <code>mark_rodata_ro</code> and update state of the system from the <code>SYSTEM_BOOTING</code> to the</p>
+<pre><code class="language-C">system_state = SYSTEM_RUNNING;
+</code></pre>
+<p>And tries to run the <code>init</code> process:</p>
+<pre><code class="language-C">if (ramdisk_execute_command) {
+	ret = run_init_process(ramdisk_execute_command);
+	if (!ret)
+		return 0;
+	pr_err(&quot;Failed to execute %s (error %d)\n&quot;,
+	       ramdisk_execute_command, ret);
+}
+</code></pre>
+<p>First of all it checks the <code>ramdisk_execute_command</code> which we set in the <code>kernel_init_freeable</code> function and it will be equal to the value of the <code>rdinit=</code> kernel command line parameters or <code>/init</code> by default. The <code>run_init_process</code> function fills the first element of the <code>argv_init</code> array:</p>
+<pre><code class="language-C">static const char *argv_init[MAX_INIT_ARGS+2] = { &quot;init&quot;, NULL, };
+</code></pre>
+<p>which represents arguments of the <code>init</code> program and call <code>do_execve</code> function:</p>
+<pre><code class="language-C">argv_init[0] = init_filename;
+return do_execve(getname_kernel(init_filename),
+	(const char __user *const __user *)argv_init,
+	(const char __user *const __user *)envp_init);
+</code></pre>
+<p>The <code>do_execve</code> function is defined in the <a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/include/linux/sched.h">include/linux/sched.h</a> and runs program with the given file name and arguments. If we did not pass <code>rdinit=</code> option to the kernel command line, kernel starts to check the <code>execute_command</code> which is equal to value of the <code>init=</code> kernel command line parameter:</p>
+<pre><code class="language-C">	if (execute_command) {
+		ret = run_init_process(execute_command);
+		if (!ret)
+			return 0;
+		panic(&quot;Requested init %s failed (error %d).&quot;,
+		      execute_command, ret);
+	}
+</code></pre>
+<p>If we did not pass <code>init=</code> kernel command line parameter either, kernel tries to run one of the following executable files:</p>
+<pre><code class="language-C">if (!try_to_run_init_process(&quot;/sbin/init&quot;) ||
+    !try_to_run_init_process(&quot;/etc/init&quot;) ||
+    !try_to_run_init_process(&quot;/bin/init&quot;) ||
+    !try_to_run_init_process(&quot;/bin/sh&quot;))
+	return 0;
+</code></pre>
+<p>Otherwise we finish with <a href="http://en.wikipedia.org/wiki/Kernel_panic">panic</a>:</p>
+<pre><code class="language-C">panic(&quot;No working init found.  Try passing init= option to kernel. &quot;
+      &quot;See Linux Documentation/init.txt for guidance.&quot;);
+</code></pre>
+<p>That's all! Linux kernel initialization process is finished!</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>It is the end of the tenth part about the Linux kernel <a href="https://0xax.gitbook.io/linux-insides/summary/initialization">initialization process</a>. It is not only the <code>tenth</code> part, but also is the last part which describes initialization of the linux kernel. As I wrote in the first <a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-1">part</a> of this chapter, we will go through all steps of the kernel initialization and we did it. We started at the first architecture-independent function - <code>start_kernel</code> and finished with the launch of the first <code>init</code> process in the our system. I skipped details about different subsystem of the kernel, for example I almost did not cover scheduler, interrupts, exception handling, etc. From the next part we will start to dive to the different kernel subsystems. Hope it will be interesting.</p>
+<p>If you have any questions or suggestions write me a comment or ping me at <a href="https://twitter.com/0xAX">twitter</a>.</p>
+<p><strong>Please note that English is not my first language, And I am really sorry for any inconvenience. If you find any mistakes please send me PR to <a href="https://github.com/0xAX/linux-insides">linux-insides</a>.</strong></p>
+<h2 id="links"><a class="header" href="#links">Links</a></h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Slab_allocation">SLAB</a></li>
+<li><a href="http://www.felixcloutier.com/x86/XSAVES.html">xsave</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Floating-point_unit">FPU</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/master/Documentation/security/credentials.rst">Documentation/security/credentials.txt</a></li>
+<li><a href="https://github.com/torvalds/linux/blob/16f73eb02d7e1765ccab3d2018e0bd98eb93d973/Documentation/x86/x86_64/mm.txt">Documentation/x86/x86_64/mm</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Read-copy-update">RCU</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Virtual_file_system">VFS</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Inode">inode</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Procfs">proc</a></li>
+<li><a href="http://linux.die.net/man/5/proc">man proc</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Sysctl">Sysctl</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/trace/ftrace.txt">ftrace</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Cgroups">cgroup</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">CPU hotplug documentation</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/scheduler/completion.txt">completions - wait for completion handling</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Non-uniform_memory_access">NUMA</a></li>
+<li><a href="https://www.kernel.org/doc/Documentation/cgroups/cpusets.txt">cpus/mems</a></li>
+<li><a href="http://kernelnewbies.org/Documents/InitcallMechanism">initcalls</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Tmpfs">Tmpfs</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Initrd">initrd</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Kernel_panic">panic</a></li>
+<li><a href="https://0xax.gitbook.io/linux-insides/summary/initialization/linux-initialization-9">Previous part</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../Initialization/linux-initialization-9.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../Interrupts/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../Initialization/linux-initialization-9.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../Interrupts/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+    </body>
+</html>
